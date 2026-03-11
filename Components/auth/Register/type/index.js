@@ -1,5 +1,5 @@
 import { lazy } from 'react';
 
-export const CandidateCard = lazy(() => import('./Candidate'));
-export const CompanyCard = lazy(() => import('./Company'));
+export const CandidateForm = lazy(() => import('./Candidate'));
+export const CompanyForm = lazy(() => import('./Company'));
 

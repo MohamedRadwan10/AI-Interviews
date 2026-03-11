@@ -1,12 +1,10 @@
-'use client'
-
-import LoginPage from "@/Components/auth/Login";
+import RegisterPage from "@/Components/auth/Register";
 import React from "react";
 
 const page = () => {
   return (
     <div>
-      <LoginPage />
+      <RegisterPage type={'company'}/>
     </div>
   );
 };

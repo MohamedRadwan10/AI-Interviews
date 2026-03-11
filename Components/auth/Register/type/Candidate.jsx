@@ -1,9 +1,8 @@
-import React from 'react'
+import AuthPage from "@/Components/auth/AuthPage";
+import { registerConfig } from "@/Config/FieldsConfig";
 
 const Candidate = () => {
-  return (
-    <div>Candidate</div>
-  )
-}
+  return <AuthPage config={registerConfig} />;
+};
 
-export default Candidate
+export default Candidate;

@@ -5,8 +5,8 @@ import { get, startCase } from "lodash-es";
 import * as FieldComponents from "@/Components/Common/Inputs/type";
 
 const MainInput = (props) => {
-  const { field_name } = props;
-  const componentKey = `${startCase(field_name).replaceAll(" ", "")}Field`;
+  const { type } = props;
+  const componentKey = `${startCase(type).replaceAll(" ", "")}Field`;
   const MainComp = get(
     FieldComponents,
     componentKey,

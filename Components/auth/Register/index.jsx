@@ -2,24 +2,23 @@
 
 import { get, startCase } from "lodash-es";
 import { Suspense } from "react";
-import * as CardComponents from "@/Components/auth/Register/type";
-import Loading from "@/MainApp/Components/Loading";
+import * as FormComponents from "@/Components/auth/Register/type";
 
-const SettingComponent = (props) => {
-  const cardName = props?.card_name ?? "";
-  const componentKey = `${startCase(cardName).replaceAll(" ", "")}Card`;
+const RegisterPage = (props) => {
+  const type = props?.type ?? "";
+  const componentKey = `${startCase(type).replaceAll(" ", "")}Form`;
 
   const MainComp = get(
-    CardComponents,
+    FormComponents,
     componentKey,
-    CardComponents.CandidateCard,
+    FormComponents.CandidateForm,
   );
 
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={<div>loading .....</div>}>
       <MainComp {...props} />
     </Suspense>
   );
 };
 
-export default SettingComponent;
+export default RegisterPage;

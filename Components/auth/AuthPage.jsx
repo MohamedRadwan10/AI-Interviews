@@ -1,13 +1,19 @@
+"use client";
 import React from "react";
 import { get } from "lodash-es";
 import MainImage from "@/Components/Common/Image";
 import MainText from "@/Components/Common/MainText";
 import logoImage from "@/public/assets/logo.png";
-import LoginForm from "@/Components/auth/Login/LoginForm";
 import MainButton from "@/Components/Common/MainButton";
+import Link from "next/link";
+import MainForm from "../Common/MainForm";
 
-const LoginPage = () => {
+const AuthPage = ({ config }) => {
   const logo = get(logoImage, "src");
+
+  const handleSubmit = async (values) => {
+    console.log("Form submitted:", values);
+  };
 
   return (
     <div className="min-h-screen flex justify-center items-center dark:bg-dark-primary-1 bg-light-primary">
@@ -33,24 +39,27 @@ const LoginPage = () => {
           </div>
         </div>
 
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center mb-6">
           <MainText
             tag="p"
-            title="Welcome back to IntelliHire"
+            title={config.pageTitle}
             className="text-xl m-0 font-semibold text-light-black dark:text-dark-white"
           />
           <MainText
             tag="p"
-            title="Step into the future of hiring"
+            title={config.pageSubtitle}
             className="text-sm m-0 text-light-gray dark:text-dark-gray"
           />
         </div>
-        <LoginForm />
+
+        <MainForm config={config} onSubmit={handleSubmit} />
+
         <div className="flex items-center justify-between gap-3 my-4 dark:text-dark-gray text-light-gray text-sm">
           <div className="w-1/3 h-[1px] dark:bg-dark-gray bg-light-gray"></div>
           OR CONTINUE WITH
-          <div className="w-1/3  h-[1px] dark:bg-dark-gray bg-light-gray"></div>
+          <div className="w-1/3 h-[1px] dark:bg-dark-gray bg-light-gray"></div>
         </div>
+
         <div className="flex gap-4">
           <MainButton
             type="button"
@@ -78,21 +87,29 @@ const LoginPage = () => {
             Microsoft
           </MainButton>
         </div>
-        <p className="text-center text-sm dark:text-dark-gray text-light-gray mt-6">
-          Don't have account?
-          <MainText
-            title="Candidate"
-            className="dark:text-dark-primary-2 text-light-secondary cursor-pointer"
-          />
-          or
-          <MainText
-            title="Employer"
-            className="dark:text-dark-primary-2 text-light-secondary cursor-pointer"
-          />
-        </p>
+
+        {config.footerLinks && config.footerLinks.length > 0 && (
+          <p className="text-center text-sm dark:text-dark-gray text-light-gray mt-6">
+            {config.footerText}
+            {config.footerLinks.map((link, index) => (
+              <React.Fragment key={link.href}>
+                <Link href={link.href} className="mx-1">
+                  <MainText
+                    title={link.text}
+                    className="dark:text-dark-primary-2 text-light-secondary cursor-pointer inline"
+                  />
+                </Link>
+                {index < config.footerLinks.length - 1 &&
+                  config.footerSeparator && (
+                    <span className="mx-1">{config.footerSeparator}</span>
+                  )}
+              </React.Fragment>
+            ))}
+          </p>
+        )}
       </div>
     </div>
   );
 };
 
-export default LoginPage;
+export default AuthPage;

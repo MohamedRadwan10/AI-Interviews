@@ -1,9 +1,8 @@
-import React from 'react'
+import AuthPage from "@/Components/auth/AuthPage";
+import { registerConfig } from "@/Config/FieldsConfig";
 
 const Company = () => {
-  return (
-    <div>Company</div>
-  )
-}
+  return <AuthPage config={registerConfig} />;
+};
 
-export default Company
+export default Company;
