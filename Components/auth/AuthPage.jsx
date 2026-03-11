@@ -8,11 +8,11 @@ import MainButton from "@/Components/Common/MainButton";
 import Link from "next/link";
 import MainForm from "../Common/MainForm";
 
-const AuthPage = ({ config }) => {
+const AuthPage = ({ config, onSubmit }) => {
   const logo = get(logoImage, "src");
 
   const handleSubmit = async (values) => {
-    console.log("Form submitted:", values);
+    onSubmit(values);
   };
 
   return (

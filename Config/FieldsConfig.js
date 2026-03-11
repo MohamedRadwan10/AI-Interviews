@@ -80,7 +80,7 @@ export const registerConfig = {
 
   fields: [
     {
-      field_name: "fullName",
+      field_name: "name",
       type: "text",
       label: "Full Name",
       placeholder: "Mohamed Mahmoud",
@@ -162,7 +162,7 @@ export const registerConfig = {
       },
     },
     {
-      field_name: "confirmPassword",
+      field_name: "rePassword",
       type: "password",
       label: "Re-enter Password",
       placeholder: "Re-enter your password",
@@ -192,21 +192,21 @@ export const registerConfig = {
         },
       },
     },
-    {
-      field_name: "checkBox",
-      type: "checkBox",
-      label: "I agree to the Terms and Privacy Policy.",
-      fieldClassName:
-        "w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600",
-      containerClassName:
-        "flex items-center gap-2 text-light-black dark:text-dark-white",
-      validation: {
-        required: true,
-        oneOf: {
-          values: [true],
-          message: "You must agree to the Terms and Privacy Policy.",
-        },
-      },
-    },
+    // {
+    //   field_name: "checkBox",
+    //   type: "checkBox",
+    //   label: "I agree to the Terms and Privacy Policy.",
+    //   fieldClassName:
+    //     "w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600",
+    //   containerClassName:
+    //     "flex items-center gap-2 text-light-black dark:text-dark-white",
+    //   validation: {
+    //     required: true,
+    //     oneOf: {
+    //       values: [true],
+    //       message: "You must agree to the Terms and Privacy Policy.",
+    //     },
+    //   },
+    // },
   ],
 };

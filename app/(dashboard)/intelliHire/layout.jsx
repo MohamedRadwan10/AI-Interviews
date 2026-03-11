@@ -1,14 +1,15 @@
+"use client";
 import Layout from "@/Components/admin/Layout/Layout";
-import { DarkModeProvider } from "@/Context/DarkModeContext";
+import { UserTokenProvider } from "@/Context/UserTokenContext";
 import { ReduxProvider } from "@/Store/ReduxProvider";
 
 const MainLayout = ({ children }) => {
   return (
-    <DarkModeProvider>
+    <UserTokenProvider>
       <ReduxProvider>
         <Layout>{children}</Layout>
       </ReduxProvider>
-    </DarkModeProvider>
+    </UserTokenProvider>
   );
 };
 
