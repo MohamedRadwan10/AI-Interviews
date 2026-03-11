@@ -1,8 +1,10 @@
 import AuthPage from "@/Components/auth/AuthPage";
 import { loginConfig } from "@/Config/FieldsConfig";
+import { useAuth } from "@/hooks/useAuth";
 
 const LoginPage = () => {
-  return <AuthPage config={loginConfig} />;
+  const { login } = useAuth();
+  return <AuthPage config={loginConfig} onSubmit={login} />;
 };
 
 export default LoginPage;
