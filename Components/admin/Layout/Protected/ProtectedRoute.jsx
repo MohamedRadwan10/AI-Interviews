@@ -1,25 +1,26 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
 
 const ProtectedRouter = ({ children }) => {
-  const [token, setToken] = useState(null);
   const [checked, setChecked] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const storedToken = localStorage.getItem("userToken");
-    setToken(storedToken);
     setChecked(true);
-  }, []);
 
-  if (!checked) return null;
+    if (!storedToken) {
+      router.push("/login");
+    }
+  }, [router]);
 
-  if (!token) {
-    return <Navigate to="/login" replace />;
+  if (!checked) {
+    return null;
   }
 
-  return children;
+  return <>{children}</>;
 };
 
 export default ProtectedRouter;

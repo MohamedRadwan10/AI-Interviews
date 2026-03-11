@@ -5,23 +5,7 @@ import axios from "axios";
 import { UserTokenContext } from "@/Context/UserTokenContext";
 
 export const useAuth = () => {
-  const context = useContext(UserTokenContext);
-
-  if (!context) {
-    return {
-      register: async () => {
-        console.warn("Context not available during prerender");
-      },
-      login: async () => {
-        console.warn("Context not available during prerender");
-      },
-      logout: () => {},
-      errors: null,
-      isLoading: false,
-    };
-  }
-  
-  const { setUserToken, setUserData, logout } = context;
+  const { setUserToken, setUserData, logout } = useContext(UserTokenContext);
   const [errors, setErrors] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
