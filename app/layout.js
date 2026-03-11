@@ -2,7 +2,7 @@ import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import "./globals.css";
-import { DarkModeProvider } from "@/Context/DarkModeContext";
+import ClientLayout from "./ClientLayout";
 
 export const metadata = {
   title: "IntelliHire",
@@ -11,9 +11,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html>
+    <html lang="en">
       <body>
-        <DarkModeProvider>{children}</DarkModeProvider>
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );
