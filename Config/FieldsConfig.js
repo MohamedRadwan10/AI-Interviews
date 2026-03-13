@@ -7,12 +7,12 @@ export const loginConfig = {
   footerLinks: [
     {
       text: "Candidate",
-      href: "/candidate_register",
+      href: "/candidate-register",
       type: "candidate",
     },
     {
       text: "Company",
-      href: "/company_register",
+      href: "/company-register",
       type: "company",
     },
   ],
