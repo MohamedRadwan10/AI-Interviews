@@ -8,7 +8,7 @@ const MainText = ({
   ...props
 }) => {
   const Component = tag;
-  const classes = `${useDefaultStyle ? "" : ""} ${className}`;
+  const classes = `${useDefaultStyle ? "" : ""} ${className} !select-none`;
 
   return (
     <Component className={classes} {...props}>

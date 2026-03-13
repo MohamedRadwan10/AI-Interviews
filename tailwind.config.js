@@ -23,6 +23,7 @@ module.exports = {
         light: {
           primary: "#F0F4F8", //main bg
           secondary: "#2563ea",
+          blue50: "#EFF6FF",
           white: "#fff",
           black: "#000",
           gray: "#9CA3AF", //text login // border field login
