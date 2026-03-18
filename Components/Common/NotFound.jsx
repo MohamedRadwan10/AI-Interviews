@@ -5,12 +5,13 @@ import React from "react";
 import logoImage from "@/public/assets/notFound.png";
 import MainButton from "@/Components/Common/MainButton";
 import { useRouter } from "next/navigation";
+import MainText from "@/Components/Common/MainText";
 
 const NotFound = () => {
   const router = useRouter();
 
   const handleBack = () => {
-    router.push("intelliHire");
+    router.push("/intelliHire");
   };
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center dark:bg-dark-primary-1 bg-light-primary">
@@ -23,16 +24,24 @@ const NotFound = () => {
             preview={false}
           />
 
-          <h1 className="text-8xl font-bold text-dark-primary-2 mb-4">404</h1>
+          <MainText
+            tag="h1"
+            title="404"
+            className="text-8xl font-bold text-dark-primary-2 mb-4"
+          />
 
-          <h2 className="text-3xl font-semibold text-gray-800 mb-3">
-            Not Found!
-          </h2>
+          <MainText
+            tag="h2"
+            title="Not Found!"
+            className="text-3xl font-semibold text-gray-800 mb-3"
+          />
 
-          <p className="text-gray-600 text-lg mb-8 max-w-lg mx-auto">
-            Sorry, the page you are looking for may have been moved, deleted, or
-            it does not exist at all.
-          </p>
+          <MainText
+            tag="p"
+            title="Sorry, the page you are looking for may have been moved, deleted, or
+            it does not exist at all."
+            className="text-gray-600 text-lg mb-8 max-w-lg mx-auto"
+          />
 
           <MainButton
             onClick={handleBack}
