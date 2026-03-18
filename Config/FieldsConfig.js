@@ -6,17 +6,12 @@ export const loginConfig = {
   footerText: "Don't have account?",
   footerLinks: [
     {
-      text: "Candidate",
-      href: "/candidate-register",
-      type: "candidate",
-    },
-    {
-      text: "Company",
-      href: "/company-register",
-      type: "company",
+      text: "Register",
+      href: "/account-type",
+      type: "register",
     },
   ],
-  footerSeparator: "or",
+  footerSeparator: "",
 
   fields: [
     {
