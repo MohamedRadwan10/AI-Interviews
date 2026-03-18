@@ -79,7 +79,8 @@ export const footerConfig = {
 };
 
 export const navigation = [
-  { label: "Home", path: "/intelliHire", active: true },
-  { label: "Jobs", path: "/jobs", active: false },
-  { label: "Moderate My Job", path: "/moderate-job", active: false },
+  { label: "Home", path: "/intelliHire" },
+  { label: "About Us", path: "/intelliHire/about" },
+  { label: "Jobs", path: "/intelliHire/jobs" },
+  { label: "Moderate My Job", path: "/intelliHire/moderate-job" },
 ];
