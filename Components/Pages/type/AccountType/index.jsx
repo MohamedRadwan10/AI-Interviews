@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import AccountTypeCard from "../Cards/AccountType";
-import { map } from "lodash-es";
-import MainButton from "../Common/MainButton";
-import MainText from "../Common/MainText";
+import { map, get } from "lodash-es";
+import MainButton from "@/Components/Common/MainButton";
+import MainText from "@/Components/Common/MainText";
 import { useRouter } from "next/navigation";
+import MainCard from "@/Components/Common/Cards";
 
 const accountTypes = [
   {
@@ -32,29 +32,36 @@ const AccountType = () => {
     router.push(`/${selected}-register`);
   };
 
+  const pageTitle = "How do you want to use the platform?";
+  const pageSubtitle = "Select the account type to continue";
+
   return (
     <div className="min-h-screen dark:bg-dark-primary-1 bg-light-primary flex flex-col items-center justify-center px-6">
       <MainText
         tag="h1"
-        title="How do you want to use the platform?"
+        title={pageTitle}
         className="text-light-black dark:text-dark-white text-2xl font-semibold mb-2"
       />
 
       <MainText
         tag="p"
-        title="Select the account type to continue"
+        title={pageSubtitle}
         className="text-light-gray dark:text-dark-gray text-sm mb-10"
       />
 
       <div className="flex gap-6 flex-wrap justify-center">
-        {map(accountTypes, (item, idx) => (
-          <AccountTypeCard
-            key={idx}
-            item={item}
-            selected={selected}
-            onSelect={setSelected}
-          />
-        ))}
+        {map(get({ items: accountTypes }, "items", []), (item, idx) => {
+          const type = get(item, "type");
+          return (
+            <MainCard
+              key={idx}
+              type="accountType"
+              data={item}
+              selected={selected}
+              onSelect={setSelected}
+            />
+          );
+        })}
       </div>
 
       <MainButton

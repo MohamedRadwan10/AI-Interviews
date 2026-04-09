@@ -1,25 +1,29 @@
-import React from "react";
+import { get } from "lodash-es";
 import { InputText } from "primereact/inputtext";
 
-const PhoneField = ({
-  value,
-  onChange,
-  onBlur,
-  label,
-  containerClassName,
-  error,
-  field_name,
-  fieldClassName,
-}) => {
-  const handleChange = (e) => {
-    const onlyNumbers = e.target.value.replace(/\D/g, "");
+const PhoneField = (props) => {
+  const value = get(props, "value", "");
+  const onChange = get(props, "onChange");
+  const onBlur = get(props, "onBlur");
+  const label = get(props, "label");
+  const containerClassName = get(props, "containerClassName", "");
+  const error = get(props, "error");
+  const field_name = get(props, "field_name");
+  const fieldClassName = get(props, "fieldClassName", "");
 
-    onChange({
-      target: {
-        name: field_name,
-        value: onlyNumbers,
-      },
-    });
+  const handleChange = (e) => {
+    const target = get(e, "target");
+    const rawValue = get(target, "value", "");
+    const onlyNumbers = rawValue.replace(/\D/g, "");
+
+    if (onChange) {
+      onChange({
+        target: {
+          name: field_name,
+          value: onlyNumbers,
+        },
+      });
+    }
   };
 
   return (
@@ -31,7 +35,7 @@ const PhoneField = ({
       <InputText
         id={field_name}
         name={field_name}
-        value={value ?? ""}
+        value={value}
         onChange={handleChange}
         onBlur={onBlur}
         placeholder="Enter your phone number"

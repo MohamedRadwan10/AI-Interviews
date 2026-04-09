@@ -1,17 +1,17 @@
-import React from "react";
+import { get } from "lodash-es";
 import { InputText } from "primereact/inputtext";
 
-const TextField = ({
-  field_name,
-  value,
-  onChange,
-  onBlur,
-  label,
-  placeholder,
-  error,
-  containerClassName,
-  fieldClassName,
-}) => {
+const TextField = (props) => {
+  const field_name = get(props, "field_name");
+  const value = get(props, "value", "");
+  const onChange = get(props, "onChange");
+  const onBlur = get(props, "onBlur");
+  const label = get(props, "label");
+  const placeholder = get(props, "placeholder", "Enter text");
+  const error = get(props, "error");
+  const containerClassName = get(props, "containerClassName", "");
+  const fieldClassName = get(props, "fieldClassName", "");
+
   return (
     <div className={`w-full mb-4 ${containerClassName}`}>
       {label && (
@@ -22,10 +22,10 @@ const TextField = ({
       <InputText
         id={field_name}
         name={field_name}
-        value={value ?? ""}
+        value={value}
         onChange={onChange}
         onBlur={onBlur}
-        placeholder={placeholder || "Enter text"}
+        placeholder={placeholder}
         className={`w-full p-2 border rounded ${
           error ? "border-red-500" : "border-gray-300"
         } ${fieldClassName}`}

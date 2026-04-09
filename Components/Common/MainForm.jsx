@@ -1,46 +1,57 @@
-"use client";
-import React, { useMemo } from "react";
+import { map, get } from "lodash-es";
 import { useFormik } from "formik";
 import MainButton from "@/Components/Common/MainButton";
 import MainInput from "./Inputs";
 import { buildValidationSchema } from "@/Utils/Func/ValidationSchema";
+import { useMemo } from "react";
 
-const MainForm = ({ config, onSubmit }) => {
+const MainForm = (props) => {
+  const config = get(props, "config", {});
+  const onSubmit = get(props, "onSubmit");
+  const fields = get(config, "fields", []);
+  const submitButtonText = get(config, "submitButtonText");
+
   const validationSchema = useMemo(
-    () => buildValidationSchema(config.fields),
-    [config],
+    () => buildValidationSchema(fields),
+    [fields],
   );
 
   const formik = useFormik({
-    initialValues: config.fields.reduce((acc, field) => {
-      acc[field.field_name] = field.type === "checkBox" ? false : "";
+    initialValues: fields.reduce((acc, field) => {
+      const fieldName = get(field, "field_name");
+      const fieldType = get(field, "type");
+      acc[fieldName] = fieldType === "checkBox" ? false : "";
       return acc;
     }, {}),
     validationSchema,
     onSubmit: (values) => {
-      onSubmit(values);
+      if (onSubmit) onSubmit(values);
     },
   });
 
+  const isValid = get(formik, "isValid");
+  const isSubmitting = get(formik, "isSubmitting");
+  const values = get(formik, "values", {});
+  const touched = get(formik, "touched", {});
+  const errors = get(formik, "errors", {});
+
   return (
     <form onSubmit={formik.handleSubmit} className="w-full">
-      {config.fields.map((field) => {
+      {map(fields, (field) => {
+        const fieldName = get(field, "field_name");
         return (
           <MainInput
-            key={field.field_name}
-            field_name={field.field_name}
-            type={field.type}
-            label={field.label}
-            placeholder={field.placeholder}
-            value={formik.values[field.field_name]}
-            error={
-              formik.touched[field.field_name] &&
-              formik.errors[field.field_name]
-            }
+            key={fieldName}
+            field_name={fieldName}
+            type={get(field, "type")}
+            label={get(field, "label")}
+            placeholder={get(field, "placeholder")}
+            value={get(values, fieldName)}
+            error={get(touched, fieldName) && get(errors, fieldName)}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            fieldClassName={field.fieldClassName}
-            containerClassName={field.containerClassName}
+            fieldClassName={get(field, "fieldClassName")}
+            containerClassName={get(field, "containerClassName")}
           />
         );
       })}
@@ -48,9 +59,9 @@ const MainForm = ({ config, onSubmit }) => {
       <MainButton
         type="submit"
         className="w-full flex justify-center items-center py-2 mt-4 bg-light-secondary dark:bg-dark-secondary text-white rounded-md hover:opacity-90 transition-opacity"
-        disabled={!formik.isValid || formik.isSubmitting}
+        disabled={!isValid || isSubmitting}
       >
-        {config.submitButtonText}
+        {submitButtonText}
       </MainButton>
     </form>
   );

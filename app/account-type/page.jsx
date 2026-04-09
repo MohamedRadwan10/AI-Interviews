@@ -1,7 +1,7 @@
-import AccountType from "@/Components/AccountType";
+import MainPage from "@/Components/Pages";
 
 const page = () => {
-  return <AccountType />;
+  return <MainPage type="accountType" />;
 };
 
 export default page;

@@ -1,16 +1,16 @@
-import React from "react";
+import { get } from "lodash-es";
 import { InputText } from "primereact/inputtext";
 
-const EmailField = ({
-  value,
-  onChange,
-  onBlur,
-  label,
-  containerClassName,
-  error,
-  field_name,
-  fieldClassName
-}) => {
+const EmailField = (props) => {
+  const value = get(props, "value");
+  const onChange = get(props, "onChange");
+  const onBlur = get(props, "onBlur");
+  const label = get(props, "label");
+  const containerClassName = get(props, "containerClassName", "");
+  const error = get(props, "error");
+  const field_name = get(props, "field_name");
+  const fieldClassName = get(props, "fieldClassName", "");
+
   return (
     <div className={`w-full mb-4 ${containerClassName}`}>
       <label className="block mb-1 font-medium">{label}</label>
@@ -19,12 +19,20 @@ const EmailField = ({
         name={field_name}
         type="email"
         value={value}
-        onChange={(e) =>
-          onChange({ target: { name: field_name, value: e.target.value } })
-        }
+        onChange={(e) => {
+          const target = get(e, "target");
+          const newValue = get(target, "value");
+          if (onChange) {
+            onChange({
+              target: { name: field_name, value: newValue },
+            });
+          }
+        }}
         onBlur={onBlur}
         placeholder="Enter your email"
-        className={`w-full p-2 border rounded ${error ? "border-red-500" : "border-gray-300"} ${fieldClassName}`}
+        className={`w-full p-2 border rounded ${
+          error ? "border-red-500" : "border-gray-300"
+        } ${fieldClassName}`}
       />
       {error && <small className="text-red-500">{error}</small>}
     </div>

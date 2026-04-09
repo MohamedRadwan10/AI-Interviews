@@ -1,59 +1,73 @@
 import MainText from "@/Components/Common/MainText";
 import React from "react";
 import { footerConfig } from "@/Config/LayoutConfig";
-import { map } from "lodash-es";
+import { map, get } from "lodash-es";
 
 const AppFooter = () => {
-  const { brand, sections, contact, copyright, styles } = footerConfig;
+  const brand = get(footerConfig, "brand", {});
+  const sections = get(footerConfig, "sections", []);
+  const contact = get(footerConfig, "contact", {});
+  const copyright = get(footerConfig, "copyright", {});
+  const styles = get(footerConfig, "styles", {});
+
+  const logo = get(brand, "logo", {});
+  const textStyles = get(styles, "text", {});
 
   return (
-    <footer className={styles.footer}>
-      <div className={styles.container}>
-        <div className={styles.grid}>
+    <footer className={get(styles, "footer")}>
+      <div className={get(styles, "container")}>
+        <div className={get(styles, "grid")}>
           <div className="space-y-4">
             <MainText
               tag="h3"
-              title={brand.name}
-              className={brand.logo.className}
+              title={get(brand, "name")}
+              className={get(logo, "className")}
             />
             <MainText
               tag="p"
-              title={brand.tagline}
+              title={get(brand, "tagline")}
               className="text-gray-300 text-sm leading-relaxed"
             />
           </div>
 
-          {map(sections, (section, index) => (
-            <div key={index} className="space-y-4">
-              <MainText
-                tag="h4"
-                title={section.title}
-                className="text-lg font-semibold text-white mb-4"
-              />
-              <ul className="space-y-2">
-                {map(section.links, (link, idx) => (
-                  <li key={idx}>
-                    <a
-                      href={link.path}
-                      className={`${styles.text.muted} ${styles.text.hover} transition-colors duration-200 text-sm`}
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {map(sections, (section, index) => {
+            const links = get(section, "links", []);
+            return (
+              <div key={index} className="space-y-4">
+                <MainText
+                  tag="h4"
+                  title={get(section, "title")}
+                  className="text-lg font-semibold text-white mb-4"
+                />
+                <ul className="space-y-2">
+                  {map(links, (link, idx) => (
+                    <li key={idx}>
+                      <a
+                        href={get(link, "path")}
+                        className={`${get(textStyles, "muted")} ${get(
+                          textStyles,
+                          "hover",
+                        )} transition-colors duration-200 text-sm`}
+                      >
+                        {get(link, "label")}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
 
           <div className="space-y-4">
             <MainText
               tag="h4"
-              title={contact.title}
+              title={get(contact, "title")}
               className="text-lg font-semibold text-white mb-4"
             />
             <ul className="space-y-3">
-              {map(contact.items, (item, index) => {
-                const IconComponent = item.icon;
+              {map(get(contact, "items", []), (item, index) => {
+                const IconComponent = get(item, "icon");
+                const type = get(item, "type");
                 return (
                   <li
                     key={index}
@@ -61,15 +75,18 @@ const AppFooter = () => {
                   >
                     <IconComponent className="w-4 h-4" />
                     <span>
-                      {item.type === "email" || item.type === "phone" ? (
+                      {type === "email" || type === "phone" ? (
                         <a
-                          href={item.href}
-                          className={`${styles.text.hover} transition-colors duration-200`}
+                          href={get(item, "href")}
+                          className={`${get(
+                            textStyles,
+                            "hover",
+                          )} transition-colors duration-200`}
                         >
-                          {item.text}
+                          {get(item, "text")}
                         </a>
                       ) : (
-                        item.text
+                        get(item, "text")
                       )}
                     </span>
                   </li>
@@ -80,11 +97,15 @@ const AppFooter = () => {
         </div>
 
         <div
-          className={`${styles.border} mt-8 pt-6 text-center text-gray-500 text-sm`}
+          className={`${get(
+            styles,
+            "border",
+          )} mt-8 pt-6 text-center text-gray-500 text-sm`}
         >
-          <p>
-            &copy; {copyright.year} {copyright.text}. {copyright.rights}
-          </p>
+          <MainText tag="p">
+            &copy; {get(copyright, "year")} {get(copyright, "text")}.{" "}
+            {get(copyright, "rights")}
+          </MainText>
         </div>
       </div>
     </footer>

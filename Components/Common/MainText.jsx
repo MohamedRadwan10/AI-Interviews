@@ -5,6 +5,7 @@ const MainText = ({
   tag = "span",
   className = "!select-none",
   useDefaultStyle = true,
+  children,
   ...props
 }) => {
   const Component = tag;
@@ -12,7 +13,7 @@ const MainText = ({
 
   return (
     <Component className={classes} {...props}>
-      {title}
+      {children || title}
     </Component>
   );
 };

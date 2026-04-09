@@ -1,24 +1,27 @@
-import React from "react";
+import { get } from "lodash-es";
 import { Checkbox } from "primereact/checkbox";
 
-const CheckBoxField = ({
-  value,
-  onChange,
-  onBlur,
-  label,
-  containerClassName,
-  error,
-  field_name,
-  fieldClassName,
-}) => {
+const CheckBoxField = (props) => {
+  const value = get(props, "value");
+  const onChange = get(props, "onChange");
+  const onBlur = get(props, "onBlur");
+  const label = get(props, "label");
+  const containerClassName = get(props, "containerClassName", "");
+  const error = get(props, "error");
+  const field_name = get(props, "field_name");
+  const fieldClassName = get(props, "fieldClassName", "");
+
   const handleChange = (e) => {
-    onChange({
-      target: {
-        name: field_name,
-        type: "checkbox",
-        checked: e.checked,
-      },
-    });
+    const isChecked = get(e, "checked");
+    if (onChange) {
+      onChange({
+        target: {
+          name: field_name,
+          type: "checkbox",
+          checked: isChecked,
+        },
+      });
+    }
   };
 
   return (
