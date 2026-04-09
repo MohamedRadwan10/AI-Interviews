@@ -1,8 +1,7 @@
-import MainComp from "@/Components/About";
-import React from "react";
+import MainPage from "@/Components/Pages";
 
 const page = () => {
-  return <MainComp />;
+  return <MainPage type="about" />;
 };
 
 export default page;

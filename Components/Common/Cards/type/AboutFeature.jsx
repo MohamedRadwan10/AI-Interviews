@@ -1,13 +1,14 @@
-import MainText from "@/Components/Common/MainText";
+import { get } from "lodash-es";
+import MainText from "../../MainText";
 
-const FeatureCard = ({
-  icon,
-  title,
-  desc,
-  large = false,
-  className,
-  iconClassName,
-}) => {
+const FeatureCard = (props) => {
+  const icon = get(props, "icon");
+  const title = get(props, "title");
+  const desc = get(props, "desc");
+  const large = get(props, "large", false);
+  const className = get(props, "className");
+  const iconClassName = get(props, "iconClassName");
+
   return (
     <div
       className={`rounded-2xl p-6 flex flex-col items-center gap-3 border-none hover:-translate-y-1 transition-all duration-300 ${className}`}
@@ -20,7 +21,9 @@ const FeatureCard = ({
       <MainText
         tag="h3"
         title={title}
-        className={`font-semibold text-light-black dark:text-dark-white ${large ? "text-lg" : "text-base"}`}
+        className={`font-semibold text-light-black dark:text-dark-white ${
+          large ? "text-lg" : "text-base"
+        }`}
       />
       <MainText
         tag="p"
