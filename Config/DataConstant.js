@@ -154,4 +154,42 @@ export const DataConstant = {
       ],
     },
   },
+  footer: {
+    brand: {
+      desc: "The future of technical recruitment. AI-powered, unbiased, and efficient.",
+      socials: [
+        { icon: "pi pi-facebook", link: "#" },
+        { icon: "pi pi-twitter", link: "#" },
+      ],
+    },
+    sections: [
+      {
+        title: "Navigation",
+        links: [
+          { text: "Home", href: "/" },
+          { text: "Browse Jobs", href: "/jobs" },
+          { text: "Features", href: "/features" },
+          { text: "About Us", href: "/about" },
+          { text: "Moderate My Job", href: "/dashboard" },
+        ],
+      },
+      {
+        title: "Legal",
+        links: [
+          { text: "Privacy Policy", href: "/privacy" },
+          { text: "Terms of Service", href: "/terms" },
+          { text: "Cookie Policy", href: "/cookies" },
+        ],
+      },
+      {
+        title: "Contact Us",
+        items: [
+          { type: "email", icon: "pi pi-envelope", text: "Support@IntelliHire", href: "mailto:Support@IntelliHire" },
+          { type: "phone", icon: "pi pi-phone", text: "01183291091", href: "tel:01183291091" },
+          { type: "location", icon: "pi pi-map-marker", text: "Cairo" },
+        ],
+      },
+    ],
+    copyright: "© 2026 IntelliHire. All Rights Reserved.",
+  },
 };

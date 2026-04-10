@@ -1,112 +1,83 @@
-import MainText from "@/Components/Common/MainText";
 import React from "react";
-import { footerConfig } from "@/Config/LayoutConfig";
+import Link from "next/link";
 import { map, get } from "lodash-es";
+import { DataConstant } from "@/Config/DataConstant";
+import MainImage from "@/Components/Common/Image";
+import logoImage from "@/public/assets/logo.png";
+import MainText from "@/Components/Common/MainText";
 
 const AppFooter = () => {
-  const brand = get(footerConfig, "brand", {});
-  const sections = get(footerConfig, "sections", []);
-  const contact = get(footerConfig, "contact", {});
-  const copyright = get(footerConfig, "copyright", {});
-  const styles = get(footerConfig, "styles", {});
-
-  const logo = get(brand, "logo", {});
-  const textStyles = get(styles, "text", {});
+  const brand = get(DataConstant, "footer.brand", {});
+  const sections = get(DataConstant, "footer.sections", []);
+  const copyright = get(DataConstant, "footer.copyright", "");
+  const desc = get(brand, "desc", "");
+  const logo = get(logoImage, "src", logoImage);
 
   return (
-    <footer className={get(styles, "footer")}>
-      <div className={get(styles, "container")}>
-        <div className={get(styles, "grid")}>
-          <div className="space-y-4">
-            <MainText
-              tag="h3"
-              title={get(brand, "name")}
-              className={get(logo, "className")}
+    <footer className="w-full text-gray-300 py-12">
+      <div className="border-t border-gray-700/50 mb-10 w-full"></div>
+      <div className="w-full flex flex-col md:flex-row justify-between gap-10">
+        <div className="w-full md:w-[35%] flex flex-col gap-4">
+          <div className="flex items-center gap-2 -ml-1">
+             <MainImage
+              src={logo}
+              alt="Logo"
+              imageClassName="max-h-12 max-w-24"
+              preview={false}
             />
-            <MainText
-              tag="p"
-              title={get(brand, "tagline")}
-              className="text-gray-300 text-sm leading-relaxed"
-            />
+            <Link href="/intelliHire" className="flex">
+              <MainText
+                tag="h2"
+                title="Intelli"
+                className="text-2xl m-0 font-bold text-light-black dark:text-dark-white"
+              />
+              <MainText
+                tag="h2"
+                title="Hire"
+                className="text-2xl m-0 font-bold text-light-secondary dark:text-dark-secondary"
+              />
+            </Link>
           </div>
+          <MainText tag="p" title={desc} className="text-sm text-gray-400 leading-relaxed max-w-sm mt-2" />
+        </div>
 
-          {map(sections, (section, index) => {
-            const links = get(section, "links", []);
+        <div className="w-full md:w-[60%] flex flex-wrap justify-between gap-8">
+          {map(sections, (section, idx) => {
+            const title = get(section, "title", "");
+            const sectionLinks = get(section, "links") || get(section, "items") || [];
+            
             return (
-              <div key={index} className="space-y-4">
-                <MainText
-                  tag="h4"
-                  title={get(section, "title")}
-                  className="text-lg font-semibold text-white mb-4"
-                />
-                <ul className="space-y-2">
-                  {map(links, (link, idx) => (
-                    <li key={idx}>
-                      <a
-                        href={get(link, "path")}
-                        className={`${get(textStyles, "muted")} ${get(
-                          textStyles,
-                          "hover",
-                        )} transition-colors duration-200 text-sm`}
-                      >
-                        {get(link, "label")}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
+              <div key={idx} className="flex flex-col gap-4 min-w-[140px]">
+                <MainText tag="h4" title={title} className="text-white font-medium" />
+                <div className="flex flex-col gap-3">
+                  {map(sectionLinks, (item, i) => {
+                    const itemIcon = get(item, "icon");
+                    const text = get(item, "text");
+                    const href = get(item, "href");
+
+                    const content = (
+                      <>
+                        {itemIcon && <i className={`${itemIcon} text-blue-600 text-[15px] w-4`} />}
+                        <MainText tag="span" title={text} />
+                      </>
+                    );
+                    const className = "text-sm text-gray-400 hover:text-gray-200 transition-colors flex items-center gap-2.5";
+                    
+                    return href ? (
+                      <Link key={i} href={href} className={className}>{content}</Link>
+                    ) : (
+                      <MainText key={i} tag="span" className={className}>{content}</MainText>
+                    );
+                  })}
+                </div>
               </div>
             );
           })}
-
-          <div className="space-y-4">
-            <MainText
-              tag="h4"
-              title={get(contact, "title")}
-              className="text-lg font-semibold text-white mb-4"
-            />
-            <ul className="space-y-3">
-              {map(get(contact, "items", []), (item, index) => {
-                const IconComponent = get(item, "icon");
-                const type = get(item, "type");
-                return (
-                  <li
-                    key={index}
-                    className="flex items-center space-x-2 text-gray-400 text-sm"
-                  >
-                    <IconComponent className="w-4 h-4" />
-                    <span>
-                      {type === "email" || type === "phone" ? (
-                        <a
-                          href={get(item, "href")}
-                          className={`${get(
-                            textStyles,
-                            "hover",
-                          )} transition-colors duration-200`}
-                        >
-                          {get(item, "text")}
-                        </a>
-                      ) : (
-                        get(item, "text")
-                      )}
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
         </div>
+      </div>
 
-        <div
-          className={`${get(
-            styles,
-            "border",
-          )} mt-8 pt-6 text-center text-gray-500 text-sm`}
-        >
-          <MainText tag="p">
-            &copy; {get(copyright, "year")} {get(copyright, "text")}.{" "}
-            {get(copyright, "rights")}
-          </MainText>
-        </div>
+      <div className="border-t border-gray-700/50 mt-12 pt-6 w-full text-center text-sm text-gray-500">
+        <MainText tag="p" title={copyright} />
       </div>
     </footer>
   );
