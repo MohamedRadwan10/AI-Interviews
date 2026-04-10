@@ -5,7 +5,6 @@ import React from "react";
 import logoImage from "@/public/assets/notFound.png";
 import MainButton from "@/Components/Common/MainButton";
 import { useRouter } from "next/navigation";
-import MainText from "@/Components/Common/MainText";
 
 const NotFound = () => {
   const router = useRouter();
@@ -13,41 +12,27 @@ const NotFound = () => {
   const handleBack = () => {
     router.push("/intelliHire");
   };
+
   return (
-    <div className="w-full h-screen flex flex-col justify-center items-center dark:bg-dark-primary-1 bg-light-primary">
-      <div className="container mx-auto px-4 ">
-        <div className="max-w-3xl mx-auto text-center">
-          <MainImage
-            src={logoImage.src}
-            alt="404 - not found"
-            imageClassName="w-full max-w-md mx-auto"
-            preview={false}
-          />
-
-          <MainText
-            tag="h1"
-            title="404"
-            className="text-8xl font-bold text-dark-primary-2 mb-4"
-          />
-
-          <MainText
-            tag="h2"
-            title="Not Found!"
-            className="text-3xl font-semibold text-gray-800 mb-3"
-          />
-
-          <MainText
-            tag="p"
-            title="Sorry, the page you are looking for may have been moved, deleted, or
-            it does not exist at all."
-            className="text-gray-600 text-lg mb-8 max-w-lg mx-auto"
-          />
-
+    <div className="w-full min-h-screen flex flex-col justify-center items-center bg-light-primary dark:bg-dark-primary-1 py-12">
+      <div className="container mx-auto px-4">
+        <div className="w-full text-center flex flex-col items-center">
+          
+          <div className="relative group mb-8">
+            <div className="absolute inset-0 "></div>
+            <MainImage
+              src={logoImage.src}
+              alt="404 - Not Found - AI Interview"
+              imageClassName="w-full max-w-2xl mx-auto relative z-10 drop-shadow-2xl transform transition-transform duration-500 hover:scale-[1.02]"
+              preview={false}
+            />
+          </div>
           <MainButton
             onClick={handleBack}
-            className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-3 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+            className="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-3.5 rounded-full transition-all duration-300 shadow-md hover:shadow-blue-500/25 hover:-translate-y-1"
           >
-            Back to Home
+            <i className="pi pi-arrow-left mr-2 text-sm"></i>
+            Return to Dashboard
           </MainButton>
         </div>
       </div>

@@ -12,10 +12,10 @@ const TopBar = () => {
   const logo = get(logoImage, "src");
 
   return (
-    <header className="shadow-sm py-4 px-8">
-      <div className="container  mx-auto">
-        <div className="w-full flex items-center">
-          <div className="flex items-center gap-2 w-1/3">
+    <header className="shadow-sm py-4">
+      <div className="container mx-auto">
+        <div className="w-full flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
+          <div className="flex items-center justify-center md:justify-start gap-2 w-full md:w-1/3">
             <MainImage
               src={logo}
               alt="Logo"
@@ -36,18 +36,18 @@ const TopBar = () => {
             </Link>
           </div>
 
-          <nav className="flex justify-center gap-3 w-1/3">
-            <ul className="flex items-center space-x-8">
+          <nav className="flex justify-center gap-3 w-full md:w-1/3 overflow-x-auto pb-2 md:pb-0">
+            <ul className="flex items-center space-x-6 md:space-x-8 px-2 md:px-0">
               {map(navigation, (item) => {
                 const label = get(item, "label");
                 const path = get(item, "path");
 
                 return (
-                  <li key={path}>
+                  <li key={path} className="whitespace-nowrap">
                     <Link href={path}>
                       <MainText
                         title={label}
-                        className="cursor-pointer transition-colors duration-200 text-light-black dark:text-dark-white"
+                        className="cursor-pointer transition-colors duration-200 text-light-black dark:text-dark-white whitespace-nowrap"
                       />
                     </Link>
                   </li>
@@ -55,7 +55,8 @@ const TopBar = () => {
               })}
             </ul>
           </nav>
-          <div className="flex justify-end gap-3 w-1/3">
+
+          <div className="flex justify-center md:justify-end gap-4 w-full md:w-1/3">
             <Theme />
             <Avatar icon="pi pi-user" shape="circle" className="bg-dark-primary-2 text-dark-black cursor-pointer" />
           </div>
