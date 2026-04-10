@@ -1,8 +1,12 @@
+"use client";
 import AuthPage from "@/Components/auth/AuthPage";
-import { registerConfig } from "@/Config/FieldsConfig";
+import { companyRegisterConfig } from "@/Config/FieldsConfig";
+import { useAuth } from "@/hooks/useAuth";
 
 const Company = () => {
-  return <AuthPage config={registerConfig} />;
+  const { registerCompany } = useAuth();
+  return <AuthPage config={companyRegisterConfig} onSubmit={registerCompany} />;
 };
 
 export default Company;
+

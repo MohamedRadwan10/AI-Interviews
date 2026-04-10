@@ -59,6 +59,173 @@ export const loginConfig = {
   ],
 };
 
+export const companyRegisterConfig = {
+  pageTitle: "Register your company",
+  pageSubtitle: "Connect with the best tech talent",
+  submitButtonText: "Register Company",
+
+  footerText: "Already have account?",
+  footerLinks: [
+    {
+      text: "Log in",
+      href: "/login",
+    },
+  ],
+  footerSeparator: "",
+
+  fields: [
+    {
+      field_name: "name",
+      type: "text",
+      label: "Company Name",
+      placeholder: "Enter company name",
+      fieldClassName:
+        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+      containerClassName: "text-light-black dark:text-dark-white",
+      validation: {
+        required: true,
+        message: "Company name is required",
+      },
+    },
+    {
+      field_name: "email",
+      type: "email",
+      label: "Business Email",
+      placeholder: "company@example.com",
+      fieldClassName:
+        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+      containerClassName: "text-light-black dark:text-dark-white",
+      validation: {
+        required: true,
+        type: "email",
+        message: "Valid business email is required",
+      },
+    },
+    {
+      field_name: "websiteUrl",
+      type: "text",
+      label: "Website URL",
+      placeholder: "https://www.company.com",
+      fieldClassName:
+        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+      containerClassName: "text-light-black dark:text-dark-white",
+      validation: {
+        required: true,
+        message: "Website URL is required",
+      },
+    },
+    {
+      field_name: "industry",
+      type: "text",
+      label: "Industry",
+      placeholder: "e.g. Software, Finance",
+      fieldClassName:
+        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+      containerClassName: "text-light-black dark:text-dark-white",
+      validation: {
+        required: true,
+        message: "Industry is required",
+      },
+    },
+    {
+      field_name: "phoneNumbers",
+      type: "text",
+      label: "Phone Numbers",
+      placeholder: "Enter phone numbers",
+      fieldClassName:
+        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+      containerClassName: "text-light-black dark:text-dark-white",
+      validation: {
+        required: true,
+        message: "Phone number is required",
+      },
+    },
+    {
+      field_name: "locations.country",
+      type: "text",
+      label: "Country",
+      placeholder: "Enter country",
+      fieldClassName:
+        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+      containerClassName: "text-light-black dark:text-dark-white",
+      validation: {
+        required: true,
+        message: "Country is required",
+      },
+    },
+    {
+      field_name: "locations.city",
+      type: "text",
+      label: "City",
+      placeholder: "Enter city",
+      fieldClassName:
+        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+      containerClassName: "text-light-black dark:text-dark-white",
+      validation: {
+        required: true,
+        message: "City is required",
+      },
+    },
+    {
+      field_name: "locations.government",
+      type: "text",
+      label: "Government",
+      placeholder: "Enter government/state",
+      fieldClassName:
+        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+      containerClassName: "text-light-black dark:text-dark-white",
+      validation: {
+        required: true,
+        message: "Government is required",
+      },
+    },
+    {
+      field_name: "password",
+      type: "password",
+      label: "Password",
+      placeholder: "Enter password",
+      fieldClassName:
+        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+      containerClassName: "text-light-black dark:text-dark-white",
+      validation: {
+        required: true,
+        min: 8,
+        matches: [
+          {
+            regex: "^[A-Z]",
+            message: "Password must start with an uppercase letter",
+          },
+          {
+            regex: "[a-z]",
+            message: "Password must contain at least one lowercase letter",
+          },
+          {
+            regex: "[0-9]",
+            message: "Password must contain at least one number",
+          },
+        ],
+      },
+    },
+    {
+      field_name: "ConfirmPassword",
+      type: "password",
+      label: "Confirm Password",
+      placeholder: "Confirm your password",
+      fieldClassName:
+        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+      containerClassName: "text-light-black dark:text-dark-white",
+      validation: {
+        required: true,
+        min: 8,
+        oneOf: {
+          ref: "password",
+          message: "Password and Confirm Password do not match",
+        },
+      },
+    },
+  ],
+};
+
 export const registerConfig = {
   pageTitle: "Create your account",
   pageSubtitle: "Step into the future of hiring",
@@ -111,7 +278,7 @@ export const registerConfig = {
       },
     },
     {
-      field_name: "phone",
+      field_name: "phoneNumber",
       type: "phone",
       label: "Phone Number",
       placeholder: "Enter Your Phone Number",
@@ -124,8 +291,8 @@ export const registerConfig = {
         required: true,
         pattern: "^(\\+2)?01[0125][0-9]{8}$",
         message: {
-          required: "phone is required",
-          pattern: "phone is invalid",
+          required: "phone number is required",
+          pattern: "phone number is invalid",
         },
       },
     },
@@ -157,7 +324,7 @@ export const registerConfig = {
       },
     },
     {
-      field_name: "rePassword",
+      field_name: "ConfirmPassword",
       type: "password",
       label: "Re-enter Password",
       placeholder: "Re-enter your password",
@@ -183,7 +350,7 @@ export const registerConfig = {
         ],
         oneOf: {
           ref: "password",
-          message: "Password and Re-password do not match",
+          message: "Password and Confirm Password do not match",
         },
       },
     },
