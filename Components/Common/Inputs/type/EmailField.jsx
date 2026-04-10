@@ -12,7 +12,7 @@ const EmailField = (props) => {
   const fieldClassName = get(props, "fieldClassName", "");
 
   return (
-    <div className={`w-full mb-4 ${containerClassName}`}>
+    <div className={`w-full mb-2 ${containerClassName}`}>
       <label className="block mb-1 font-medium">{label}</label>
       <InputText
         id={field_name}

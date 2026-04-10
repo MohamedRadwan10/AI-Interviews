@@ -27,11 +27,11 @@ const PasswordField = (props) => {
   );
 
   return (
-    <div className={`w-full mb-4 ${containerClassName}`}>
+    <div className={`w-full mb-2 ${containerClassName}`}>
       <label htmlFor={field_name} className="block mb-1 font-medium">
         {label}
       </label>
-      <div className="flex items-center justify-between w-full gap-2">
+      <div className="w-full">
         <Password
           id={field_name}
           name={field_name}
@@ -61,12 +61,12 @@ const PasswordField = (props) => {
           inputClassName={`!w-full p-2 border rounded ${
             error ? "border-red-500" : "border-gray-300"
           } ${fieldClassName}`}
-          className={`flex-grow`}
+          className={`w-full`}
           panelClassName="password-panel"
           style={{ width: "100%" }}
           inputStyle={{ width: "100%" }}
         />
-        {error && <small className="text-red-500">{error}</small>}
+        {error && <small className="text-red-500 block mt-1">{error}</small>}
       </div>
     </div>
   );
