@@ -2,11 +2,15 @@
 
 import { DarkModeProvider } from "@/Context/DarkModeContext";
 import { UserTokenProvider } from "@/Context/UserTokenContext";
+import ChatbaseIdentity from "./ChatbaseIdentity";
 
 export default function ClientLayout({ children }) {
   return (
     <UserTokenProvider>
-      <DarkModeProvider>{children}</DarkModeProvider>
+      <DarkModeProvider>
+        <ChatbaseIdentity />
+        {children}
+      </DarkModeProvider>
     </UserTokenProvider>
   );
 }

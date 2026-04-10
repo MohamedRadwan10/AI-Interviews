@@ -24,8 +24,14 @@ const MainForm = (props) => {
       return acc;
     }, {}),
     validationSchema,
-    onSubmit: (values) => {
-      if (onSubmit) onSubmit(values);
+    onSubmit: async (values, actions) => {
+      if (onSubmit) {
+        try {
+          await onSubmit(values);
+        } catch (error) {
+        }
+      }
+      actions.setSubmitting(false);
     },
   });
 
@@ -37,24 +43,26 @@ const MainForm = (props) => {
 
   return (
     <form onSubmit={formik.handleSubmit} className="w-full">
-      {map(fields, (field) => {
-        const fieldName = get(field, "field_name");
-        return (
-          <MainInput
-            key={fieldName}
-            field_name={fieldName}
-            type={get(field, "type")}
-            label={get(field, "label")}
-            placeholder={get(field, "placeholder")}
-            value={get(values, fieldName)}
-            error={get(touched, fieldName) && get(errors, fieldName)}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            fieldClassName={get(field, "fieldClassName")}
-            containerClassName={get(field, "containerClassName")}
-          />
-        );
-      })}
+      <div className="flex flex-col gap-1">
+        {map(fields, (field) => {
+          const fieldName = get(field, "field_name");
+          return (
+            <MainInput
+              key={fieldName}
+              field_name={fieldName}
+              type={get(field, "type")}
+              label={get(field, "label")}
+              placeholder={get(field, "placeholder")}
+              value={get(values, fieldName)}
+              error={get(touched, fieldName) && get(errors, fieldName)}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              fieldClassName={get(field, "fieldClassName")}
+              containerClassName={get(field, "containerClassName")}
+            />
+          );
+        })}
+      </div>
 
       <MainButton
         type="submit"

@@ -20,7 +20,7 @@ export const loginConfig = {
       label: "Email",
       placeholder: "Enter your email",
       fieldClassName:
-        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
       containerClassName: "text-light-black dark:text-dark-white",
       validation: {
         required: true,
@@ -80,7 +80,7 @@ export const companyRegisterConfig = {
       label: "Company Name",
       placeholder: "Enter company name",
       fieldClassName:
-        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
       containerClassName: "text-light-black dark:text-dark-white",
       validation: {
         required: true,
@@ -93,7 +93,7 @@ export const companyRegisterConfig = {
       label: "Business Email",
       placeholder: "company@example.com",
       fieldClassName:
-        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
       containerClassName: "text-light-black dark:text-dark-white",
       validation: {
         required: true,
@@ -107,7 +107,7 @@ export const companyRegisterConfig = {
       label: "Website URL",
       placeholder: "https://www.company.com",
       fieldClassName:
-        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
       containerClassName: "text-light-black dark:text-dark-white",
       validation: {
         required: true,
@@ -120,7 +120,7 @@ export const companyRegisterConfig = {
       label: "Industry",
       placeholder: "e.g. Software, Finance",
       fieldClassName:
-        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
       containerClassName: "text-light-black dark:text-dark-white",
       validation: {
         required: true,
@@ -133,7 +133,7 @@ export const companyRegisterConfig = {
       label: "Phone Numbers",
       placeholder: "Enter phone numbers",
       fieldClassName:
-        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
       containerClassName: "text-light-black dark:text-dark-white",
       validation: {
         required: true,
@@ -146,7 +146,7 @@ export const companyRegisterConfig = {
       label: "Country",
       placeholder: "Enter country",
       fieldClassName:
-        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
       containerClassName: "text-light-black dark:text-dark-white",
       validation: {
         required: true,
@@ -159,7 +159,7 @@ export const companyRegisterConfig = {
       label: "City",
       placeholder: "Enter city",
       fieldClassName:
-        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
       containerClassName: "text-light-black dark:text-dark-white",
       validation: {
         required: true,
@@ -172,7 +172,7 @@ export const companyRegisterConfig = {
       label: "Government",
       placeholder: "Enter government/state",
       fieldClassName:
-        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
       containerClassName: "text-light-black dark:text-dark-white",
       validation: {
         required: true,
@@ -185,7 +185,7 @@ export const companyRegisterConfig = {
       label: "Password",
       placeholder: "Enter password",
       fieldClassName:
-        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
       containerClassName: "text-light-black dark:text-dark-white",
       validation: {
         required: true,
@@ -212,7 +212,7 @@ export const companyRegisterConfig = {
       label: "Confirm Password",
       placeholder: "Confirm your password",
       fieldClassName:
-        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
       containerClassName: "text-light-black dark:text-dark-white",
       validation: {
         required: true,
@@ -247,7 +247,7 @@ export const registerConfig = {
       label: "Full Name",
       placeholder: "Mohamed Mahmoud",
       fieldClassName:
-        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
       containerClassName: "text-light-black dark:text-dark-white",
       validation: {
         required: true,
@@ -266,7 +266,7 @@ export const registerConfig = {
       label: "Email",
       placeholder: "Mohamed@gmail.com",
       fieldClassName:
-        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
       containerClassName: "text-light-black dark:text-dark-white",
       validation: {
         required: true,
@@ -283,7 +283,7 @@ export const registerConfig = {
       label: "Phone Number",
       placeholder: "Enter Your Phone Number",
       fieldClassName:
-        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
       containerClassName: "text-light-black dark:text-dark-white",
       maxLength: 11,
       numeric: true,
@@ -302,7 +302,7 @@ export const registerConfig = {
       label: "Password",
       placeholder: "Enter Your password",
       fieldClassName:
-        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
       containerClassName: "text-light-black dark:text-dark-white",
       validation: {
         required: true,
@@ -329,7 +329,7 @@ export const registerConfig = {
       label: "Re-enter Password",
       placeholder: "Re-enter your password",
       fieldClassName:
-        "mb-2 dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
       containerClassName: "text-light-black dark:text-dark-white",
       validation: {
         required: true,

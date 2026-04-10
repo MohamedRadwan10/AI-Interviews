@@ -27,7 +27,7 @@ const PhoneField = (props) => {
   };
 
   return (
-    <div className={`w-full mb-4 ${containerClassName}`}>
+    <div className={`w-full mb-2 ${containerClassName}`}>
       <label htmlFor={field_name} className="block mb-1 font-medium">
         {label}
       </label>

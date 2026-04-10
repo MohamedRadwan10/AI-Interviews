@@ -4,8 +4,8 @@ import { companyRegisterConfig } from "@/Config/FieldsConfig";
 import { useAuth } from "@/hooks/useAuth";
 
 const Company = () => {
-  const { registerCompany } = useAuth();
-  return <AuthPage config={companyRegisterConfig} onSubmit={registerCompany} />;
+  const { registerCompany, errors } = useAuth();
+  return <AuthPage config={companyRegisterConfig} onSubmit={registerCompany} apiError={errors} />;
 };
 
 export default Company;

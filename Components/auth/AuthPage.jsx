@@ -8,7 +8,7 @@ import MainButton from "@/Components/Common/MainButton";
 import Link from "next/link";
 import MainForm from "../Common/MainForm";
 
-const AuthPage = ({ config, onSubmit }) => {
+const AuthPage = ({ config, onSubmit, apiError }) => {
   const logo = get(logoImage, "src");
   const pageTitle = get(config, "pageTitle");
   const pageSubtitle = get(config, "pageSubtitle");
@@ -17,13 +17,13 @@ const AuthPage = ({ config, onSubmit }) => {
   const footerSeparator = get(config, "footerSeparator");
 
   const handleSubmit = async (values) => {
-    onSubmit(values);
+    return onSubmit(values);
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center dark:bg-dark-primary-1 bg-light-primary">
-      <div className="min-w-[40%] py-4 px-6 rounded-lg shadow-md dark:bg-dark-primary-3 bg-light-white">
-        <div className="flex items-center justify-center mb-3 w-full">
+    <div className="min-h-screen flex justify-center items-center dark:bg-dark-primary-1 bg-light-primary py-12">
+      <div className="w-full max-w-2xl xs:px-2 sm:px-8 py-8 rounded-lg shadow-md dark:bg-dark-primary-3 bg-light-white">
+        <div className="flex items-center justify-center mb-4 w-full">
           <MainImage
             src={logo}
             alt="Logo"
@@ -48,14 +48,20 @@ const AuthPage = ({ config, onSubmit }) => {
           <MainText
             tag="p"
             title={pageTitle}
-            className="text-xl m-0 font-semibold text-light-black dark:text-dark-white"
+            className="text-xl m-0 font-semibold text-light-black dark:text-dark-white text-center"
           />
           <MainText
             tag="p"
             title={pageSubtitle}
-            className="text-sm m-0 text-light-gray dark:text-dark-gray"
+            className="text-sm m-0 text-light-gray dark:text-dark-gray text-center"
           />
         </div>
+
+        {apiError && (
+          <div className="w-full bg-red-100 text-red-700 p-3 rounded-md mb-6 text-center text-sm font-semibold border border-red-200 shadow-sm">
+            {apiError}
+          </div>
+        )}
 
         <MainForm config={config} onSubmit={handleSubmit} />
 

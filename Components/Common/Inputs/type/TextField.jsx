@@ -13,7 +13,7 @@ const TextField = (props) => {
   const fieldClassName = get(props, "fieldClassName", "");
 
   return (
-    <div className={`w-full mb-4 ${containerClassName}`}>
+    <div className={`w-full mb-2 ${containerClassName}`}>
       {label && (
         <label htmlFor={field_name} className="block mb-1 font-medium">
           {label}

@@ -3,6 +3,8 @@ import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import "./globals.css";
 import ClientLayout from "./ClientLayout";
+import Script from "next/script";
+
 
 export const metadata = {
   title: "IntelliHire",
@@ -14,6 +16,19 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <ClientLayout>{children}</ClientLayout>
+
+        <Script
+          id="chatbase-config"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `window.embeddedChatbotConfig = { chatbotId: "VZ1PwRyPj3AoVjDZHRUO1", domain: "www.chatbase.co" }`
+          }}
+        />
+        <Script
+          id="chatbase-embed"
+          src="https://www.chatbase.co/embed.min.js"
+          strategy="lazyOnload"
+        />
       </body>
     </html>
   );
