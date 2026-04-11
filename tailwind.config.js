@@ -27,6 +27,7 @@ module.exports = {
           secondary: "#2563ea", //about
           main: "#F0F4F8",
           blue50: "#EFF6FF",
+          blue60: "#cddaebff",
           white: "#fff",
           black: "#000",
           gray: "#9CA3AF", //text login // border field login

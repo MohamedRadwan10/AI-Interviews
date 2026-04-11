@@ -3,6 +3,7 @@
 import React, { Suspense } from "react";
 import { get, startCase } from "lodash-es";
 import * as FieldComponents from "@/Components/Common/Inputs/type";
+import Loading from "@/Components/Common/LoadingSkeleton";
 
 const MainInput = (props) => {
   const type = get(props, "type", "text");
@@ -12,7 +13,7 @@ const MainInput = (props) => {
   const MainComp = get(FieldComponents, componentKey, TextField);
 
   return (
-    <Suspense fallback={<div>Loading field...</div>}>
+    <Suspense fallback={<Loading type="field" />}>
       <MainComp {...props} />
     </Suspense>
   );
