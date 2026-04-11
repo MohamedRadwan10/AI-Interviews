@@ -6,7 +6,7 @@ import MainImage from "@/Components/Common/Image";
 import logoImage from "@/public/assets/logo.png";
 import Link from "next/link";
 import Theme from "./Components/Theme";
-import { Avatar } from "primereact/avatar";
+import UserAvatar from "./Components/UserAvatar";
 
 const TopBar = () => {
   const logo = get(logoImage, "src");
@@ -56,9 +56,9 @@ const TopBar = () => {
             </ul>
           </nav>
 
-          <div className="flex justify-center md:justify-end gap-4 w-full md:w-1/3">
+          <div className="flex justify-center md:justify-end items-center gap-4 w-full md:w-1/3">
             <Theme />
-            <Avatar icon="pi pi-user" shape="circle" className="bg-dark-primary-2 text-dark-black cursor-pointer" />
+            <UserAvatar />
           </div>
         </div>
       </div>

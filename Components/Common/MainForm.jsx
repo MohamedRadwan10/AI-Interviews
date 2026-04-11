@@ -1,4 +1,4 @@
-import { map, get } from "lodash-es";
+import { map, get, set } from "lodash-es";
 import { useFormik } from "formik";
 import MainButton from "@/Components/Common/MainButton";
 import MainInput from "./Inputs";
@@ -20,7 +20,7 @@ const MainForm = (props) => {
     initialValues: fields.reduce((acc, field) => {
       const fieldName = get(field, "field_name");
       const fieldType = get(field, "type");
-      acc[fieldName] = fieldType === "checkBox" ? false : "";
+      set(acc, fieldName, fieldType === "checkBox" ? false : "");
       return acc;
     }, {}),
     validationSchema,
@@ -46,19 +46,35 @@ const MainForm = (props) => {
       <div className="flex flex-col gap-1">
         {map(fields, (field) => {
           const fieldName = get(field, "field_name");
+          const fieldType = get(field, "type");
+          const onValueChange = get(field, "onValueChange");
+
+          const rawOptions = get(field, "options");
+          const options = typeof rawOptions === "function" ? rawOptions(values) : rawOptions;
+
           return (
             <MainInput
               key={fieldName}
               field_name={fieldName}
-              type={get(field, "type")}
+              type={fieldType}
               label={get(field, "label")}
               placeholder={get(field, "placeholder")}
               value={get(values, fieldName)}
               error={get(touched, fieldName) && get(errors, fieldName)}
-              onChange={formik.handleChange}
+              onChange={(e) => {
+                const isCheck = fieldType === "checkBox";
+                const val = isCheck ? get(e, "target.checked", e) : get(e, "target.value", e);
+                
+                formik.setFieldValue(fieldName, val);
+                
+                if (onValueChange) {
+                  onValueChange(val, { setFieldValue: formik.setFieldValue });
+                }
+              }}
               onBlur={formik.handleBlur}
               fieldClassName={get(field, "fieldClassName")}
               containerClassName={get(field, "containerClassName")}
+              options={options}
             />
           );
         })}

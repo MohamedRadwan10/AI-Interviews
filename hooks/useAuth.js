@@ -12,7 +12,8 @@ export const useAuth = () => {
     setRefreshToken, 
     setUserData, 
     logout: logoutContext, 
-    deviceName 
+    deviceName,
+    userData
   } = useContext(UserTokenContext);
   
   const [errors, setErrors] = useState(null);
@@ -71,6 +72,7 @@ export const useAuth = () => {
             setRefreshToken(refresh);
           }
           if (user) {
+            localStorage.setItem("userData", JSON.stringify(user));
             setUserData(user);
           }
 
@@ -136,6 +138,7 @@ export const useAuth = () => {
     logout,
     errors,
     isLoading,
+    userData,
   };
 };
 
