@@ -16,6 +16,15 @@ export const UserTokenProvider = ({ children }) => {
     if (savedToken) setUserToken(savedToken);
     if (savedRefreshToken) setRefreshToken(savedRefreshToken);
 
+    const savedUserData = localStorage.getItem("userData");
+    if (savedUserData) {
+      try {
+        setUserData(JSON.parse(savedUserData));
+      } catch (e) {
+        console.error("Failed to parse userData:", e);
+      }
+    }
+
     if (typeof window !== "undefined") {
       setDeviceName(navigator.userAgent.split(" ")[0] || "Web App");
     }
@@ -27,6 +36,7 @@ export const UserTokenProvider = ({ children }) => {
     setUserData(null);
     localStorage.removeItem("userToken");
     localStorage.removeItem("refreshToken");
+    localStorage.removeItem("userData");
   };
 
   const result = useMemo(() => {

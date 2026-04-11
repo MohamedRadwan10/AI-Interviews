@@ -1,7 +1,10 @@
 import * as Yup from "yup";
+import { set } from "lodash-es";
 
 export const buildValidationSchema = (fields) => {
-  const shape = fields.reduce((acc, field) => {
+  const shapeConfig = {};
+
+  fields.forEach((field) => {
     let schema = Yup.string();
 
     if (field.validation) {
@@ -41,7 +44,7 @@ export const buildValidationSchema = (fields) => {
           }
 
           schema = schema.test("matches", rule.message, (value) => {
-            if (!value) return false;
+            if (!value) return true; // Let required handle empty values
             try {
               const regex = new RegExp(regexPattern);
               return regex.test(value);
@@ -84,9 +87,19 @@ export const buildValidationSchema = (fields) => {
       }
     }
 
-    acc[field.field_name] = schema;
-    return acc;
-  }, {});
+    set(shapeConfig, field.field_name, schema);
+  });
 
-  return Yup.object().shape(shape);
+  const convertToYup = (obj) => {
+    if (obj instanceof Yup.Schema) {
+      return obj;
+    }
+    const nestedShape = {};
+    for (const key in obj) {
+      nestedShape[key] = convertToYup(obj[key]);
+    }
+    return Yup.object().shape(nestedShape);
+  };
+
+  return convertToYup(shapeConfig);
 };

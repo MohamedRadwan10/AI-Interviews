@@ -5,3 +5,4 @@ export const PasswordField = lazy(() => import("./PasswordField"));
 export const TextField = lazy(() => import("./TextField"));
 export const CheckBoxField = lazy(() => import("./CheckBoxField"));
 export const PhoneField = lazy(() => import("./PhoneField"));
+export const SelectField = lazy(() => import("./SelectField"));

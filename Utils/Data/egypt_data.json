@@ -1,0 +1,220 @@
+{
+  "governorates": [
+    {
+      "id": "CAI",
+      "name": "Cairo",
+      "name_ar": "القاهرة",
+      "cities": [
+        "15th of May", "Abdeen", "Ain Shams", "Al Rehab City", "Amiriyeh", "Azbakeya", "Bab al-Shayeria", "Badr City", "Basatin", "Dar al-Salam", "El Marg", "El Matareya", "El Sayeda Zeinab", "El Sharabiya", "El Shorouk City", "El-Tabbin", "Ezbet el-Nakhl", "Fifth Settlement", "Fustat", "Heliopolis", "Helwan", "Khalifa", "Maadi", "Madinaty", "Manshiyat nasir", "Masr al-Atika", "Mostakbal City", "Muski", "New Cairo", "New Heliopolis City", "Nozha", "Qasr el-Nil", "Rawda Island", "Rod El Farag", "Salam City", "Sheraton", "Shubra", "Tura", "Waili", "Zamalek", "Zeitoun"
+      ]
+    },
+    {
+      "id": "GIZ",
+      "name": "Giza",
+      "name_ar": "الجيزة",
+      "cities": [
+        "6th of October City", "Abu Namros", "Atfih", "Agouza", "Al Ayyat", "Al Badrashein", "Al Hawamdiya", "Al Omrania", "Al Wahat al Bahariya", "Dokki", "Faisal", "Haram", "Imbaba", "Kerdasa", "Mohandessin", "Monsha'at al Qanater", "Ossim", "Sheikh Zayed City"
+      ]
+    },
+    {
+      "id": "ALX",
+      "name": "Alexandria",
+      "name_ar": "الإسكندرية",
+      "cities": [
+        "Abu Qir", "Agami", "Amreya", "Attarin", "Bab Sharqi", "Borg El Arab", "Dekheila", "Gomrok", "Karamouz", "Labban", "Mamoura", "Manshiyya", "Mex", "Montaza", "Moutaza", "New Borg El Arab", "Raml", "Sidi Gaber", "Sidi Bishr", "Smouha"
+      ]
+    },
+    {
+      "id": "DK",
+      "name": "Dakahlia",
+      "name_ar": "الدقهلية",
+      "cities": [
+        "Aga", "Bani Ubayd", "Belqas", "Deketnes", "El Gamaliya", "El Kurdi", "El Matareya", "El Senbellawein", "Gamasa", "Mansoura", "Minat el-Nasr", "Mit Ghamr", "Mit Salsil", "Nabaroh", "Sherbin", "Talkha", "Tamai el-Amdeed"
+      ]
+    },
+    {
+      "id": "SHG",
+      "name": "Sohag",
+      "name_ar": "سوهاج",
+      "cities": [
+        "Akhmim", "Dar El Salam", "Girga", "Juhayna", "Maragha", "Monsha'a", "Sakaltah", "Sohag City", "Tahta", "Tima"
+      ]
+    },
+    {
+      "id": "QAL",
+      "name": "Qalyubia",
+      "name_ar": "القليوبية",
+      "cities": [
+        "Banha", "El Khanka", "El Obour", "El Qanatir al Khayriya", "Kafr Shukr", "Qalyub", "Qaha", "Shibin Al Qanater", "Shubra El Kheima", "Tukh"
+      ]
+    },
+    {
+      "id": "MNF",
+      "name": "Monufia",
+      "name_ar": "المنوفية",
+      "cities": [
+        "Ashmoun", "Bagour", "Berkat El Saba", "Menouf", "Quweisna", "Sadat City", "Shibin El Kom", "Sers El Lyan", "Tala", "Shohada"
+      ]
+    },
+    {
+      "id": "GH",
+      "name": "Gharbia",
+      "name_ar": "الغربية",
+      "cities": [
+        "Basyoun", "Kafr El Zayat", "Mahalla El Kubra", "Qutur", "Samanoud", "Santa", "Tanta", "Zefta"
+      ]
+    },
+    {
+      "id": "SHR",
+      "name": "Sharqia",
+      "name_ar": "الشرقية",
+      "cities": [
+        "10th of Ramadan City", "Abu Hammad", "Abu Kebir", "Awlad Saqr", "Belbeis", "Diyarb Negm", "Faqus", "Hehia", "Husseiniya", "Ibrahimiyah", "Kafr Saqr", "Mashtool El Souq", "Minya El Qamh", "New Salhia", "Qanayat", "Qirin", "Zagazig"
+      ]
+    },
+    {
+      "id": "BH",
+      "name": "Beheira",
+      "name_ar": "البحيرة",
+      "cities": [
+        "Abu Hummus", "Abu El Matamir", "Badr", "Damanhour", "Delengat", "Edfina", "Edko", "Etay El Barud", "Hosh Issa", "Kafr El Dawar", "Koum Hamada", "Mahmoudiyah", "Nubariyah", "Rashid", "Rahmaniyah", "Shubrakhit", "Wadi El Natrun"
+      ]
+    },
+    {
+      "id": "DM",
+      "name": "Damietta",
+      "name_ar": "دمياط",
+      "cities": [
+        "Damietta City", "Ezbet El Borg", "Faraskur", "Kafr El Battikh", "Kafr Saad", "New Damietta", "Ras El Bar", "Zarqa"
+      ]
+    },
+    {
+      "id": "PS",
+      "name": "Port Said",
+      "name_ar": "بورسعيد",
+      "cities": [
+        "Al-Arab", "Al-Dawahy", "Al-Ganoub", "Al-Manakh", "Al-Manal", "Al-Sharq", "Al-Zohour", "Mubarak-East", "Port Fouad"
+      ]
+    },
+    {
+      "id": "IS",
+      "name": "Ismailia",
+      "name_ar": "الإسماعيلية",
+      "cities": [
+        "Abu Suwayr", "Fayed", "Ismailia City", "Qantara East", "Qantara West", "Tell El Kebir"
+      ]
+    },
+    {
+      "id": "SZ",
+      "name": "Suez",
+      "name_ar": "السويس",
+      "cities": [
+        "Adabiya", "Ain Sokhna", "Arbaeen", "Attaka", "Faisal", "Ganayen", "Suez City"
+      ]
+    },
+    {
+      "id": "FYM",
+      "name": "Fayoum",
+      "name_ar": "الفيوم",
+      "cities": [
+        "Fayoum City", "Ibsheway", "Itssa", "New Fayoum", "Sinnuris", "Tamiya", "Youssef el-Seddik"
+      ]
+    },
+    {
+      "id": "BNS",
+      "name": "Beni Suef",
+      "name_ar": "بني سويف",
+      "cities": [
+        "Al Fashn", "Al Wasta", "Beba", "Beni Suef City", "Ihnasia", "Nasser", "New Beni Suef", "Sumusta"
+      ]
+    },
+    {
+      "id": "MIN",
+      "name": "Minya",
+      "name_ar": "المنيا",
+      "cities": [
+        "Abu Qurqas", "Beni Mazar", "Deir Mawas", "El Idwa", "Maghagha", "Mallawi", "Matai", "Minya City", "New Minya", "Samalout"
+      ]
+    },
+    {
+      "id": "AST",
+      "name": "Assiut",
+      "name_ar": "أسيوط",
+      "cities": [
+        "Abnoub", "Abu Tig", "Assiut City", "Badari", "Dairut", "Fateh", "Ghanayem", "Manfalut", "New Assiut", "Qusiya", "Sahel Selim", "Sedfa"
+      ]
+    },
+    {
+      "id": "QNA",
+      "name": "Qena",
+      "name_ar": "قنا",
+      "cities": [
+        "Abu Tesht", "Dishna", "Farshut", "Nag Hammadi", "Naqada", "New Qena", "Qena City", "Qift", "Qus", "Waqf"
+      ]
+    },
+    {
+      "id": "LXR",
+      "name": "Luxor",
+      "name_ar": "الأقصر",
+      "cities": [
+        "Armant", "Esna", "Luxor City", "New Luxor", "New Tiba", "Qurna", "Ziniya"
+      ]
+    },
+    {
+      "id": "ASN",
+      "name": "Aswan",
+      "name_ar": "أسوان",
+      "cities": [
+        "Abu Simbel", "Aswan City", "Daraw", "Edfu", "Kalabsha", "Kom Ombo", "Nasr el-Nuba", "New Aswan", "Toshka"
+      ]
+    },
+    {
+      "id": "RS",
+      "name": "Red Sea",
+      "name_ar": "البحر الأحمر",
+      "cities": [
+        "El Gouna", "Hala'ib", "Hurghada", "Marsa Alam", "Quseir", "Ras Gharib", "Safaga", "Shalateen", "Soma Bay"
+      ]
+    },
+    {
+      "id": "NV",
+      "name": "New Valley",
+      "name_ar": "الوادي الجديد",
+      "cities": [
+        "Balat", "Dakhla", "Farafra", "Kharga", "Mut", "Paris"
+      ]
+    },
+    {
+      "id": "MAT",
+      "name": "Matrouh",
+      "name_ar": "مطروح",
+      "cities": [
+        "Al-Hamman", "Al-Negaila", "Dabaa", "El Alamein", "Marsa Matrouh", "Nuwayba", "Sallum", "Sidi Barrani", "Siwa Oasis"
+      ]
+    },
+    {
+      "id": "SIN_N",
+      "name": "North Sinai",
+      "name_ar": "شمال سيناء",
+      "cities": [
+        "Arish", "Bir al-Abed", "Hasana", "Nakhl", "Rafah", "Sheikh Zuweid"
+      ]
+    },
+    {
+      "id": "SIN_S",
+      "name": "South Sinai",
+      "name_ar": "جنوب سيناء",
+      "cities": [
+        "Abu Redis", "Abu Zenima", "Dahab", "Nuweiba", "Ras Sidr", "Saint Catherine", "Sharm El-Sheikh", "Taba", "Tor"
+      ]
+    },
+    {
+      "id": "KS",
+      "name": "Kafr El Sheikh",
+      "name_ar": "كفر الشيخ",
+      "cities": [
+        "Baltim", "Biyala", "Desouk", "Fuwwah", "Hamoul", "Kafr El Sheikh City", "Metoubes", "Qallin", "Riyadh", "Sidi Salem"
+      ]
+    }
+  ]
+}

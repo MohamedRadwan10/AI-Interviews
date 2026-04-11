@@ -1,3 +1,6 @@
+import { getAllCountries, getStatesOfCountry, getCitiesOfState } from "@/Utils/Func/LocationData";
+import { get } from "lodash-es";
+
 export const loginConfig = {
   pageTitle: "Welcome back to IntelliHire",
   pageSubtitle: "Step into the future of hiring",
@@ -142,9 +145,14 @@ export const companyRegisterConfig = {
     },
     {
       field_name: "locations.country",
-      type: "text",
+      type: "select",
       label: "Country",
-      placeholder: "Enter country",
+      placeholder: "Select country",
+      options: getAllCountries(),
+      onValueChange: (val, { setFieldValue }) => {
+        setFieldValue("locations.government", "");
+        setFieldValue("locations.city", "");
+      },
       fieldClassName:
         "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
       containerClassName: "text-light-black dark:text-dark-white",
@@ -154,29 +162,34 @@ export const companyRegisterConfig = {
       },
     },
     {
-      field_name: "locations.city",
-      type: "text",
-      label: "City",
-      placeholder: "Enter city",
-      fieldClassName:
-        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
-      containerClassName: "text-light-black dark:text-dark-white",
-      validation: {
-        required: true,
-        message: "City is required",
-      },
-    },
-    {
       field_name: "locations.government",
-      type: "text",
+      type: "select",
       label: "Government",
-      placeholder: "Enter government/state",
+      placeholder: "Select government/state",
+      options: (values) => getStatesOfCountry(get(values, "locations.country")),
+      onValueChange: (val, { setFieldValue }) => {
+        setFieldValue("locations.city", "");
+      },
       fieldClassName:
         "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
       containerClassName: "text-light-black dark:text-dark-white",
       validation: {
         required: true,
         message: "Government is required",
+      },
+    },
+    {
+      field_name: "locations.city",
+      type: "select",
+      label: "City",
+      placeholder: "Select city",
+      options: (values) => getCitiesOfState(get(values, "locations.country"), get(values, "locations.government")),
+      fieldClassName:
+        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+      containerClassName: "text-light-black dark:text-dark-white",
+      validation: {
+        required: true,
+        message: "City is required",
       },
     },
     {

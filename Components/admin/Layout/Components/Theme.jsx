@@ -17,7 +17,7 @@ const Theme = () => {
         className={`
           relative w-14 h-7 p-1 rounded-2xl border border-light-black dark:border-dark-white cursor-pointer
           transition-colors duration-300
-          bg-transparent
+          bg-transparent focus:ring-0
         `}
       >
         <div

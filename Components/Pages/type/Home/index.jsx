@@ -7,8 +7,11 @@ import MainButton from "@/Components/Common/MainButton";
 import { CheckCircle2, ArrowRight } from "lucide-react";
 import MainCard from "@/Components/Common/Cards";
 import HeroCurve from "@/Components/Common/HeroCurve";
+// import { useAuth } from "@/hooks/useAuth";
 
 const Home = () => {
+  // const { userData } = useAuth();
+  // console.log("User Data:", userData);
   const homeData = get(DataConstant, "home", {});
   const hero = get(homeData, "hero", {});
   const latestJobs = get(homeData, "latestJobs", {});
