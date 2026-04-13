@@ -1,11 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchData } from "./apiThunk";
+import { fetchApiData } from "./apiThunk";
 
-const initialState = {
-  data: {},
-  loading: false,
-  error: null,
-};
+const initialState = {};
 
 const apiSlice = createSlice({
   name: "api",
@@ -13,19 +9,31 @@ const apiSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchData.pending, (state) => {
-        state.loading = true;
+      .addCase(fetchApiData.pending, (state, action) => {
+        const { key } = action.meta.arg;
+        if (!state[key]) {
+          state[key] = { data: null, loading: true, error: null };
+        } else {
+          state[key].loading = true;
+          state[key].error = null;
+        }
       })
-      .addCase(fetchData.fulfilled, (state, { payload }) => {
-        state.loading = false;
-        state.data[payload.key] = payload.data;
+      .addCase(fetchApiData.fulfilled, (state, { payload }) => {
+        const { key, data } = payload;
+        if (!state[key]) state[key] = {};
+        
+        state[key].loading = false;
+        state[key].data = data;
+        state[key].error = null;
       })
-      .addCase(fetchData.rejected, (state, { error }) => {
-        state.loading = false;
-        state.error = error.message;
+      .addCase(fetchApiData.rejected, (state, { payload, error, meta }) => {
+        const key = payload?.key || meta.arg.key;
+        if (!state[key]) state[key] = {};
+        
+        state[key].loading = false;
+        state[key].error = payload?.error || error.message;
       });
   },
 });
-const apiReducer = apiSlice.reducer;
 
-export default apiReducer;
+export default apiSlice.reducer;

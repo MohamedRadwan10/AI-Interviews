@@ -1,4 +1,4 @@
-export const API_BASE_URL = "https://localhost:7257/api";
+export const API_BASE_URL = "http://intellhire.runasp.net/api";
 
 export const AUTH_ENDPOINTS = {
   login: {
@@ -20,5 +20,9 @@ export const AUTH_ENDPOINTS = {
   logout: {
     url: "/Auth/logout",
     method: "POST",
+  },
+  jobs: {
+    url: "/jobs/browse",
+    method: "GET",
   },
 };
