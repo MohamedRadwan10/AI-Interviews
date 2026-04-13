@@ -1,22 +1,26 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
-const apiKey = "bf720dd9efe080eeea407994406ddcd1";
-const baseUrl = "https://api.themoviedb.org/3";
-
-export const fetchData = createAsyncThunk(
+export const fetchApiData = createAsyncThunk(
   "api/fetchData",
-  async ({ endpoint, key }) => {
-    const response = await fetch(`${baseUrl}${endpoint}?api_key=${apiKey}`);
+  async ({ url, method = "GET", params = {}, data = null, headers = {}, key }, { rejectWithValue }) => {
+    try {
+      const response = await axios({
+        url,
+        method,
+        params,
+        data,
+        headers,
+      });
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch data");
+      return {
+        key,
+        data: response.data,
+      };
+    } catch (error) {
+      console.error(`API Error for key [${key}]:`, error);
+      const errorMessage = error.response?.data || error.message;
+      return rejectWithValue({ key, error: errorMessage });
     }
-
-    const data = await response.json();
-
-    return {
-      key,
-      data: data.results || data,
-    };
   }
 );
