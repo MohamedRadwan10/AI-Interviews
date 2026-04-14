@@ -5,7 +5,7 @@ import { Briefcase } from "lucide-react";
 
 const JobSpecsCard = ({ item }) => {
   const careerLevel = get(item, "careerLevel", "Not specified");
-  const experience = get(item, "experience", "0 to 1 Years");
+  const experience = get(item, "experienceYears", "0 to 1 Years");
   const category = get(item, "category", "General");
   const skillsStr = get(item, "skills", category);
   

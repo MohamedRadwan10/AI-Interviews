@@ -58,7 +58,7 @@ export const useJobs = () => {
 
 export const useJobDetails = (jobId) => {
   const { data, loading, error, refetch } = useApi({
-    type: "jobs",
+    type: "jobsDetails",
     urlSuffix: `/${jobId}`,
     autoFetch: !!jobId,
   });

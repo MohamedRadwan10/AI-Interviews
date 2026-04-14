@@ -5,7 +5,7 @@ import { FileText, CheckCircle2 } from "lucide-react";
 
 const JobContentCard = ({ item }) => {
   const description = get(item, "description");
-  const requirementsStr = get(item, "requirements");
+  const requirementsStr = get(item, "jobrequirements");
   
   const requirements = typeof requirementsStr === "string" 
     ? requirementsStr.split("\n").filter(req => req.trim() !== "")

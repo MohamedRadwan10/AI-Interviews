@@ -12,7 +12,7 @@ const JobHeaderCard = ({ item }) => {
   const logo = get(item, "companyLogo", defaultLogo) || defaultLogo;
   const type = get(item, "type");
   const location = get(item, "locations");
-  const applyUrl = get(item, "applyUrl");
+  const applyUrl = get(item, "companyUrl");
   const description = get(item, "description");
   const startDateTime = get(item, "startDateTime");
   const endDateTime = get(item, "endDateTime");
@@ -41,7 +41,7 @@ const JobHeaderCard = ({ item }) => {
               </MainText>
               <span className="text-gray-300 dark:text-gray-600 text-[10px]">●</span>
               <MainText tag="span" className="flex items-center gap-1">
-                {postedAt}
+               {postedAt}
               </MainText>
             </div>
           </div>
