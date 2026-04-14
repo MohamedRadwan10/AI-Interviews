@@ -47,7 +47,7 @@ const JobsPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {map(jobs, (job) => (
                 <div key={job?.jobid || job?.id}>
-                  <MainCard type="job" data={job} />
+                  <MainCard type="job" job={job} />
                 </div>
               ))}
             </div>
