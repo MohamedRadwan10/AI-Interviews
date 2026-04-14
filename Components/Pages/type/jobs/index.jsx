@@ -1,13 +1,13 @@
 import React from "react";
 import { map } from "lodash-es";
-import JobCard from "../../Common/Cards/JobCard";
-import Pagination from "../../Common/Pagination";
-import MainText from "../../Common/MainText";
-import MainButton from "../../Common/MainButton";
-import MainInput from "../../Common/Inputs";
-import Loading from "../../Common/LoadingSkeleton";
+import Pagination from "../../../Common/Pagination";
+import MainText from "../../../Common/MainText";
+import MainButton from "../../../Common/MainButton";
+import MainInput from "../../../Common/Inputs";
+import Loading from "../../../Common/LoadingSkeleton";
 import { Search, SlidersHorizontal } from "lucide-react";
-import { useJobs } from "../../../hooks/useJobs";
+import { useJobs } from "../../../../hooks/useJobs";
+import MainCard from "@/Components/Common/Cards";
 
 const JobsPage = () => {
   const { jobs, loading, error, searchTerm, setSearchTerm, page, setPage, totalCount } = useJobs();
@@ -47,7 +47,7 @@ const JobsPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {map(jobs, (job) => (
                 <div key={job?.jobid || job?.id}>
-                  <JobCard job={job} />
+                  <MainCard type="job" data={job} />
                 </div>
               ))}
             </div>

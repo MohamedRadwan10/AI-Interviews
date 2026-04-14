@@ -1,8 +1,7 @@
-"use client";
+import MainPage from "@/Components/Pages";
 
-import React from "react";
-import JobsPage from "../../../../Components/Pages/jobs";
+const page = () => {
+  return <MainPage type="jobs" />;
+};
 
-export default function Page() {
-  return <JobsPage />;
-}
+export default page;

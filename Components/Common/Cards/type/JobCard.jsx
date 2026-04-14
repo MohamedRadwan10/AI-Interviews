@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { get, map } from "lodash-es";
-import MainText from "../MainText";
+import MainText from "../../MainText";
 import { Briefcase, MapPin, Clock, ChevronRight, GraduationCap } from "lucide-react";
 
 const JobCard = ({ job }) => {
