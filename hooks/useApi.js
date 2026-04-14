@@ -4,7 +4,7 @@ import { get } from "lodash-es";
 import { API_BASE_URL, AUTH_ENDPOINTS } from "../Config/apiRegistry";
 import { fetchApiData } from "../Store/Slices/apiThunk";
 
-export const useApi = ({ type, params = {}, data = null, customHeaders = {}, autoFetch = true }) => {
+export const useApi = ({ type, params = {}, data = null, customHeaders = {}, autoFetch = true, urlSuffix = "" }) => {
   const dispatch = useDispatch();
   const apiState = useSelector((state) => state.api[type]) || {
     data: null,
@@ -24,7 +24,7 @@ export const useApi = ({ type, params = {}, data = null, customHeaders = {}, aut
       dispatch(
         fetchApiData({
           key: type,
-          url: `${API_BASE_URL}${endpointConfig.url}`,
+          url: `${API_BASE_URL}${endpointConfig.url}${urlSuffix}`,
           method: endpointConfig.method,
           params: { ...params, ...(override.params || {}) },
           data: { ...data, ...(override.data || {}) },
