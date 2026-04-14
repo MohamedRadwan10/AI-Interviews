@@ -26,4 +26,8 @@ export const AUTH_ENDPOINTS = {
     url: "/jobs/browse",
     method: "GET",
   },
+  jobsDetails: {
+    url: "/jobs/Details",
+    method: "GET",
+  },
 };

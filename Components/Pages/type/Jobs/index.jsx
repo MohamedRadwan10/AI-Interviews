@@ -4,13 +4,15 @@ import Pagination from "../../../Common/Pagination";
 import MainText from "../../../Common/MainText";
 import MainButton from "../../../Common/MainButton";
 import MainInput from "../../../Common/Inputs";
-import Loading from "../../../Common/LoadingSkeleton";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { useJobs } from "../../../../hooks/useJobs";
 import MainCard from "@/Components/Common/Cards";
 
 const JobsPage = () => {
   const { jobs, loading, error, searchTerm, setSearchTerm, page, setPage, totalCount } = useJobs();
+ 
+  if(error) return <div className="text-red-500 text-center py-12">{error}</div>
+
   return (
     <div className="min-h-screen bg-light-primary dark:bg-dark-primary-1 py-12 px-4 sm:px-6 lg:px-8 font-sans transition-colors duration-200">
       <div className="max-w-7xl mx-auto">
@@ -35,15 +37,6 @@ const JobsPage = () => {
 
         <div className="mb-8">
           <MainText tag="h2" title="Latest Opportunities" className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-6"/>
-          {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array.from({ length: 9 }).map((_, i) => (
-                <div key={i}><Loading type="jobCard" /></div>
-              ))}
-            </div>
-          ) : error ? (
-            <div className="text-red-500 text-center py-12">{error}</div>
-          ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {map(jobs, (job) => (
                 <div key={job?.jobid || job?.id}>
@@ -51,7 +44,6 @@ const JobsPage = () => {
                 </div>
               ))}
             </div>
-          )}
         </div>
 
         <Pagination 

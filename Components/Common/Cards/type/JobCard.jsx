@@ -1,10 +1,13 @@
 import React from "react";
-import Link from "next/link";
 import { get, map } from "lodash-es";
 import MainText from "../../MainText";
 import { Briefcase, MapPin, Clock, ChevronRight, GraduationCap } from "lucide-react";
+import MainButton from "../../MainButton";
+import { useNavigation } from "@/hooks/common";
+import { Since } from "@/Utils/Filter/date";
 
 const JobCard = ({ job }) => {
+  const { navigateTo } = useNavigation();
   const title = get(job, "title", "Unknown Title");
   const companyName = get(job, "companyName", "Unknown Company");
   const defaultLogo = companyName !== "Unknown Company" 
@@ -19,17 +22,10 @@ const JobCard = ({ job }) => {
   const tags = typeof skillsStr === "string" ? skillsStr.split(",").map(tag => tag.trim()) : [category]; 
   const startDateTime = get(job, "startDateTime");
   const endDateTime = get(job, "endDateTime");
-
-  const formatDate = (dateStr) => {
-    if (!dateStr) return null;
-    return new Date(dateStr).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
-  };
-
-  const formattedStart = formatDate(startDateTime);
-  const formattedEnd = formatDate(endDateTime);
+  const formattedStart = Since(startDateTime);
+  const formattedEnd = Since(endDateTime);
   const postedAt = formattedStart ? (formattedEnd ? `${formattedStart} - Ends: ${formattedEnd}` : formattedStart) : "Just now";
-
-  const jobId = get(job, "jobid", get(job, "id", "#"));
+  const jobId = get(job, "jobid");
 
   return (
     <div className="flex flex-col justify-between p-6 rounded-2xl bg-white dark:bg-dark-primary-4 border border-gray-200 dark:border-gray-800 shadow-sm transition-all hover:shadow-md h-full">
@@ -70,9 +66,9 @@ const JobCard = ({ job }) => {
         <MainText className="flex items-center gap-1.5 text-xs text-gray-400">
           <Clock className="w-3 h-3" /> {postedAt}
         </MainText>
-        <Link href={`/jobs/${jobId}`} className="text-sm font-semibold text-blue-600 dark:text-blue-500 hover:text-blue-700 dark:hover:text-blue-400 flex items-center gap-1">
+        <MainButton onClick={() => navigateTo(`/intelliHire/jobs/${jobId}`)} className="text-sm font-semibold text-blue-600 dark:text-blue-500 hover:text-blue-700 dark:hover:text-blue-400 flex items-center gap-1">
           See Details <ChevronRight className="w-4 h-4" />
-        </Link>
+        </MainButton>
       </div>
     </div>
   );
