@@ -7,11 +7,8 @@ import MainButton from "@/Components/Common/MainButton";
 import { CheckCircle2, ArrowRight } from "lucide-react";
 import MainCard from "@/Components/Common/Cards";
 import HeroCurve from "@/Components/Common/HeroCurve";
-// import { useAuth } from "@/hooks/useAuth";
 
 const Home = () => {
-  // const { userData } = useAuth();
-  // console.log("User Data:", userData);
   const homeData = get(DataConstant, "home", {});
   const hero = get(homeData, "hero", {});
   const latestJobs = get(homeData, "latestJobs", {});
@@ -45,7 +42,7 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {map(jobItems, (job) => {
               const jobId = get(job, "id");
-              return <MainCard key={jobId} type="job" data={job} />;
+              return <MainCard key={jobId} type="jobItem" data={job} />;
             })}
           </div>
         </div>

@@ -1,4 +1,5 @@
-export const API_BASE_URL = "https://intellhire.runasp.net/api";
+export const BACKEND_BASE_URL = "https://intellhire.runasp.net/api";
+export const API_BASE_URL = "/api/proxy";
 
 export const AUTH_ENDPOINTS = {
   login: {
