@@ -3,7 +3,7 @@ import { get, startCase } from "lodash-es";
 import * as LoadingComponents from "@/Components/Common/LoadingSkeleton/type/index";
 
 const DefaultLoading = () => (
-  <div className="p-4 w-full h-20 animate-pulse bg-gray-100 dark:bg-dark-primary-3 rounded-lg" />
+  <div className="p-4 w-full h-20 animate-pulse bg-light-main dark:bg-dark-primary-3 rounded-lg" />
 );
 
 const Loading = ({ type = "default", className = "" }) => {

@@ -116,37 +116,37 @@ export const DataConstant = {
       subtitle: "AI-powered simulations, detailed feedback, and personalized recommendations for every candidate.",
       cards: [
         {
-          iconClassName: "bg-light-white dark:bg-transparent border border-light-gray",
+          iconClassName: "bg-light-white dark:bg-transparent border border-ui-borderLight",
           icon: <Why1 className="w-5 h-5 text-light-secondary dark:text-dark-white" />,
           title: "Effortless Job Posting",
           desc: "For Companies: Quickly create and publish job offers. Our streamlined process ensures you reach the right candidates fast.",
         },
         {
-          iconClassName: "bg-light-white dark:bg-transparent border border-light-gray",
+          iconClassName: "bg-light-white dark:bg-transparent border border-ui-borderLight",
           icon: <Why2 className="w-5 h-5 text-light-secondary dark:text-dark-white" />,
           title: "AI Interview",
           desc: "Engage in a realistic real-time voice-based tech interview. Our AI simulates top-tier interviewing experiences for every candidate.",
         },
         {
-          iconClassName: "bg-light-white dark:bg-transparent border border-light-gray",
+          iconClassName: "bg-light-white dark:bg-transparent border border-ui-borderLight",
           icon: <Why3 className="w-5 h-5 text-light-secondary dark:text-dark-white" />,
           title: "Detailed Feedback",
           desc: "For Companies: Quickly create and publish job offers. Our streamlined process ensures results for every candidate.",
         },
         {
-          iconClassName: "bg-light-white dark:bg-transparent border border-light-gray",
+          iconClassName: "bg-light-white dark:bg-transparent border border-ui-borderLight",
           icon: <Why4 className="w-5 h-5 text-light-secondary dark:text-dark-white" />,
           title: "Ad Moderation & Insights",
           desc: "For Companies: Use our full control to separate your job ads. Our streamlined process ensures top-tier ads.",
         },
         {
-          iconClassName: "bg-light-white dark:bg-transparent border border-light-gray",
+          iconClassName: "bg-light-white dark:bg-transparent border border-ui-borderLight",
           icon: <Why5 className="w-5 h-5 text-light-secondary dark:text-dark-white" />,
           title: "Integrated Code Editor",
           desc: "A dedicated coding environment within the interview that allows candidates to write, debug, and run code.",
         },
         {
-          iconClassName: "bg-light-white dark:bg-transparent border border-light-gray",
+          iconClassName: "bg-light-white dark:bg-transparent border border-ui-borderLight",
           icon: <Why6 className="w-5 h-5 text-light-secondary dark:text-dark-white" />,
           title: "Model Answer Comparison",
           desc: "Learn where you rank easily. Our process ensures your response is scored against AI-generated model answers.",

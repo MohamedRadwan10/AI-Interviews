@@ -29,7 +29,7 @@ const NotFound = () => {
           </div>
           <MainButton
             onClick={handleBack}
-            className="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-3.5 rounded-full transition-all duration-300 shadow-md hover:shadow-blue-500/25 hover:-translate-y-1"
+            className="inline-flex items-center justify-center bg-brand-primary hover:bg-brand-primaryDark text-white font-medium px-8 py-3.5 rounded-full transition-all duration-300 shadow-md hover:shadow-brand-accent/25 hover:-translate-y-1"
           >
             <i className="pi pi-arrow-left mr-2 text-sm"></i>
             Return to Dashboard

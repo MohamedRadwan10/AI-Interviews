@@ -14,7 +14,7 @@ const AccountTypeCard = ({ item, selected, onSelect }) => {
     return `relative w-[320px] p-6 border rounded-xl cursor-pointer transition-all ${
       active
         ? "border-dark-primary-2 bg-light-blue50 dark:bg-dark-primary-3"
-        : "border-light-gray dark:border-none dark:bg-dark-primary-3 bg-light-white hover:border-dark-primary-2"
+        : "border-ui-borderLight dark:border-none dark:bg-dark-primary-3 bg-light-white hover:border-dark-primary-2"
     }`;
   }, [active]);
 
@@ -59,7 +59,7 @@ const AccountTypeCard = ({ item, selected, onSelect }) => {
         <MainText
           tag="p"
           title={description}
-          className="text-light-gray dark:text-dark-gray text-sm text-center"
+          className="text-ui-textMuted dark:text-ui-muted text-sm text-center"
         />
       </div>
     </div>

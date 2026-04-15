@@ -9,7 +9,7 @@ export const AccountTypeLoading = () => {
       
       <div className="flex gap-6 flex-wrap justify-center">
         {Array.from({ length: 2 }).map((_, i) => (
-          <div key={i} className="w-80 h-48 p-6 rounded-2xl bg-white dark:bg-dark-primary-4 border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col items-center justify-center space-y-4">
+          <div key={i} className="w-80 h-48 p-6 rounded-2xl bg-white dark:bg-dark-primary-4 border border-ui-borderLight dark:border-ui-border shadow-sm flex flex-col items-center justify-center space-y-4">
             <Skeleton shape="circle" size="3rem" className="dark:!bg-dark-primary-3" />
             <Skeleton width="60%" height="1.5rem" className="dark:!bg-dark-primary-3" />
             <Skeleton width="100%" height="2.5rem" className="dark:!bg-dark-primary-3" />

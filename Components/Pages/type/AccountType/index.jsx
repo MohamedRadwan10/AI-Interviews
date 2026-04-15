@@ -46,7 +46,7 @@ const AccountType = () => {
       <MainText
         tag="p"
         title={pageSubtitle}
-        className="text-light-gray dark:text-dark-gray text-sm mb-10"
+        className="text-ui-muted dark:text-ui-muted text-sm mb-10"
       />
 
       <div className="flex gap-6 flex-wrap justify-center">
@@ -67,14 +67,14 @@ const AccountType = () => {
       <MainButton
         disabled={!selected}
         onClick={handleCreate}
-        className="mt-10 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
+        className="mt-10 px-6 py-3 bg-brand-primary hover:bg-brand-primaryDark text-white rounded-lg transition"
       >
         Create an account
       </MainButton>
 
       <MainText
         title="Return to Home"
-        className="text-light-gray dark:text-dark-gray text-sm mt-4 cursor-pointer "
+        className="text-ui-muted dark:text-ui-muted text-sm mt-4 cursor-pointer "
       />
     </div>
   );

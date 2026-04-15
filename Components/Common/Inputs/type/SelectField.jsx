@@ -45,7 +45,7 @@ const SelectField = (props) => {
         filterBy="label"
         resetFilterOnHide
         className={`w-full h-full border rounded transition-all duration-200 ${
-          error ? "border-red-500" : "border-gray-300"
+          error ? "border-status-error" : "border-ui-borderLight"
         } ${fieldClassName}`}
         pt={{
           root: { className: "flex items-center" },
@@ -56,14 +56,14 @@ const SelectField = (props) => {
           item: { 
             className: "text-light-black dark:text-dark-white hover:!bg-light-secondary/20 dark:hover:!bg-dark-primary-2 cursor-pointer p-2 m-1 rounded transition-colors" 
           },
-          panel: { className: "bg-light-primary dark:bg-dark-primary-1 border border-light-gray dark:border-dark-gray shadow-lg rounded-lg" },
-          header: { className: "bg-light-primary dark:bg-dark-primary-1 border-b border-light-gray dark:border-dark-gray p-2" },
-          filterInput: { className: "p-2 bg-light-primary dark:bg-dark-primary-3 text-light-black dark:text-dark-white border border-light-gray dark:border-dark-gray rounded w-full" },
+          panel: { className: "bg-light-primary dark:bg-dark-primary-1 border border-ui-borderLight dark:border-ui-border shadow-lg rounded-lg" },
+          header: { className: "bg-light-primary dark:bg-dark-primary-1 border-b border-ui-borderLight dark:border-ui-border p-2" },
+          filterInput: { className: "p-2 bg-light-primary dark:bg-dark-primary-3 text-light-black dark:text-dark-white border border-ui-borderLight dark:border-ui-border rounded w-full" },
           emptyMessage: { className: "p-3 text-light-black dark:text-dark-white opacity-60" }
         }}
         invalid={!!error}
       />
-      {error && <small className="text-red-500">{error}</small>}
+      {error && <small className="text-status-error">{error}</small>}
     </div>
   );
 };

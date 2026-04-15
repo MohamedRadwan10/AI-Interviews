@@ -41,11 +41,12 @@ const PhoneField = (props) => {
         placeholder="Enter your phone number"
         maxLength={11}
         className={`w-full p-2 border rounded ${
-          error ? "border-red-500" : "border-gray-300"
+          error ? "border-status-error" : "border-ui-borderLight"
         } ${fieldClassName}`}
+        {...props}
       />
 
-      {error && <small className="text-red-500">{error}</small>}
+      {error && <small className="text-status-error">{error}</small>}
     </div>
   );
 };

@@ -59,14 +59,14 @@ const PasswordField = (props) => {
           mediumLabel="Average complexity"
           strongLabel="Complex password"
           inputClassName={`!w-full p-2 border rounded ${
-            error ? "border-red-500" : "border-gray-300"
+            error ? "border-status-error" : "border-ui-borderLight"
           } ${fieldClassName}`}
           className={`w-full`}
           panelClassName="password-panel"
           style={{ width: "100%" }}
           inputStyle={{ width: "100%" }}
         />
-        {error && <small className="text-red-500 block mt-1">{error}</small>}
+        {error && <small className="text-status-error block mt-1">{error}</small>}
       </div>
     </div>
   );

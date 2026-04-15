@@ -7,10 +7,11 @@ const MainButton = ({
   children,
   value = "",
   title = "",
+  isLoading = false,
   ...props
 }) => {
   return (
-    <Button type={type} value={value} onClick={onClick} {...props}>
+    <Button type={type} value={value} onClick={onClick} loading={isLoading} {...props}>
       {children ||
         (title && (
           <section className={containerClass}>

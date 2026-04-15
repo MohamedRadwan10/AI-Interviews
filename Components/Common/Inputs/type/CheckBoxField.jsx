@@ -40,7 +40,7 @@ const CheckBoxField = (props) => {
           {label}
         </label>
       </div>
-      {error && <small className="text-red-500 block mt-1">{error}</small>}
+      {error && <small className="text-status-error block mt-1">{error}</small>}
     </div>
   );
 };
