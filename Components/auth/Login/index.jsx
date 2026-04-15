@@ -4,8 +4,8 @@ import { loginConfig } from "@/Config/FieldsConfig";
 import { useAuth } from "@/hooks/useAuth";
 
 const LoginPage = () => {
-  const { login, errors } = useAuth();
-  return <AuthPage config={loginConfig} onSubmit={login} apiError={errors} />;
+  const { login, errors, isLoading } = useAuth();
+  return <AuthPage config={loginConfig} onSubmit={login} apiError={errors} isLoading={isLoading} />;
 };
 
 export default LoginPage;

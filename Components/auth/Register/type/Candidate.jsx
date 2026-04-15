@@ -4,9 +4,9 @@ import { registerConfig } from "@/Config/FieldsConfig";
 import { useAuth } from "@/hooks/useAuth";
 
 const Candidate = () => {
-  const { registerCandidate, errors } = useAuth();
+  const { registerCandidate, errors, isLoading } = useAuth();
 
-  return <AuthPage config={registerConfig} onSubmit={registerCandidate} apiError={errors} />;
+  return <AuthPage config={registerConfig} onSubmit={registerCandidate} apiError={errors} isLoading={isLoading} />;
 };
 
 export default Candidate;

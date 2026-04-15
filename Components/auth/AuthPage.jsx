@@ -12,7 +12,7 @@ import { CheckCircle2 } from "lucide-react";
 import { Suspense } from "react";
 import RouteLoading from "../Common/LoadingSkeleton/RouteLoading";
 
-const AuthPageContent = ({ config, onSubmit, apiError }) => {
+const AuthPageContent = ({ config, onSubmit, apiError, isLoading }) => {
   const logo = get(logoImage, "src");
   const pageTitle = get(config, "pageTitle");
   const pageSubtitle = get(config, "pageSubtitle");
@@ -89,7 +89,7 @@ const AuthPageContent = ({ config, onSubmit, apiError }) => {
           </div>
         )}
 
-        <MainForm config={config} onSubmit={handleSubmit} />
+        <MainForm config={config} onSubmit={handleSubmit} isLoading={isLoading} />
 
         <div className="flex items-center justify-between gap-3 my-4 dark:text-dark-gray text-light-gray text-sm">
           <div className="w-1/3 h-[1px] dark:bg-dark-gray bg-light-gray"></div>
