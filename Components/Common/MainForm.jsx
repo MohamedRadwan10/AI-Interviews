@@ -8,6 +8,7 @@ import { useMemo } from "react";
 const MainForm = (props) => {
   const config = get(props, "config", {});
   const onSubmit = get(props, "onSubmit");
+  const isLoading = get(props, "isLoading", false);
   const fields = get(config, "fields", []);
   const submitButtonText = get(config, "submitButtonText");
 
@@ -83,7 +84,8 @@ const MainForm = (props) => {
       <MainButton
         type="submit"
         className="w-full flex justify-center items-center py-2 mt-4 bg-light-secondary dark:bg-dark-secondary text-white rounded-md hover:opacity-90 transition-opacity"
-        disabled={!isValid || isSubmitting}
+        disabled={!isValid || isSubmitting || isLoading}
+        isLoading={isLoading || isSubmitting}
       >
         {submitButtonText}
       </MainButton>

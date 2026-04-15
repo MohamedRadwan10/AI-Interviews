@@ -1,21 +1,26 @@
 "use client";
 import React from "react";
-import { map, get } from "lodash-es";
+import { map, get, take } from "lodash-es";
 import { DataConstant } from "@/Config/DataConstant";
 import MainText from "@/Components/Common/MainText";
 import MainButton from "@/Components/Common/MainButton";
 import { CheckCircle2, ArrowRight } from "lucide-react";
 import MainCard from "@/Components/Common/Cards";
 import HeroCurve from "@/Components/Common/HeroCurve";
+import { useJobs } from "@/hooks/useJobs";
+import { useNavigation } from "@/hooks/common";
+import { JobCardLoading } from "@/Components/Common/LoadingSkeleton/type/JobCard";
 
 const Home = () => {
+  const { navigateTo } = useNavigation();
+  const { jobs, loading } = useJobs();
   const homeData = get(DataConstant, "home", {});
   const hero = get(homeData, "hero", {});
   const latestJobs = get(homeData, "latestJobs", {});
   const redefining = get(homeData, "redefining", {});
   const pathIcons = get(hero, "pathIcons", []);
-  const jobItems = get(latestJobs, "items", []);
   const bullets = get(redefining, "bullets", []);
+  const featuredJobs = take(jobs, 3);
 
   return (
     <div className="min-h-screen font-sans bg-light-primary dark:bg-dark-primary-1 transition-colors duration-300">
@@ -25,7 +30,10 @@ const Home = () => {
           <MainText tag="h1" title={get(hero, "title")} className="text-4xl md:text-6xl font-extrabold text-light-black dark:text-dark-white mb-2 tracking-tight" />
           <MainText tag="h2" title={get(hero, "subtitle")} className="text-2xl md:text-3xl font-bold text-light-secondary dark:text-brand-accent mb-6" />
           <MainText tag="p" title={get(hero, "desc")} className="text-base md:text-lg text-ui-textMuted dark:text-ui-muted max-w-2xl mx-auto mb-10 whitespace-pre-line leading-relaxed" />
-          <MainButton className="p-button-rounded bg-light-secondary dark:bg-brand-primary dark:hover:bg-brand-primaryDark text-white border-none px-8 py-3.5 text-lg font-bold shadow-xl flex items-center gap-2 mx-auto transform hover:scale-105 transition-all">
+          <MainButton 
+            onClick={() => navigateTo("/intelliHire/jobs")}
+            className="p-button-rounded bg-light-secondary dark:bg-brand-primary dark:hover:bg-brand-primaryDark text-white border-none px-8 py-3.5 text-lg font-bold shadow-xl flex items-center gap-2 mx-auto transform hover:scale-105 transition-all"
+          >
             {get(hero, "cta")} <ArrowRight className="w-5 h-5" />
           </MainButton>
         </div>
@@ -40,10 +48,14 @@ const Home = () => {
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {map(jobItems, (job) => {
-              const jobId = get(job, "id");
-              return <MainCard key={jobId} type="jobItem" data={job} />;
-            })}
+            {loading ? (
+              [1, 2, 3].map((i) => <JobCardLoading key={i} />)
+            ) : (
+              map(featuredJobs, (job) => {
+                const jobId = get(job, "id");
+                return <MainCard key={jobId} type="jobItem" data={job} />;
+              })
+            )}
           </div>
         </div>
       </section>
@@ -62,7 +74,10 @@ const Home = () => {
                   </div>
                 ))}
               </div>
-              <MainButton className="p-button-rounded bg-light-secondary dark:bg-brand-primary dark:hover:bg-brand-primaryDark text-white border-none px-10 py-4 text-lg font-bold shadow-xl flex items-center gap-2 transform hover:scale-105 transition-all">
+              <MainButton 
+                onClick={() => navigateTo("/intelliHire/jobs")}
+                className="p-button-rounded bg-light-secondary dark:bg-brand-primary dark:hover:bg-brand-primaryDark text-white border-none px-10 py-4 text-lg font-bold shadow-xl flex items-center gap-2 transform hover:scale-105 transition-all"
+              >
                 {get(redefining, "cta")} <ArrowRight className="w-5 h-5" />
               </MainButton>
             </div>
