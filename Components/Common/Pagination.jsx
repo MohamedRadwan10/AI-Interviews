@@ -21,7 +21,7 @@ const Pagination = ({ page, limit = 9, totalRecords, onPageChange }) => {
         rows={limit}
         totalRecords={totalRecords}
         onPageChange={handlePageChange}
-        className="bg-transparent dark:bg-transparent border-none [&_.p-paginator-page]:rounded-full [&_.p-paginator-page]:w-8 [&_.p-paginator-page]:h-8 [&_.p-paginator-page.p-highlight]:bg-blue-600 [&_.p-paginator-page.p-highlight]:text-white dark:[&_.p-paginator-page]:text-gray-300 dark:[&_.p-paginator-page:not(.p-highlight):hover]:bg-gray-800"
+        className="bg-transparent dark:bg-transparent border-none [&_.p-paginator-page]:rounded-full [&_.p-paginator-page]:w-8 [&_.p-paginator-page]:h-8 [&_.p-paginator-page.p-highlight]:bg-brand-primary [&_.p-paginator-page.p-highlight]:text-white dark:[&_.p-paginator-page]:text-light-gray dark:[&_.p-paginator-page:not(.p-highlight):hover]:bg-ui-border"
       />
     </div>
   );

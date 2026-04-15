@@ -4,15 +4,15 @@
 
 @layer base {
   :root {
-    --scrollbar-thumb: #2563ea;
-    --scrollbar-track: #f0f4f8;
+    --scrollbar-thumb: #2563ea; /* brand.primary */
+    --scrollbar-track: #f0f4f8; /* light.main */
     --scrollbar-size: 4px;
     --scrollbar-radius: 999px;
   }
 
   html.dark {
-    --scrollbar-track: #0f172a;
-    --scrollbar-thumb: #134cc7;
+    --scrollbar-track: #0f172a; /* dark.primary.1 */
+    --scrollbar-thumb: #134cc7; /* dark.primary.2 */
   }
 
   * {
@@ -36,7 +36,7 @@
   }
 
   *::-webkit-scrollbar-thumb:hover {
-    background: var(--scrollbar-thumb-hover, #4f46e5);
+    background: var(--scrollbar-thumb-hover, #4f46e5); /* brand.secondary */
   }
 
   *::-webkit-scrollbar-button {

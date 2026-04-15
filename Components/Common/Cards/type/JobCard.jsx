@@ -28,16 +28,16 @@ const JobCard = ({ job }) => {
   const jobId = get(job, "id");
 
   return (
-    <div className="flex flex-col justify-between p-6 rounded-2xl bg-white dark:bg-dark-primary-4 border border-gray-200 dark:border-gray-800 shadow-sm transition-all hover:shadow-md h-full">
+    <div className="flex flex-col justify-between p-6 rounded-2xl bg-white dark:bg-dark-primary-4 border border-ui-borderLight dark:border-ui-border shadow-sm transition-all hover:shadow-md h-full">
       <div className="flex items-start gap-4 mb-4">
-        <div className="flex items-center justify-center w-12 h-12 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-dark-primary-3 text-lg font-bold text-gray-700 dark:text-gray-200 shrink-0">
+        <div className="flex items-center justify-center w-12 h-12 rounded-xl border border-ui-borderLight dark:border-ui-border bg-light-primary dark:bg-dark-primary-3 text-lg font-bold text-ui-textMuted dark:text-white shrink-0">
           {logo}
         </div>
         <div>
-          <MainText tag="h3" title={title} className="font-semibold text-lg text-gray-900 dark:text-white"/>
-          <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-sm mt-0.5">
+          <MainText tag="h3" title={title} className="font-semibold text-lg text-ui-textMain dark:text-white"/>
+          <div className="flex items-center gap-2 text-ui-textMuted dark:text-ui-muted text-sm mt-0.5">
             <MainText tag="span" title={companyName} />
-            {careerLevel && <span className="text-gray-300 dark:text-gray-600 text-[10px]">●</span>}
+            {careerLevel && <span className="text-ui-borderLight dark:text-ui-textMuted text-[10px]">●</span>}
             {careerLevel && (
               <MainText tag="span" className="flex items-center gap-1">
                 <GraduationCap className="w-3.5 h-3.5" /> {careerLevel}
@@ -48,25 +48,25 @@ const JobCard = ({ job }) => {
       </div>
 
       <div className="flex flex-wrap gap-2 mb-4">
-        <MainText className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-dark-primary-3 text-gray-600 dark:text-gray-300">
+        <MainText className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-light-main dark:bg-dark-primary-3 text-ui-textMuted dark:text-ui-muted">
           <Briefcase className="w-3 h-3" /> {type}
         </MainText>
-        <MainText className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-dark-primary-3 text-gray-600 dark:text-gray-300">
+        <MainText className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-light-main dark:bg-dark-primary-3 text-ui-textMuted dark:text-ui-muted">
           <MapPin className="w-3 h-3" /> {location}
         </MainText>
       </div>
 
       <div className="flex flex-wrap gap-2 mb-6">
         {map(tags, (tag, index) => (
-          <MainText key={index} title={tag} className="px-3 py-1 rounded-full text-xs border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400"/>
+          <MainText key={index} title={tag} className="px-3 py-1 rounded-full text-xs border border-ui-borderLight dark:border-ui-border text-ui-textMuted dark:text-ui-muted"/>
         ))}
       </div>
 
-      <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800 mt-auto">
-        <MainText className="flex items-center gap-1.5 text-xs text-gray-400">
+      <div className="flex items-center justify-between pt-4 border-t border-ui-borderLight dark:border-ui-border mt-auto">
+        <MainText className="flex items-center gap-1.5 text-xs text-ui-muted">
           <Clock className="w-3 h-3" /> {postedAt}
         </MainText>
-        <MainButton onClick={() => navigateTo(`/intelliHire/jobs/${jobId}`)} className="text-sm font-semibold text-blue-600 dark:text-blue-500 hover:text-blue-700 dark:hover:text-blue-400 flex items-center gap-1">
+        <MainButton onClick={() => navigateTo(`/intelliHire/jobs/${jobId}`)} className="text-sm font-semibold text-brand-primary dark:text-brand-accent hover:text-brand-primaryDark dark:hover:text-brand-accent/80 flex items-center gap-1">
           See Details <ChevronRight className="w-4 h-4" />
         </MainButton>
       </div>

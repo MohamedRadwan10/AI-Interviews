@@ -15,7 +15,7 @@ const JobDetailsPage = ({ jobId }) => {
   if (!loading && error) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="text-red-500 font-medium">Failed to load job details.</div>
+        <div className="text-status-error font-medium">Failed to load job details.</div>
       </div>
     );
   }
@@ -23,7 +23,7 @@ const JobDetailsPage = ({ jobId }) => {
   if (!loading && !job) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="text-gray-500 dark:text-gray-400 font-medium">Job not found.</div>
+        <div className="text-ui-textMuted dark:text-ui-muted font-medium">Job not found.</div>
       </div>
     );
   }
@@ -34,7 +34,7 @@ const JobDetailsPage = ({ jobId }) => {
         
         <MainButton 
           onClick={navigateBack}
-          className="flex items-center gap-2 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-6 transition-colors"
+          className="flex items-center gap-2 text-sm font-medium text-ui-textMuted dark:text-ui-muted hover:text-ui-textMain dark:hover:text-white mb-6 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Jobs
         </MainButton>

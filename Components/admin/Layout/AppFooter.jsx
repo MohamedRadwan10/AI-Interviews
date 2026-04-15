@@ -14,8 +14,8 @@ const AppFooter = () => {
   const logo = get(logoImage, "src", logoImage);
 
   return (
-    <footer className="w-full text-gray-300 py-12">
-      <div className="border-t border-gray-700/50 mb-10 w-full"></div>
+    <footer className="w-full text-ui-muted py-12">
+      <div className="border-t border-ui-border/50 mb-10 w-full"></div>
       <div className="w-full flex flex-col md:flex-row justify-between gap-10">
         <div className="w-full md:w-[35%] flex flex-col gap-4">
           <div className="flex items-center gap-2 -ml-1">
@@ -38,7 +38,7 @@ const AppFooter = () => {
               />
             </Link>
           </div>
-          <MainText tag="p" title={desc} className="text-sm text-gray-400 leading-relaxed max-w-sm mt-2" />
+          <MainText tag="p" title={desc} className="text-sm text-ui-muted leading-relaxed max-w-sm mt-2" />
         </div>
 
         <div className="w-full md:w-[60%] flex flex-wrap justify-between gap-8">
@@ -57,11 +57,11 @@ const AppFooter = () => {
 
                     const content = (
                       <>
-                        {itemIcon && <i className={`${itemIcon} text-blue-600 text-[15px] w-4`} />}
+                        {itemIcon && <i className={`${itemIcon} text-brand-primary text-[15px] w-4`} />}
                         <MainText tag="span" title={text} />
                       </>
                     );
-                    const className = "text-sm text-gray-400 hover:text-gray-200 transition-colors flex items-center gap-2.5";
+                    const className = "text-sm text-ui-muted hover:text-light-gray transition-colors flex items-center gap-2.5";
                     
                     return href ? (
                       <Link key={i} href={href} className={className}>{content}</Link>
@@ -76,7 +76,7 @@ const AppFooter = () => {
         </div>
       </div>
 
-      <div className="border-t border-gray-700/50 mt-12 pt-6 w-full text-center text-sm text-gray-500">
+      <div className="border-t border-ui-border/50 mt-12 pt-6 w-full text-center text-sm text-ui-textMuted">
         <MainText tag="p" title={copyright} />
       </div>
     </footer>

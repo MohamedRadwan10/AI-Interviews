@@ -21,15 +21,15 @@ const JobHeaderCard = ({ item }) => {
   const postedAt = formattedStart ? (formattedEnd ? `${formattedStart} - Ends: ${formattedEnd}` : formattedStart) : "Just now";
 
   return (
-    <div className="flex flex-col md:flex-row justify-between items-start p-6 rounded-2xl bg-white dark:bg-dark-primary-4 border border-gray-200 dark:border-gray-800 shadow-sm transition-all h-full mb-6 gap-6">
+    <div className="flex flex-col md:flex-row justify-between items-start p-6 rounded-2xl bg-white dark:bg-dark-primary-4 border border-ui-borderLight dark:border-ui-border shadow-sm transition-all h-full mb-6 gap-6">
       <div className="flex flex-col gap-4 w-full">
         <div className="flex items-start gap-4">
-          <div className="flex items-center justify-center w-16 h-16 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-dark-primary-3 text-2xl font-bold text-gray-700 dark:text-gray-200 shrink-0">
+          <div className="flex items-center justify-center w-16 h-16 rounded-xl border border-ui-borderLight dark:border-ui-border bg-light-primary dark:bg-dark-primary-3 text-2xl font-bold text-ui-textMuted dark:text-gray-200 shrink-0">
             {logo}
           </div>
           <div>
-            <MainText tag="h1" title={title} className="font-semibold text-2xl text-gray-900 dark:text-white" />
-            <div className="flex flex-wrap items-center gap-2 text-gray-500 dark:text-gray-400 text-sm mt-1">
+            <MainText tag="h1" title={title} className="font-semibold text-2xl text-ui-textMain dark:text-white" />
+            <div className="flex flex-wrap items-center gap-2 text-ui-textMuted dark:text-ui-muted text-sm mt-1">
               <MainText tag="span" title={companyName} />
               <span className="text-gray-300 dark:text-gray-600 text-[10px]">●</span>
               <MainText tag="span" className="flex items-center gap-1">
@@ -48,14 +48,14 @@ const JobHeaderCard = ({ item }) => {
         </div>
 
         <div className="flex flex-col gap-2 mt-4 text-sm">
-          <MainText tag="h4" className="font-medium text-gray-900 dark:text-gray-100">
+          <MainText tag="h4" className="font-medium text-ui-textMain dark:text-gray-100">
             About {companyName}
           </MainText>
-          <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
+          <div className="flex items-center gap-1 text-ui-textMuted dark:text-ui-muted">
             <MapPin className="w-4 h-4" /> {location}
           </div>
           {applyUrl !== "#" && (
-            <a href={applyUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-blue-600 hover:text-blue-700 text-sm w-fit mt-1">
+            <a href={applyUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-brand-primary hover:text-brand-primaryDark text-sm w-fit mt-1">
               <ExternalLink className="w-4 h-4" /> {applyUrl}
             </a>
           )}
@@ -69,7 +69,7 @@ const JobHeaderCard = ({ item }) => {
       
       <div className="shrink-0 w-full md:w-auto mt-4 md:mt-auto flex justify-end">
         <MainButton 
-          className="w-full flex justify-center items-center md:w-48 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors border-0"
+          className="w-full flex justify-center items-center md:w-48 px-6 py-3 rounded-xl bg-brand-primary hover:bg-brand-primaryDark text-white font-medium transition-colors border-0"
         >
           Apply Now
         </MainButton>

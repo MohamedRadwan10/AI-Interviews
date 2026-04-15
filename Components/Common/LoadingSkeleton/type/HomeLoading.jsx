@@ -33,7 +33,7 @@ export const HomeLoading = () => {
       </section>
 
       <section className="py-20 px-6 lg:px-32">
-        <div className="container mx-auto bg-blue-50/50 dark:bg-dark-primary-3/30 rounded-[2.5rem] p-8 md:p-16 border border-blue-100/50 dark:border-gray-800 backdrop-blur-sm">
+        <div className="container mx-auto bg-light-blue50/50 dark:bg-dark-primary-3/30 rounded-[2.5rem] p-8 md:p-16 border border-light-blue100/50 dark:border-ui-border backdrop-blur-sm">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <Skeleton width="80%" height="3rem" className="dark:!bg-dark-primary-3" />

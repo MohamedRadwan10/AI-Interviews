@@ -17,7 +17,7 @@ export const AboutLoading = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="p-8 rounded-2xl bg-white dark:bg-dark-primary-3/30 border border-gray-100 dark:border-gray-800 space-y-4">
+              <div key={i} className="p-8 rounded-2xl bg-white dark:bg-dark-primary-3/30 border border-ui-borderLight dark:border-ui-border space-y-4">
                 <Skeleton shape="circle" size="3rem" className="dark:!bg-dark-primary-3" />
                 <Skeleton width="60%" height="1.5rem" className="dark:!bg-dark-primary-3" />
                 <Skeleton width="100%" height="3rem" className="dark:!bg-dark-primary-3" />

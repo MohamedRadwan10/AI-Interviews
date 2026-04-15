@@ -7,7 +7,7 @@ import { useDarkMode } from "@/Context/DarkModeContext";
 
 const HeroCurve = ({ pathIcons, anchorHeight = "50%", strokeWidth = 2.5 }) => {
   const { isDarkMode } = useDarkMode();
-  const pathColor = isDarkMode ? "#3b82f6" : "#0F172A";
+  const pathColor = isDarkMode ? "#3B82F6" : "#0F172A"; // isDarkMode ? brand.accent : dark.primary.1
   
   const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 0);
 
@@ -27,7 +27,7 @@ const HeroCurve = ({ pathIcons, anchorHeight = "50%", strokeWidth = 2.5 }) => {
           <div
             key={index}
             id={item.id}
-            className={`absolute w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-light-secondary dark:bg-blue-600 flex items-center justify-center shadow-2xl border-4 border-white dark:border-dark-primary-1 z-20 ${item.className}`}
+            className={`absolute w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-light-secondary dark:bg-brand-primary flex items-center justify-center shadow-2xl border-4 border-white dark:border-dark-primary-1 z-20 ${item.className}`}
             style={{ transform: "translate(-50%, -50%)" }}
           >
             {item.icon}
