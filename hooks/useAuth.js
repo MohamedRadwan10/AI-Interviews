@@ -1,5 +1,5 @@
 "use client";
-import { useContext, useState, useCallback } from "react";
+import { useContext, useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { UserTokenContext } from "@/Context/UserTokenContext";
@@ -13,8 +13,36 @@ export const useAuth = () => {
     setUserData, 
     logout: logoutContext, 
     deviceName,
-    userData
+    userData,
+    userToken
   } = useContext(UserTokenContext);
+
+  const getUserProfile = useCallback(async () => {
+    const config = AUTH_ENDPOINTS.userData;
+    const token = userToken || localStorage.getItem("userToken");
+    if (!token) return;
+
+    try {
+      const response = await axios({
+        method: config.method,
+        url: `${API_BASE_URL}${config.url}`,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      console.log("User Data from API (/User/profile):", response.data);
+      return response.data;
+    } catch (err) {
+      console.error("Failed to fetch user profile from API:", err.response?.data || err.message);
+    }
+  }, [userToken]);
+
+  useEffect(() => {
+    if (userToken) {
+      getUserProfile();
+    }
+  }, [userToken, getUserProfile]);
+
   
   const [errors, setErrors] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -55,6 +83,7 @@ export const useAuth = () => {
       });
 
       const data = response.data;
+      console.log("API Response Data:", data);
 
 
       if (data) {
@@ -81,7 +110,7 @@ export const useAuth = () => {
           if (type === "login") {
              router.push("/intelliHire");
           } else {
-             router.push("/login");
+             router.push("/verify-email-request");
           }
           return data;
         }
@@ -136,6 +165,7 @@ export const useAuth = () => {
     registerCandidate,
     registerCompany,
     logout,
+    getUserProfile,
     errors,
     isLoading,
     userData,

@@ -22,6 +22,26 @@ export const AUTH_ENDPOINTS = {
     url: "/Auth/logout",
     method: "POST",
   },
+  forgetPassword: {
+    url: "/Auth/forget-password-request",  //   in body {userEmail} ---> {  "email": "user@example.com" }
+    method: "POST",
+  },
+  sendOTP: {
+    url: "/Auth/send-otp",  //   in body {email and code} ---> {  "email": "user@example.com" , "code": "string" }
+    method: "POST",
+  },
+  resetPassword: {
+    url: "/Auth/reset-password",  //   in body {email and token and newPassword and confirmPassword } ---> {"email": "user@example.com","token": "string","newPassword": "string","confirmPassword": "string"}
+    method: "POST",
+  },
+  verifyEmail: {
+    url: "/Auth/confirm-email", // in parametar query userId  , token 
+    method: "GET",
+  },
+  userData: {
+    url: "/User/profile",  // token only
+    method: "GET",
+  },
   jobs: {
     url: "/jobs/browse",
     method: "GET",

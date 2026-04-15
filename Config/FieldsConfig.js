@@ -13,8 +13,13 @@ export const loginConfig = {
       href: "/account-type",
       type: "register",
     },
+    {
+      text: "Forgot password ?",
+      href: "/forget-password",
+      type: "forget",
+    },
   ],
-  footerSeparator: "",
+  footerSeparator: "|",
 
   fields: [
     {
@@ -384,4 +389,57 @@ export const registerConfig = {
     //   },
     // },
   ],
+};
+
+export const forgetPasswordConfig = {
+  emailStep: {
+    pageTitle: "Forget Your Password ?",
+    pageSubtitle: "Enter the email address associated with your account.",
+    submitButtonText: "Reset Password",
+    footerLinks: [{ text: "Back to Login", href: "/login" }],
+    fields: [
+      {
+        field_name: "email",
+        type: "email",
+        label: "Email",
+        placeholder: "Mohamed@gmail.com",
+        fieldClassName: "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+        containerClassName: "text-light-black dark:text-dark-white",
+        validation: { required: true, type: "email", message: "Please enter a valid email" },
+      },
+    ],
+  },
+  otpStep: {
+    pageTitle: "Get Your Code",
+    pageSubtitle: "Please enter the 6-digit code that sent to your email address",
+    submitButtonText: "Continue",
+    footerText: "Didn't get OTP?",
+    footerLinks: [{ text: "Resend OTP", href: "#", type: "resend" }],
+  },
+  passwordStep: {
+    pageTitle: "Enter New Password",
+    pageSubtitle: "Your new password must be different from previously used password",
+    submitButtonText: "Reset Password",
+    footerLinks: [{ text: "Cancel", href: "/login" }],
+    fields: [
+      {
+        field_name: "password",
+        type: "password",
+        label: "Password",
+        placeholder: "Enter Your password",
+        fieldClassName: "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+        containerClassName: "text-light-black dark:text-dark-white",
+        validation: { required: true, min: 8 },
+      },
+      {
+        field_name: "confirmPassword",
+        type: "password",
+        label: "Confirm Password",
+        placeholder: "Enter Your password",
+        fieldClassName: "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
+        containerClassName: "text-light-black dark:text-dark-white",
+        validation: { required: true, oneOf: { ref: "password", message: "Passwords do not match" } },
+      },
+    ],
+  },
 };

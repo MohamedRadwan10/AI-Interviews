@@ -7,11 +7,13 @@ import MainInput from "../../../Common/Inputs";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { useJobs } from "../../../../hooks/useJobs";
 import MainCard from "@/Components/Common/Cards";
+import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
 
 const JobsPage = () => {
   const { jobs, loading, error, searchTerm, setSearchTerm, page, setPage, totalCount } = useJobs();
  
-  if(error) return <div className="text-red-500 text-center py-12">{error}</div>
+  if (loading) return <RouteLoading type="jobs" />;
+  if (error) return <div className="text-red-500 text-center py-12">{error}</div>
 
   return (
     <div className="min-h-screen bg-light-primary dark:bg-dark-primary-1 py-12 px-4 sm:px-6 lg:px-8 font-sans transition-colors duration-200">

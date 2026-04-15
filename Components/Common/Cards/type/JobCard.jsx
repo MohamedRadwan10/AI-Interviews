@@ -25,7 +25,7 @@ const JobCard = ({ job }) => {
   const formattedStart = Since(startDateTime);
   const formattedEnd = Since(endDateTime);
   const postedAt = formattedStart ? (formattedEnd ? `${formattedStart} - Ends: ${formattedEnd}` : formattedStart) : "Just now";
-  const jobId = get(job, "jobid");
+  const jobId = get(job, "id");
 
   return (
     <div className="flex flex-col justify-between p-6 rounded-2xl bg-white dark:bg-dark-primary-4 border border-gray-200 dark:border-gray-800 shadow-sm transition-all hover:shadow-md h-full">

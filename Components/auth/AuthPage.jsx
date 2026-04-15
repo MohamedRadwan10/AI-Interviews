@@ -7,6 +7,8 @@ import logoImage from "@/public/assets/logo.png";
 import MainButton from "@/Components/Common/MainButton";
 import Link from "next/link";
 import MainForm from "../Common/MainForm";
+import { useSearchParams } from "next/navigation";
+import { CheckCircle2 } from "lucide-react";
 
 const AuthPage = ({ config, onSubmit, apiError }) => {
   const logo = get(logoImage, "src");
@@ -15,6 +17,8 @@ const AuthPage = ({ config, onSubmit, apiError }) => {
   const footerLinks = get(config, "footerLinks", []);
   const footerText = get(config, "footerText");
   const footerSeparator = get(config, "footerSeparator");
+  const searchParams = useSearchParams();
+  const isSuccess = searchParams.get("success") === "true";
 
   const handleSubmit = async (values) => {
     return onSubmit(values);
@@ -60,6 +64,26 @@ const AuthPage = ({ config, onSubmit, apiError }) => {
         {apiError && (
           <div className="w-full bg-red-100 text-red-700 p-3 rounded-md mb-6 text-center text-sm font-semibold border border-red-200 shadow-sm">
             {apiError}
+          </div>
+        )}
+
+        {isSuccess && (
+          <div className="w-full bg-green-500/10 border border-green-500/20 p-4 rounded-xl mb-6 flex items-start gap-3">
+            <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5" />
+            <div>
+              <MainText title="Password reset successfully!" className="block text-white font-bold text-sm" />
+              <MainText title="You can now log in with your new password." className="block text-dark-gray text-xs mt-1" />
+            </div>
+          </div>
+        )}
+
+        {searchParams.get("verified") === "true" && (
+          <div className="w-full bg-green-500/10 border border-green-500/20 p-4 rounded-xl mb-6 flex items-start gap-3">
+            <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5" />
+            <div>
+              <MainText title="🎉 Email confirmed successfully!" className="block text-white font-bold text-sm" />
+              <MainText title="You can now log in to IntelliHire." className="block text-dark-gray text-xs mt-1" />
+            </div>
           </div>
         )}
 

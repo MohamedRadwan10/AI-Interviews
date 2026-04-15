@@ -4,11 +4,13 @@ import { useJobDetails } from "../../../../hooks/useJobs";
 import { useNavigation } from "../../../../hooks/common"; 
 import MainCard from "../../../Common/Cards";
 import MainButton from "../../../Common/MainButton";
+import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
 
 const JobDetailsPage = ({ jobId }) => {
   const { navigateBack } = useNavigation();
   const { job, loading, error } = useJobDetails(jobId);
 
+  if (loading) return <RouteLoading type="jobDetails" />;
 
   if (!loading && error) {
     return (
