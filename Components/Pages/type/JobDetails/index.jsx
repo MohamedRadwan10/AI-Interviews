@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useJobDetails } from "../../../../hooks/useJobs";
 import { useNavigation } from "../../../../hooks/common"; 
@@ -6,7 +6,7 @@ import MainCard from "../../../Common/Cards";
 import MainButton from "../../../Common/MainButton";
 import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
 
-const JobDetailsPage = ({ jobId }) => {
+const JobDetailsContent = ({ jobId }) => {
   const { navigateBack } = useNavigation();
   const { job, loading, error } = useJobDetails(jobId);
 
@@ -47,6 +47,14 @@ const JobDetailsPage = ({ jobId }) => {
         
       </div>
     </div>
+  );
+};
+
+const JobDetailsPage = (props) => {
+  return (
+    <Suspense fallback={<RouteLoading type="jobDetails" />}>
+      <JobDetailsContent {...props} />
+    </Suspense>
   );
 };
 

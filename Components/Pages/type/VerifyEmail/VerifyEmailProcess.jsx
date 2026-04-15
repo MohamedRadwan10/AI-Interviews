@@ -1,9 +1,9 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { useVerifyEmail } from "@/hooks/useVerifyEmail";
 import MainText from "@/Components/Common/MainText";
 import { CheckCircle2, XCircle } from "lucide-react";
 
-const VerifyEmailProcess = () => {
+const VerifyEmailContent = () => {
   const { status, error } = useVerifyEmail();
 
   const renderContent = () => {
@@ -72,6 +72,14 @@ const VerifyEmailProcess = () => {
         {renderContent()}
       </div>
     </div>
+  );
+};
+
+const VerifyEmailProcess = () => {
+  return (
+    <Suspense fallback={null}>
+      <VerifyEmailContent />
+    </Suspense>
   );
 };
 

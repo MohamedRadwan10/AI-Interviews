@@ -1,3 +1,5 @@
+"use client";
+
 import RegisterPage from "@/Components/auth/Register";
 import React from "react";
 

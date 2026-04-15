@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { get, map } from "lodash-es";
 import MainText from "../../MainText";
 import { Briefcase, MapPin, Clock, ChevronRight, GraduationCap } from "lucide-react";
@@ -6,7 +6,7 @@ import MainButton from "../../MainButton";
 import { useNavigation } from "@/hooks/common";
 import { Since } from "@/Utils/Filter/date";
 
-const JobCard = ({ job }) => {
+const JobCardContent = ({ job }) => {
   const { navigateTo } = useNavigation();
   const title = get(job, "title", "Unknown Title");
   const companyName = get(job, "companyName", "Unknown Company");
@@ -71,6 +71,14 @@ const JobCard = ({ job }) => {
         </MainButton>
       </div>
     </div>
+  );
+};
+
+const JobCard = (props) => {
+  return (
+    <Suspense fallback={null}>
+      <JobCardContent {...props} />
+    </Suspense>
   );
 };
 

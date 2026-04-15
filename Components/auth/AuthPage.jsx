@@ -9,8 +9,10 @@ import Link from "next/link";
 import MainForm from "../Common/MainForm";
 import { useSearchParams } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
+import { Suspense } from "react";
+import RouteLoading from "../Common/LoadingSkeleton/RouteLoading";
 
-const AuthPage = ({ config, onSubmit, apiError }) => {
+const AuthPageContent = ({ config, onSubmit, apiError }) => {
   const logo = get(logoImage, "src");
   const pageTitle = get(config, "pageTitle");
   const pageSubtitle = get(config, "pageSubtitle");
@@ -150,6 +152,14 @@ const AuthPage = ({ config, onSubmit, apiError }) => {
         )}
       </div>
     </div>
+  );
+};
+
+const AuthPage = (props) => {
+  return (
+    <Suspense fallback={<RouteLoading />}>
+      <AuthPageContent {...props} />
+    </Suspense>
   );
 };
 
