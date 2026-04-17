@@ -1,7 +1,7 @@
 import React from "react";
 import { Paginator } from "primereact/paginator";
 
-const Pagination = ({ page, limit = 9, totalRecords, onPageChange }) => {
+const Pagination = ({ page, limit = 9, totalRecords, onPageChange, scrollDelay = 30 }) => {
   const first = (page - 1) * limit;
 
   if (!totalRecords || totalRecords <= limit) {
@@ -11,6 +11,9 @@ const Pagination = ({ page, limit = 9, totalRecords, onPageChange }) => {
   const handlePageChange = (event) => {
     if (onPageChange) {
       onPageChange(event.page + 1);
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }, scrollDelay);
     }
   };
 

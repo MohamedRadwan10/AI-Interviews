@@ -3,6 +3,7 @@ import { Clock, User, CheckCircle2, AlertCircle } from "lucide-react";
 import MainText from "../../../Common/MainText";
 import AudioLevelMeter from "@/Components/Common/AudioLevelMeter";
 import Webcam from "react-webcam";
+import MainImage from "@/Components/Common/Image";
 import { useInterviewSidebar } from "@/hooks/useInterviewSession";
 
 export const InterviewSidebar = ({ isConnected, isSessionStarted }) => {
@@ -21,8 +22,13 @@ export const InterviewSidebar = ({ isConnected, isSessionStarted }) => {
       </div>
 
       <div className="aspect-video bg-gradient-to-br from-brand-primary/10 to-brand-primary/5 rounded-3xl border border-ui-borderLight dark:border-ui-border flex flex-col items-center justify-center p-6 text-center shadow-inner">
-        <div className="w-20 h-20 bg-white dark:bg-dark-primary-4 rounded-full flex items-center justify-center shadow-lg mb-4 border-4 border-brand-primary/20">
-          <User className="w-10 h-10 text-brand-primary animate-pulse" />
+        <div className="w-20 h-20 bg-white dark:bg-dark-primary-4 rounded-full overflow-hidden flex items-center justify-center shadow-lg mb-4 border-4 border-brand-primary/20">
+          <MainImage 
+            src="/assets/images/ai-avatar.png" 
+            alt="AI Interviewer" 
+            imageClassName="w-full h-full object-cover"
+            preview={false}
+          />
         </div>
         <MainText className="text-lg font-bold text-ui-textMain dark:text-white">AI Interviewer</MainText>
         <MainText className="text-xs text-ui-textMuted dark:text-ui-muted mt-1">Listening to your response...</MainText>
