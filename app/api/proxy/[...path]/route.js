@@ -15,13 +15,21 @@ async function handler(request, { params }) {
     const forwardHeaders = new Headers();
     for (const [key, value] of request.headers.entries()) {
       const lk = key.toLowerCase();
-      if (["host", "origin", "referer", "x-forwarded-for"].includes(lk)) continue;
+      // Skip headers that should be handled by the fetch call itself
+      if (["host", "origin", "referer", "content-length"].includes(lk)) continue;
       forwardHeaders.set(key, value);
     }
 
-    let body = undefined;
+    let body = null;
     if (!["GET", "HEAD"].includes(request.method)) {
-      body = await request.text();
+      const contentType = request.headers.get("content-type") || "";
+      if (contentType.includes("multipart/form-data")) {
+        // For multipart data, we must pass the body as a blob/arrayBuffer 
+        // to prevent encoding issues with request.text()
+        body = await request.arrayBuffer();
+      } else {
+        body = await request.text();
+      }
     }
 
     const backendResponse = await fetch(targetUrl, {
@@ -31,7 +39,7 @@ async function handler(request, { params }) {
       cache: "no-store",
     });
 
-    const responseBody = await backendResponse.text();
+    const responseBody = await backendResponse.arrayBuffer();
 
     return new NextResponse(responseBody, {
       status: backendResponse.status,

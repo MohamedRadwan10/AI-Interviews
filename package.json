@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@microsoft/signalr": "^10.0.0",
+    "@monaco-editor/react": "^4.7.0",
     "@reduxjs/toolkit": "^2.11.2",
     "axios": "^1.13.6",
     "country-state-city": "^3.2.1",
@@ -24,8 +26,10 @@
     "react": "19.2.3",
     "react-content-loader": "^7.1.2",
     "react-dom": "19.2.3",
+    "react-media-recorder-2": "^1.6.23",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.13.1",
+    "react-webcam": "^7.2.0",
     "react-xarrows": "^2.0.2",
     "yup": "^1.7.1"
   },
