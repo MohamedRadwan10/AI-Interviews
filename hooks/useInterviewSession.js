@@ -57,6 +57,7 @@ export const useInterviewSession = (jobId) => {
 
       const result = await callStartSession();
       const data = get(result, 'data');
+      console.log("🚀 Interview StartSession Response:", data);
       
       const sId = typeof data === "string" ? data : get(data, 'SessionId') || get(data, 'sessionId') || get(data, 'id') || "";
 
@@ -116,7 +117,9 @@ export const useInterviewSession = (jobId) => {
     }
 
     try {
+      console.log("📤 Submitting Answer:", { sessionId, Order: qId, questionIndex, hasVoice: !!answerData.voiceFile });
       const response = await callNextQuestion({ data: formData });
+      console.log("📩 NextQuestion API Response:", response);
       
       if (questionIndex >= 4) {
         await finishInterview();
@@ -124,7 +127,7 @@ export const useInterviewSession = (jobId) => {
         setQuestionIndex(prev => prev + 1);
       }
     } catch (err) {
-      // Submit answer silent fail
+      console.error("Submit answer failed:", get(err, 'error.response.data') || get(err, 'error') || err);
     } finally {
       setIsSubmitting(false);
     }
