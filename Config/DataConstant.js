@@ -193,3 +193,28 @@ export const DataConstant = {
     copyright: "© 2026 IntelliHire. All Rights Reserved.",
   },
 };
+
+export const languages = [
+  { label: "JavaScript", value: "javascript" },
+  { label: "TypeScript", value: "typescript" },
+  { label: "Python", value: "python" },
+  { label: "C++", value: "cpp" },
+  { label: "C", value: "c" },
+  { label: "C#", value: "csharp" },
+  { label: "Java", value: "java" },
+  { label: "Go", value: "go" },
+  { label: "PHP", value: "php" },
+  { label: "Ruby", value: "ruby" },
+  { label: "Swift", value: "swift" },
+  { label: "Kotlin", value: "kotlin" },
+  { label: "Rust", value: "rust" },
+  { label: "HTML", value: "html" },
+  { label: "CSS", value: "css" },
+  { label: "JSON", value: "json" },
+  { label: "Markdown", value: "markdown" },
+  { label: "SQL", value: "sql" },
+  { label: "Shell", value: "shell" },
+  { label: "XML", value: "xml" },
+  { label: "YAML", value: "yaml" }
+];
+  

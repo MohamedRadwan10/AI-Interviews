@@ -26,7 +26,6 @@ export const useJobs = () => {
     },
   });
 
-  console.log(data);
 
   const rawJobs = get(
     data,
@@ -64,7 +63,6 @@ export const useJobDetails = (jobId) => {
   });
 
   const job = get(data, "job", data);
-  console.log(job);
 
   return {
     job,

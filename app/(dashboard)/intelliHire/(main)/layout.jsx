@@ -4,9 +4,9 @@ import { ReduxProvider } from "@/Store/ReduxProvider";
 
 const MainLayout = ({ children }) => {
   return (
-      <ReduxProvider>
-        <Layout>{children}</Layout>
-      </ReduxProvider>
+    <ReduxProvider>
+      <Layout>{children}</Layout>
+    </ReduxProvider>
   );
 };
 

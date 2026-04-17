@@ -50,4 +50,16 @@ export const AUTH_ENDPOINTS = {
     url: "/jobs/Details",
     method: "GET",
   },
+  startSession: {
+    url: "/Session/StartSession", // ${jobId} فى اخر ال endpoint
+    method: "POST",
+  },
+  nextQuestion: {
+    url: "/Session/next", // SessionId string($uuid) QuestionId string($uuid) UserAnswer string currentQuestionIndex integer($int32) voiceFile string($binary)   in body in formdata
+    method: "POST",
+  },
+  endSession: {
+    url: "/Session/EndSession", // /{SessionId}/{jobId} فى اخر ال endpoint
+    method: "POST",
+  },
 };

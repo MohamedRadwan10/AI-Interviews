@@ -8,3 +8,5 @@ export const JobDetailsPage = lazy(() => import('./JobDetails'));
 export const ForgetPasswordPage = lazy(() => import('./ForgetPassword'));
 export const VerifyEmailRequestPage = lazy(() => import('./VerifyEmail/VerifyEmailRequest'));
 export const VerifyEmailProcessPage = lazy(() => import('./VerifyEmail/VerifyEmailProcess'));
+export const InterviewIntroPage = lazy(() => import('./InterviewSession').then(m => ({ default: m.InterviewIntroPage })));
+export const InterviewRoomPage = lazy(() => import('./InterviewSession').then(m => ({ default: m.InterviewRoomPage })));

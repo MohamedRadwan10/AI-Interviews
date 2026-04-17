@@ -4,15 +4,18 @@ import MainText from "../../MainText";
 import MainButton from "../../MainButton";
 import { MapPin, Clock, ExternalLink } from "lucide-react";
 import { Since } from "@/Utils/Filter/date";
+import { useNavigation } from "@/hooks/common";
 
 const JobHeaderCard = ({ item }) => {
+  const { navigateTo } = useNavigation();
+  const id = get(item, "id") || get(item, "_id");
   const title = get(item, "title");
-  const companyName = get(item, "companyName");
+  const companyName = get(item, "companyName", "Unknown Company");
   const defaultLogo = companyName !== "Unknown Company" ? companyName?.substring(0, 2).toUpperCase() : "TC";
   const logo = get(item, "companyLogo", defaultLogo) || defaultLogo;
   const type = get(item, "type");
   const location = get(item, "locations");
-  const applyUrl = get(item, "companyUrl");
+  const applyUrl = get(item, "companyUrl", "#");
   const description = get(item, "description");
   const startDateTime = get(item, "startDateTime");
   const endDateTime = get(item, "endDateTime");
@@ -69,6 +72,7 @@ const JobHeaderCard = ({ item }) => {
       
       <div className="shrink-0 w-full md:w-auto mt-4 md:mt-auto flex justify-end">
         <MainButton 
+          onClick={() => navigateTo(`/intelliHire/interview-session/${id}`)}
           className="w-full flex justify-center items-center md:w-48 px-6 py-3 rounded-xl bg-brand-primary hover:bg-brand-primaryDark text-white font-medium transition-colors border-0"
         >
           Apply Now
