@@ -1,9 +1,8 @@
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export const useNavigation = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   const navigateTo = (path) => {
     router.push(path);
@@ -28,7 +27,6 @@ export const useNavigation = () => {
   return {
     router,
     pathname,
-    searchParams,
     navigateTo,
     navigateBack,
     navigateForward,

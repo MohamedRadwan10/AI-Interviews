@@ -1,12 +1,14 @@
 "use client";
 import { useContext, useState, useCallback, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import axios from "axios";
 import { UserTokenContext } from "@/Context/UserTokenContext";
 import { API_BASE_URL, AUTH_ENDPOINTS } from "@/Config/apiRegistry";
 import { set, get } from "lodash-es";
 
+import { useNavigation } from "@/hooks/common";
+
 export const useAuth = () => {
+  const { navigateTo } = useNavigation();
   const { 
     setUserToken, 
     setRefreshToken, 
@@ -46,7 +48,6 @@ export const useAuth = () => {
   
   const [errors, setErrors] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
   const performAuth = useCallback(async (type, values) => {
     setIsLoading(true);
@@ -108,17 +109,18 @@ export const useAuth = () => {
           setIsLoading(false);
           
           if (type === "login") {
-             router.push("/intelliHire");
+             navigateTo("/intelliHire");
           } else {
-             router.push("/verify-email-request");
+             navigateTo("/verify-email-request");
           }
           return data;
         }
 
         if (type === "logout") {
+          navigateTo("/login");
           logoutContext();
           setIsLoading(false);
-          router.push("/login");
+          
           return data;
         }
       }
@@ -128,6 +130,10 @@ export const useAuth = () => {
 
     } catch (err) {
       setIsLoading(false);
+      if (type === "logout") {
+        navigateTo("/login");
+        logoutContext();
+      }
       console.error("Auth Error Payload:", payload);
       console.error("Auth Error Response:", err.response?.data);
 
@@ -149,15 +155,15 @@ export const useAuth = () => {
       setErrors(errorMessage);
       throw err;
     }
-  }, [deviceName, logoutContext, router, setRefreshToken, setUserData, setUserToken]);
+  }, [deviceName, logoutContext, navigateTo, setRefreshToken, setUserData, setUserToken]);
 
   const login = (values) => performAuth("login", values);
   const registerCandidate = (values) => performAuth("registerCandidate", values);
   const registerCompany = (values) => performAuth("registerCompany", values);
-  const logout = () => {
+  const logout = useCallback(() => {
     const refresh = localStorage.getItem("refreshToken");
-    return performAuth("logout", { refreshToken: refresh });
-  };
+    performAuth("logout", { refreshToken: refresh });
+  }, [performAuth]);
 
   return {
     performAuth,

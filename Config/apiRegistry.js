@@ -62,4 +62,16 @@ export const AUTH_ENDPOINTS = {
     url: "/Session/EndSession", // /{SessionId}/{jobId} فى اخر ال endpoint
     method: "POST",
   },
+  checkActiveSession: {
+    url: "/Session/CheckActiveSesssion", // /{JobId} فى اخر ال endpoint
+    method: "GET",
+  },
+  getSessionDetails: {
+    url: "/Session/GetSessionDetails", // /{SessionId} فى اخر ال endpoint
+    method: "GET",
+  },
+  ActiveSessions: {
+    url: "/Session/ActiveSessions", // token only
+    method: "GET",
+  },
 };
