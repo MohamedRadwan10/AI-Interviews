@@ -1,11 +1,13 @@
 "use client";
-import { useState, useCallback, useContext, useEffect, useRef } from "react";
+import { useState, useCallback, useContext, useEffect, useRef, useMemo } from "react";
 import { UserTokenContext } from "@/Context/UserTokenContext";
 import { useUserAccount } from "@/Context/UserAccountContext";
 import { useSignalR } from "./useSignalR";
 import { useApi } from "./useApi";
 import { get } from "lodash-es";
 import { useReactMediaRecorder } from "react-media-recorder-2";
+
+const INVALID_SESSION_ID = "00000000-0000-0000-0000-000000000000";
 
 export const useInterviewSession = (jobId) => {
   const { userToken } = useContext(UserTokenContext);
@@ -19,47 +21,73 @@ export const useInterviewSession = (jobId) => {
   const [isFinishing, setIsFinishing] = useState(false);
   const [error, setError] = useState(null);
   const [interviewFinished, setInterviewFinished] = useState(false);
+  const [finishMessage, setFinishMessage] = useState("");
   const [questionIndex, setQuestionIndex] = useState(0);
-  const [totalQuestions, setTotalQuestions] = useState(5); // Default to 5
+  const [totalQuestions, setTotalQuestions] = useState(5);
 
   const { isConnected, on } = useSignalR(userToken, userId);
 
-  const { refetch: callStartSession } = useApi({
-    type: "startSession",
-    autoFetch: false,
-    urlSuffix: `/${jobId}`,
-  });
+  const { refetch: callStartSession } = useApi({ type: "startSession", autoFetch: false, urlSuffix: `/${jobId}` });
+  const { refetch: callNextQuestion } = useApi({ type: "nextQuestion", autoFetch: false });
+  const { refetch: callEndSession } = useApi({ type: "endSession", autoFetch: false, urlSuffix: `/${sessionId}/${jobId}` });
+  const { refetch: callCheckActiveSession } = useApi({ type: "checkActiveSession", autoFetch: false, urlSuffix: `/${jobId}` });
+  const { refetch: callGetSessionDetails } = useApi({ type: "getSessionDetails", autoFetch: false });
 
-  const { refetch: callNextQuestion } = useApi({
-    type: "nextQuestion",
-    autoFetch: false,
-  });
+  const restoreSession = useCallback(async (sId) => {
+    setIsLoading(true);
+    try {
+      const result = await callGetSessionDetails({ urlSuffix: `/${sId}` });
+      const data = get(result, "data");
 
-  const { refetch: callEndSession } = useApi({
-    type: "endSession",
-    autoFetch: false,
-    urlSuffix: `/${sessionId}/${jobId}`,
-  });
+      if (data) {
+        setSessionId(sId);
+        setIsSessionStarted(true);
+        setCurrentQuestion(get(data, "question") || (get(data, "questionText") ? data : null));
+        setQuestionIndex(get(data, "index") ?? 0);
+        setTotalQuestions(get(data, "totalquestion") ?? 15);
+      }
+    } catch (err) {
+      console.error("❌ Session Restoration Failed (Backend Error):", err);
+      setSessionId(null);
+      setIsSessionStarted(false);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [callGetSessionDetails]);
+
+  useEffect(() => {
+    const initSession = async () => {
+      if (!jobId) return;
+      try {
+        const response = await callCheckActiveSession();
+        const data = get(response, "data");
+        const activeSId = get(data, "sessionid") || get(data, "sessionId") || (get(data, "hasActiveSession") ? get(data, "sessionid") : null);
+
+        if (activeSId && activeSId !== INVALID_SESSION_ID && typeof activeSId === "string") {
+          await restoreSession(activeSId);
+        }
+      } catch (err) {
+        console.error("Check active session error:", err);
+      }
+    };
+    initSession();
+  }, [jobId, restoreSession, callCheckActiveSession]);
 
   useEffect(() => {
     on("nextQuestionReady", setCurrentQuestion);
-    on("reportGenerationStarted", () => setInterviewFinished(true));
+    on("reportGenerationStarted", (data) => {
+      setFinishMessage(get(data, "message") || "Interview ended. Your report is being generated now.");
+      setInterviewFinished(true);
+    });
   }, [on]);
 
   const startInterview = useCallback(async () => {
     setError(null);
     setIsLoading(true);
     try {
-      if (sessionId) {
-        setIsSessionStarted(true);
-        return sessionId;
-      }
-
       const result = await callStartSession();
-      const data = get(result, 'data');
-      console.log("🚀 Interview StartSession Response:", data);
-      
-      const sId = typeof data === "string" ? data : get(data, 'SessionId') || get(data, 'sessionId') || get(data, 'id') || "";
+      const data = get(result, "data");
+      const sId = typeof data === "string" ? data : get(data, "sessionid") || get(data, "SessionId") || get(data, "sessionId") || get(data, "id") || "";
 
       if (!sId) throw new Error("No SessionId returned from server.");
 
@@ -67,79 +95,63 @@ export const useInterviewSession = (jobId) => {
       setIsSessionStarted(true);
       return sId;
     } catch (err) {
-      const rawError = get(err, 'error') || get(err, 'response.data') || err;
-      const errorMsg = typeof rawError === "string" ? rawError : get(rawError, 'message') || get(rawError, 'title') || "Failed to start interview session.";
-      setError(errorMsg);
+      const rawError = get(err, "error") || get(err, "response.data") || err;
+      setError(typeof rawError === "string" ? rawError : get(rawError, "message") || get(rawError, "title") || "Failed to start interview session.");
     } finally {
       setIsLoading(false);
     }
-  }, [jobId, callStartSession, sessionId]);
+  }, [callStartSession]);
 
   const finishInterview = useCallback(async () => {
     if (!sessionId) return;
     setIsFinishing(true);
     try {
-      const result = await callEndSession();
-
-      setInterviewFinished(true); 
+      await callEndSession();
+      setInterviewFinished(true);
       setSessionId(null);
       setCurrentQuestion(null);
       setQuestionIndex(0);
     } catch (err) {
-      // EndSession silent fail
+      console.error("Finish interview error:", err);
     } finally {
       setIsFinishing(false);
     }
-  }, [sessionId, jobId, callEndSession]);
+  }, [sessionId, callEndSession]);
 
   const submitAnswer = useCallback(async (answerData) => {
     if (!sessionId || !currentQuestion) return;
-
     setIsSubmitting(true);
-    
+
     let parsedQuestion = currentQuestion;
     if (typeof currentQuestion === "string") {
       try { parsedQuestion = JSON.parse(currentQuestion); } catch (e) {}
     }
 
-    const qId = get(parsedQuestion, 'order') || get(parsedQuestion, 'Order') || get(parsedQuestion, 'id') || get(parsedQuestion, 'Id') || get(parsedQuestion, 'questionId') || "";
-    
+    const qId = get(parsedQuestion, "id") || get(parsedQuestion, "questionId") || "";
     const formData = new FormData();
     formData.append("SessionId", sessionId);
-    formData.append("Order", qId);
+    formData.append("QuestionId", qId);
+    formData.append("id", qId);
+    formData.append("index", questionIndex);
     formData.append("currentQuestionIndex", questionIndex);
     formData.append("UserAnswer", answerData.text || "");
-    
-    if (answerData.voiceFile) {
-        formData.append("voiceFile", answerData.voiceFile);
-    } else {
-        formData.append("voiceFile", new Blob([], { type: "application/octet-stream" }), "empty.bin");
-    }
+    formData.append("voiceFile", answerData.voiceFile || new Blob([], { type: "application/octet-stream" }), "voice.wav");
 
     try {
-      console.log("📤 Submitting Answer:", { sessionId, Order: qId, questionIndex, hasVoice: !!answerData.voiceFile });
-      const response = await callNextQuestion({ data: formData });
-      console.log("📩 NextQuestion API Response:", response);
-      
-      if (questionIndex >= 4) {
+      await callNextQuestion({ data: formData });
+      if (questionIndex + 1 >= totalQuestions) {
         await finishInterview();
       } else {
-        setQuestionIndex(prev => prev + 1);
+        setQuestionIndex((prev) => prev + 1);
       }
     } catch (err) {
-      console.error("Submit answer failed:", get(err, 'error.response.data') || get(err, 'error') || err);
+      console.error("Submit answer failed:", get(err, "error.response.data") || get(err, "error") || err);
     } finally {
       setIsSubmitting(false);
     }
-  }, [sessionId, currentQuestion, questionIndex, finishInterview, callNextQuestion]);
+  }, [sessionId, currentQuestion, questionIndex, totalQuestions, finishInterview, callNextQuestion]);
 
-  const resetSession = useCallback(() => {
-    setSessionId(null);
-    setQuestionIndex(0);
-    window.location.reload();
-  }, []);
-
-  return {
+  return useMemo(() => ({
     isSessionStarted,
     sessionId,
     currentQuestion,
@@ -152,10 +164,15 @@ export const useInterviewSession = (jobId) => {
     isFinishing,
     error,
     questionIndex,
-    isLastQuestion: questionIndex >= 4,
+    isLastQuestion: questionIndex + 1 >= totalQuestions,
+    totalQuestions,
     interviewFinished,
-    resetSession,
-  };
+    finishMessage,
+  }), [
+    isSessionStarted, sessionId, currentQuestion, isConnected, isLoading, 
+    isSubmitting, startInterview, submitAnswer, finishInterview, isFinishing, 
+    error, questionIndex, totalQuestions, interviewFinished, finishMessage
+  ]);
 };
 
 export const useAnswerConsole = (onSubmit) => {
@@ -164,25 +181,18 @@ export const useAnswerConsole = (onSubmit) => {
   const [codeAnswer, setCodeAnswer] = useState("// Write your code here\n");
   const [language, setLanguage] = useState("javascript");
 
-  const { status, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } = 
+  const { status, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } =
     useReactMediaRecorder({ audio: true, blobPropertyBag: { type: "audio/wav" } });
 
   const handleSend = () => {
-    const data = {};
-    if (activeTab === "text") data.text = textAnswer;
-    if (activeTab === "code") data.text = codeAnswer;
-    
     if (activeTab === "voice" && mediaBlobUrl) {
-        fetch(mediaBlobUrl)
-          .then(res => res.blob())
-          .then(blob => {
-            onSubmit({ voiceFile: blob });
-            clearBlobUrl();
-          });
-        return;
+      fetch(mediaBlobUrl).then((res) => res.blob()).then((blob) => {
+        onSubmit({ voiceFile: blob });
+        clearBlobUrl();
+      });
+      return;
     }
-    
-    onSubmit(data);
+    onSubmit({ text: activeTab === "text" ? textAnswer : codeAnswer });
     setTextAnswer("");
     setCodeAnswer("// Write your code here\n");
   };
@@ -193,13 +203,8 @@ export const useAnswerConsole = (onSubmit) => {
     (activeTab === "voice" && !!mediaBlobUrl);
 
   return {
-    activeTab, setActiveTab,
-    textAnswer, setTextAnswer,
-    codeAnswer, setCodeAnswer,
-    language, setLanguage,
-    status, startRecording, stopRecording, mediaBlobUrl,
-    handleSend,
-    hasAnswer
+    activeTab, setActiveTab, textAnswer, setTextAnswer, codeAnswer, setCodeAnswer,
+    language, setLanguage, status, startRecording, stopRecording, mediaBlobUrl, handleSend, hasAnswer
   };
 };
 
@@ -210,7 +215,7 @@ export const useInterviewSidebar = (isSessionStarted) => {
 
   useEffect(() => {
     if (isSessionStarted && timeLeft > 0) {
-      const timer = setInterval(() => setTimeLeft(t => t - 1), 1000);
+      const timer = setInterval(() => setTimeLeft((t) => t - 1), 1000);
       return () => clearInterval(timer);
     }
   }, [isSessionStarted, timeLeft]);
@@ -228,7 +233,7 @@ export const useInterviewSidebar = (isSessionStarted) => {
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   return { timeLeft, formatTime, webcamRef, stream };
@@ -244,12 +249,10 @@ export const useAudioLevel = (stream) => {
       setLevel(0);
       return;
     }
-
     try {
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
       const analyser = audioContext.createAnalyser();
       const source = audioContext.createMediaStreamSource(stream);
-      
       analyser.fftSize = 256;
       source.connect(analyser);
       audioContextRef.current = audioContext;
@@ -258,12 +261,12 @@ export const useAudioLevel = (stream) => {
       const updateLevel = () => {
         analyser.getByteFrequencyData(dataArray);
         const sum = dataArray.reduce((acc, val) => acc + val, 0);
-        setLevel(Math.min(100, Math.round(((sum / dataArray.length) / 128) * 100)));
+        setLevel(Math.min(100, Math.round((sum / dataArray.length / 128) * 100)));
         animationFrameRef.current = requestAnimationFrame(updateLevel);
       };
       updateLevel();
     } catch (err) {
-      // Audio level monitor error
+      console.error("Audio level monitor error:", err);
     }
 
     return () => {

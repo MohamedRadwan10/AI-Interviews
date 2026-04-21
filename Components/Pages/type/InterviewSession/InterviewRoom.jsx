@@ -22,7 +22,7 @@ const InterviewRoom = ({ jobId }) => {
     questionIndex,
     isLastQuestion,
     interviewFinished,
-    resetSession
+    finishMessage,
   } = useInterviewSession(jobId);
 
   useEffect(() => {
@@ -31,11 +31,11 @@ const InterviewRoom = ({ jobId }) => {
     }
   }, [isConnected, isSessionStarted, error, isLoading, startInterview]);
 
-  if (interviewFinished) return <InterviewComplete />;
+  if (interviewFinished) return <InterviewComplete message={finishMessage} />;
   if (error) return <InterviewError error={error} />;
-  if (!isSessionStarted || isLoading) return <RouteLoading type="default" />;
+  if (!isSessionStarted) return <RouteLoading type="interviewRoom" />;
 
-  const questionText = get(currentQuestion, "questionText", "Preparing your first question...");
+  const questionText = get(currentQuestion, "questionText", `Preparing question ${questionIndex + 1}...`);
 
   return (
     <div className="max-w-[1600px] mx-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[calc(100vh-100px)]">

@@ -46,7 +46,7 @@ export const useApi = ({ type, params = {}, data = null, customHeaders = {}, aut
         const result = await dispatch(
           fetchApiData({
             key: type,
-            url: `${API_BASE_URL}${endpointConfig.url}${urlSuffix || ""}`,
+            url: `${API_BASE_URL}${endpointConfig.url}${override.urlSuffix || urlSuffix || ""}`,
             method: endpointConfig.method,
             params: { ...params, ...(override.params || {}) },
             data: finalData,

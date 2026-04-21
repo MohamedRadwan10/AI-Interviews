@@ -6,6 +6,7 @@ import MainText from "../../../Common/MainText";
 import AudioLevelMeter from "@/Components/Common/AudioLevelMeter";
 import Webcam from "react-webcam";
 import { useNavigation } from "@/hooks/common";
+import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
 
 const INSTRUCTIONS = [
   "Ensure you are in a quiet room with no background noise.",
