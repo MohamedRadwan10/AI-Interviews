@@ -19,11 +19,13 @@ const AppFooter = () => {
       <div className="w-full flex flex-col md:flex-row justify-between gap-10">
         <div className="w-full md:w-[35%] flex flex-col gap-4">
           <div className="flex items-center gap-2 -ml-1">
-             <MainImage
+            <MainImage
               src={logo}
-              alt="Logo"
-              imageClassName="max-h-12 max-w-24"
-              preview={false}
+              alt="IntelliHire Logo"
+              width={60}
+              height={40}
+              priority={true}
+              imageClassName="object-contain"
             />
             <Link href="/intelliHire" className="flex">
               <MainText

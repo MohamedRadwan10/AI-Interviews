@@ -6,10 +6,13 @@ import MainText from "@/Components/Common/MainText";
 import MainButton from "@/Components/Common/MainButton";
 import { CheckCircle2, ArrowRight } from "lucide-react";
 import MainCard from "@/Components/Common/Cards";
-import HeroCurve from "@/Components/Common/HeroCurve";
 import { useJobs } from "@/hooks/useJobs";
 import { useNavigation } from "@/hooks/common";
 import { JobCardLoading } from "@/Components/Common/LoadingSkeleton/type/JobCard";
+import MainImage from "@/Components/Common/Image";
+import dynamic from "next/dynamic";
+
+const HeroCurve = dynamic(() => import("@/Components/Common/HeroCurve"), { ssr: false });
 
 const Home = () => {
   const { navigateTo } = useNavigation();
@@ -83,7 +86,14 @@ const Home = () => {
             </div>
             <div className="relative group">
               <div className="absolute inset-0 bg-light-secondary/10 dark:bg-brand-accent/10 blur-[60px] rounded-full scale-75 group-hover:scale-100 transition-transform duration-700"></div>
-              <img src={get(redefining, "image")} alt="AI Illustration" className="w-full h-auto relative z-10 drop-shadow-2xl" />
+              <MainImage 
+                src={get(redefining, "image")} 
+                alt="AI Powered Hiring Illustration" 
+                width={500}
+                height={500}
+                priority={true}
+                imageClassName="w-full h-auto relative z-10 drop-shadow-2xl object-cover rounded-3xl" 
+              />
             </div>
           </div>
         </div>

@@ -1,11 +1,9 @@
 "use client";
-import { useContext, useState, useCallback, useEffect } from "react";
-import axios from "axios";
+import { useContext, useCallback, useEffect, useMemo } from "react";
 import { UserTokenContext } from "@/Context/UserTokenContext";
-import { API_BASE_URL, AUTH_ENDPOINTS } from "@/Config/apiRegistry";
-import { set, get } from "lodash-es";
-
+import { set } from "lodash-es";
 import { useNavigation } from "@/hooks/common";
+import { useApi } from "./useApi";
 
 export const useAuth = () => {
   const { navigateTo } = useNavigation();
@@ -19,79 +17,52 @@ export const useAuth = () => {
     userToken
   } = useContext(UserTokenContext);
 
-  const getUserProfile = useCallback(async () => {
-    const config = AUTH_ENDPOINTS.userData;
-    const token = userToken || localStorage.getItem("userToken");
-    if (!token) return;
-
-    try {
-      const response = await axios({
-        method: config.method,
-        url: `${API_BASE_URL}${config.url}`,
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      console.log("User Data from API (/User/profile):", response.data);
-      return response.data;
-    } catch (err) {
-      console.error("Failed to fetch user profile from API:", err.response?.data || err.message);
-    }
-  }, [userToken]);
+  const loginApi = useApi({ type: "login", autoFetch: false });
+  const registerCandidateApi = useApi({ type: "registerCandidate", autoFetch: false });
+  const registerCompanyApi = useApi({ type: "registerCompany", autoFetch: false });
+  const logoutApi = useApi({ type: "logout", autoFetch: false });
+  const profileApi = useApi({ 
+    type: "userData", 
+    autoFetch: !!userToken || (typeof window !== "undefined" && !!localStorage.getItem("refreshToken")) 
+  });
 
   useEffect(() => {
-    if (userToken) {
-      getUserProfile();
+    if (profileApi.data) {
+      setUserData(profileApi.data);
     }
-  }, [userToken, getUserProfile]);
-
-  
-  const [errors, setErrors] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  }, [profileApi.data, setUserData]);
 
   const performAuth = useCallback(async (type, values) => {
-    setIsLoading(true);
-    setErrors(null);
-
-    const config = AUTH_ENDPOINTS[type];
-    if (!config) {
-      setIsLoading(false);
-      setErrors(`Invalid auth type: ${type}`);
-      return;
+    let apiHook;
+    switch (type) {
+      case "login": apiHook = loginApi; break;
+      case "registerCandidate": apiHook = registerCandidateApi; break;
+      case "registerCompany": apiHook = registerCompanyApi; break;
+      case "logout": apiHook = logoutApi; break;
+      default: return null;
     }
 
-    let payload = null;
-
     try {
-      payload = { ...values, deviceName };
+      let payload = { ...values, deviceName };
       
       if (type === "registerCompany") {
         const transformed = { ...payload };
         Object.keys(transformed).forEach(key => {
           if (key.includes('.')) {
-            const value = transformed[key];
-            set(transformed, key, value);
+            set(transformed, key, transformed[key]);
             delete transformed[key];
           }
         });
         payload = transformed;
       }
 
-      const response = await axios({
-        method: config.method,
-        url: `${API_BASE_URL}${config.url}`,
-        data: payload,
-      });
-
-      const data = response.data;
-      console.log("API Response Data:", data);
-
+      const data = await apiHook.refetch({ data: payload });
 
       if (data) {
         if (type === "login" || type.startsWith("register")) {
-          const token = data.accessToken || data.token;
-          const refresh = data.refreshToken;
-          const user = data.user || data;
+          const token = data.data?.token;
+          const refresh = data.data?.refreshToken;
+          const user = data.data
 
           if (token) {
             localStorage.setItem("userToken", token);
@@ -105,57 +76,24 @@ export const useAuth = () => {
             localStorage.setItem("userData", JSON.stringify(user));
             setUserData(user);
           }
-
-          setIsLoading(false);
           
-          if (type === "login") {
-             navigateTo("/intelliHire");
-          } else {
-             navigateTo("/verify-email-request");
-          }
-          return data;
+          navigateTo(type === "login" ? "/intelliHire" : "/verify-email-request");
         }
 
         if (type === "logout") {
           navigateTo("/login");
           logoutContext();
-          setIsLoading(false);
-          
-          return data;
         }
       }
-      
-      setIsLoading(false);
       return data;
-
     } catch (err) {
-      setIsLoading(false);
       if (type === "logout") {
         navigateTo("/login");
         logoutContext();
       }
-      console.error("Auth Error Payload:", payload);
-      console.error("Auth Error Response:", err.response?.data);
-
-      let errorMessage = "Authentication failed";
-      
-      const data = err.response?.data;
-      if (data) {
-        if (data.message) {
-          errorMessage = data.message;
-        } else if (data.errors) {
-          errorMessage = Object.values(data.errors).flat().join(" | ");
-        } else if (typeof data === "string") {
-          errorMessage = data;
-        }
-      } else {
-        errorMessage = err.message || "Network error";
-      }
-
-      setErrors(errorMessage);
       throw err;
     }
-  }, [deviceName, logoutContext, navigateTo, setRefreshToken, setUserData, setUserToken]);
+  }, [deviceName, loginApi, registerCandidateApi, registerCompanyApi, logoutApi, setUserToken, setRefreshToken, setUserData, navigateTo, logoutContext]);
 
   const login = (values) => performAuth("login", values);
   const registerCandidate = (values) => performAuth("registerCandidate", values);
@@ -165,16 +103,19 @@ export const useAuth = () => {
     performAuth("logout", { refreshToken: refresh });
   }, [performAuth]);
 
-  return {
+  const authLoading = loginApi.loading || registerCandidateApi.loading || registerCompanyApi.loading || logoutApi.loading || profileApi.loading;
+  const authErrors = loginApi.error || registerCandidateApi.error || registerCompanyApi.error || logoutApi.error || profileApi.error;
+
+  return useMemo(() => ({
     performAuth,
     login,
     registerCandidate,
     registerCompany,
     logout,
-    getUserProfile,
-    errors,
-    isLoading,
+    getUserProfile: profileApi.refetch,
+    errors: authErrors,
+    isLoading: authLoading,
     userData,
-  };
+    userToken
+  }), [performAuth, login, registerCandidate, registerCompany, logout, profileApi.refetch, authErrors, authLoading, userData, userToken]);
 };
-
