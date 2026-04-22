@@ -18,18 +18,20 @@ const TopBar = () => {
           <div className="flex items-center justify-center md:justify-start gap-2 w-full md:w-1/3">
             <MainImage
               src={logo}
-              alt="Logo"
-              imageClassName="max-h-12 max-w-24"
-              preview={false}
+              alt="IntelliHire Logo"
+              width={60}
+              height={40}
+              priority={true}
+              imageClassName="object-contain"
             />
-            <Link href="/intelliHire" className="flex">
+            <Link href="/intelliHire" className="flex items-center">
               <MainText
-                tag="h2"
+                tag="span"
                 title="Intelli"
                 className="text-2xl m-0 font-bold text-light-black dark:text-dark-white"
               />
               <MainText
-                tag="h2"
+                tag="span"
                 title="Hire"
                 className="text-2xl m-0 font-bold text-light-secondary dark:text-dark-secondary"
               />

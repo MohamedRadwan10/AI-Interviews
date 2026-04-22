@@ -1,11 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import api from "../../Services/api";
 
 export const fetchApiData = createAsyncThunk(
   "api/fetchData",
   async ({ url, method = "GET", params = {}, data = null, headers = {}, key }, { rejectWithValue }) => {
     try {
-      const response = await axios({
+      const response = await api({
         url,
         method,
         params,

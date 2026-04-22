@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useInterviewSessions } from "@/hooks/useInterviewSessions";
+import { useInterviewSessions } from "@/hooks/useInterviewSession";
 import MainCard from "@/Components/Common/Cards";
 import LoadingSkeleton from "@/Components/Common/LoadingSkeleton";
 import SectionHeader from "@/Components/Header/SectionHeader";

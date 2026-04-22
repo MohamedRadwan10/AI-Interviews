@@ -14,6 +14,7 @@ const Theme = () => {
     <div className="flex items-center gap-2">
       <MainButton
         onClick={toggleDarkMode}
+        aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
         className={`
           relative w-14 h-7 p-1 rounded-2xl border border-light-black dark:border-dark-white cursor-pointer
           transition-colors duration-300

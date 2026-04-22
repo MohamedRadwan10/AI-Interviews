@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useContext } from "react";
+import { useEffect, useCallback, useContext, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { get } from "lodash-es";
 import { API_BASE_URL, AUTH_ENDPOINTS } from "../Config/apiRegistry";
@@ -46,7 +46,7 @@ export const useApi = ({ type, params = {}, data = null, customHeaders = {}, aut
         const result = await dispatch(
           fetchApiData({
             key: type,
-            url: `${API_BASE_URL}${endpointConfig.url}${override.urlSuffix || urlSuffix || ""}`,
+            url: `${endpointConfig.url}${override.urlSuffix || urlSuffix || ""}`,
             method: endpointConfig.method,
             params: { ...params, ...(override.params || {}) },
             data: finalData,
@@ -68,10 +68,10 @@ export const useApi = ({ type, params = {}, data = null, customHeaders = {}, aut
     }
   }, [fetchData, autoFetch, endpointConfig]);
 
-  return {
+  return useMemo(() => ({
     data: apiState.data,
     loading: apiState.loading,
     error: apiState.error,
     refetch: fetchData,
-  };
+  }), [apiState.data, apiState.loading, apiState.error, fetchData]);
 };

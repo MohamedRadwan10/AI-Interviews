@@ -42,7 +42,7 @@ export const useJobs = () => {
     return isServerPaginated ? rawJobs : take(drop(rawJobs, (page - 1) * 9), 9);
   }, [isServerPaginated, rawJobs, page]);
 
-  return {
+  const jobsData = useMemo(() => ({
     jobs: displayJobs,
     loading,
     error,
@@ -52,7 +52,9 @@ export const useJobs = () => {
     setPage,
     refetch,
     totalCount,
-  };
+  }), [displayJobs, loading, error, searchTerm, page, refetch, totalCount]);
+
+  return jobsData;
 };
 
 export const useJobDetails = (jobId) => {
@@ -62,12 +64,12 @@ export const useJobDetails = (jobId) => {
     autoFetch: !!jobId,
   });
 
-  const job = get(data, "job", data);
+  const job = useMemo(() => get(data, "job", data), [data]);
 
-  return {
+  return useMemo(() => ({
     job,
     loading,
     error,
     refetch,
-  };
+  }), [job, loading, error, refetch]);
 };

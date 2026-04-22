@@ -15,7 +15,7 @@ const MainButton = ({
       {children ||
         (title && (
           <section className={containerClass}>
-            <span>title</span>
+            <span>{title}</span>
           </section>
         ))}
     </Button>

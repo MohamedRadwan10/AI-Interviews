@@ -4,10 +4,31 @@ import { UserTokenContext } from "@/Context/UserTokenContext";
 import { useUserAccount } from "@/Context/UserAccountContext";
 import { useSignalR } from "./useSignalR";
 import { useApi } from "./useApi";
-import { get } from "lodash-es";
+import { get, uniqBy } from "lodash-es";
 import { useReactMediaRecorder } from "react-media-recorder-2";
-
 const INVALID_SESSION_ID = "00000000-0000-0000-0000-000000000000";
+
+export const useInterviewSessions = () => {
+  const { userToken } = useContext(UserTokenContext);
+
+  const { data, loading, error, refetch } = useApi({
+    type: "ActiveSessions",
+    autoFetch: !!userToken || !!localStorage.getItem("refreshToken"),
+  });
+
+  const activeSessions = useMemo(() => {
+    const rawData = Array.isArray(data) ? data : [];
+    return uniqBy(rawData, (item) => item.jobid);
+  }, [data]);
+
+  return useMemo(() => ({
+    activeSessions,
+    activeSessionsCount: activeSessions.length,
+    isLoading: loading,
+    error,
+    refetch,
+  }), [activeSessions, loading, error, refetch]);
+};
 
 export const useInterviewSession = (jobId) => {
   const { userToken } = useContext(UserTokenContext);

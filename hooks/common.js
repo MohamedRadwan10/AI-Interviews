@@ -1,4 +1,5 @@
 import { useRouter, usePathname } from "next/navigation";
+import { useMemo } from "react";
 
 export const useNavigation = () => {
   const router = useRouter();
@@ -24,7 +25,7 @@ export const useNavigation = () => {
     router.refresh();
   };
 
-  return {
+  return useMemo(() => ({
     router,
     pathname,
     navigateTo,
@@ -32,5 +33,5 @@ export const useNavigation = () => {
     navigateForward,
     replaceUrl,
     reload,
-  };
+  }), [router, pathname, navigateTo, navigateBack, navigateForward, replaceUrl, reload]);
 };

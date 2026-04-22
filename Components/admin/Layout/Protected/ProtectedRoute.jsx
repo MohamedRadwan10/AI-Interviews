@@ -9,9 +9,10 @@ const ProtectedRouter = ({ children }) => {
 
   useEffect(() => {
     const storedToken = localStorage.getItem("userToken");
+    const refreshToken = localStorage.getItem("refreshToken");
     setChecked(true);
 
-    if (!storedToken) {
+    if (!storedToken && !refreshToken) {
       router.push("/login");
     }
   }, [router]);
