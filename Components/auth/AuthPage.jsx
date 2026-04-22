@@ -32,9 +32,11 @@ const AuthPageContent = ({ config, onSubmit, apiError, isLoading }) => {
         <div className="flex items-center justify-center mb-4 w-full">
           <MainImage
             src={logo}
-            alt="Logo"
-            imageClassName="max-h-12 max-w-24"
-            preview={false}
+            alt="IntelliHire Logo"
+            width={60}
+            height={40}
+            priority={true}
+            imageClassName="object-contain"
           />
           <div className="flex">
             <MainText
@@ -65,7 +67,7 @@ const AuthPageContent = ({ config, onSubmit, apiError, isLoading }) => {
 
         {apiError && (
           <div className="w-full bg-status-error/10 text-status-error p-3 rounded-md mb-6 text-center text-sm font-semibold border border-status-error/20 shadow-sm">
-            {apiError}
+            {typeof apiError === "object" ? (apiError.message || JSON.stringify(apiError)) : apiError}
           </div>
         )}
 
@@ -104,9 +106,11 @@ const AuthPageContent = ({ config, onSubmit, apiError, isLoading }) => {
           >
             <MainImage
               src="https://www.svgrepo.com/show/475656/google-color.svg"
-              alt="Google"
-              imageClassName="w-5"
-              preview={false}
+              alt="Google Logo"
+              width={20}
+              height={20}
+              priority={true}
+              imageClassName="object-contain"
             />
             Google
           </MainButton>
@@ -117,9 +121,11 @@ const AuthPageContent = ({ config, onSubmit, apiError, isLoading }) => {
           >
             <MainImage
               src="https://www.svgrepo.com/show/448239/microsoft.svg"
-              alt="Microsoft"
-              imageClassName="w-5"
-              preview={false}
+              alt="Microsoft Logo"
+              width={20}
+              height={20}
+              priority={true}
+              imageClassName="object-contain"
             />
             Microsoft
           </MainButton>

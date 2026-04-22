@@ -6,7 +6,7 @@ export default function ChatbaseIdentity() {
   const { userData } = useContext(UserTokenContext);
 
   useEffect(() => {
-    if (userData && window.chatbase) {
+    if (userData && typeof window !== "undefined") {
       const identifyChatbase = async () => {
         try {
           const response = await fetch("/api/chatbase-auth", {
@@ -19,9 +19,22 @@ export default function ChatbaseIdentity() {
 
           if (response.ok) {
             const data = await response.json();
-            if (data.token) {
-              window.chatbase('identify', { token: data.token });
-              console.log("Chatbase identified user successfully.");
+            
+            const chatbase = window.chatbase || (window.chatbase = function() {
+              (window.chatbase.q = window.chatbase.q || []).push(arguments);
+            });
+
+            if (data.userHash) {
+              chatbase('identify', {
+                customerIdentity: data.customerIdentity,
+                userHash: data.userHash,
+              });
+              console.log("Chatbase identified user securely.");
+            } else if (data.customerIdentity) {
+              chatbase('identify', {
+                customerIdentity: data.customerIdentity,
+              });
+              console.log("Chatbase identified user by identity only.");
             }
           }
         } catch (error) {
@@ -29,7 +42,17 @@ export default function ChatbaseIdentity() {
         }
       };
 
-      identifyChatbase();
+      if (window.chatbase) {
+        identifyChatbase();
+      } else {
+        const interval = setInterval(() => {
+          if (window.chatbase) {
+            identifyChatbase();
+            clearInterval(interval);
+          }
+        }, 1000);
+        return () => clearInterval(interval);
+      }
     }
   }, [userData]);
 

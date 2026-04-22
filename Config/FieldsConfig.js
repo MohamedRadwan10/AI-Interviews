@@ -225,7 +225,7 @@ export const companyRegisterConfig = {
       },
     },
     {
-      field_name: "ConfirmPassword",
+      field_name: "confirmPassword",
       type: "password",
       label: "Confirm Password",
       placeholder: "Confirm your password",
@@ -342,7 +342,7 @@ export const registerConfig = {
       },
     },
     {
-      field_name: "ConfirmPassword",
+      field_name: "confirmPassword",
       type: "password",
       label: "Re-enter Password",
       placeholder: "Re-enter your password",

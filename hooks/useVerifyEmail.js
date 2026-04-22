@@ -10,8 +10,12 @@ export const useVerifyEmail = () => {
   const [status, setStatus] = useState("loading");
   const [error, setError] = useState(null);
 
-  const userId = searchParams.get("userId");
-  const token = searchParams.get("token");
+  const userId = searchParams.get("userId") || searchParams.get("userid") || searchParams.get("uid");
+  let token = searchParams.get("token") || searchParams.get("Token");
+
+  if (token) {
+    token = token.replace(/ /g, "+");
+  }
 
   useEffect(() => {
     const confirmEmail = async () => {

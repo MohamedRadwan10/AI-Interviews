@@ -7,7 +7,7 @@ export const UserTokenProvider = ({ children }) => {
   const [userToken, setUserToken] = useState(null);
   const [refreshToken, setRefreshToken] = useState(null);
   const [userData, setUserData] = useState(null);
-  const [deviceName, setDeviceName] = useState("Web App");
+  const [deviceName, setDeviceName] = useState("web");
 
   useEffect(() => {
     const savedToken = localStorage.getItem("userToken");
@@ -23,10 +23,6 @@ export const UserTokenProvider = ({ children }) => {
       } catch (e) {
         console.error("Failed to parse userData:", e);
       }
-    }
-
-    if (typeof window !== "undefined") {
-      setDeviceName(navigator.userAgent.split(" ")[0] || "Web App");
     }
   }, []);
 

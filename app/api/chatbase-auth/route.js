@@ -1,5 +1,5 @@
-const jwt = require("jsonwebtoken");
 import { NextResponse } from "next/server";
+import crypto from "crypto";
 
 export async function POST(request) {
   try {
@@ -13,20 +13,23 @@ export async function POST(request) {
     const secret = process.env.CHATBOT_IDENTITY_SECRET;
     
     if (!secret) {
-      return NextResponse.json({ error: "Secret is missing" }, { status: 500 });
+      return NextResponse.json({ 
+        customerIdentity: user.email || user.id || "anonymous"
+      }, { status: 200 });
     }
 
-    const token = jwt.sign(
-      {
-        user_id: user.id || user.userId || user.email, 
-        email: user.email,
-        name: user.name,
-      },
-      secret,
-      { expiresIn: "1h" }
-    );
+    const customerIdentity = user.email || user.id || "anonymous";
 
-    return NextResponse.json({ token }, { status: 200 });
+    const userHash = crypto
+      .createHmac("sha256", secret)
+      .update(customerIdentity)
+      .digest("hex");
+
+    return NextResponse.json({ 
+      customerIdentity,
+      userHash 
+    }, { status: 200 });
+
   } catch (error) {
     console.error("Chatbase Auth Error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
