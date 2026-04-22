@@ -23,7 +23,7 @@ export const useAuth = () => {
   const logoutApi = useApi({ type: "logout", autoFetch: false });
   const profileApi = useApi({ 
     type: "userData", 
-    autoFetch: !!userToken || !!localStorage.getItem("refreshToken") 
+    autoFetch: !!userToken || (typeof window !== "undefined" && !!localStorage.getItem("refreshToken")) 
   });
 
   useEffect(() => {

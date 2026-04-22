@@ -13,7 +13,7 @@ export const useInterviewSessions = () => {
 
   const { data, loading, error, refetch } = useApi({
     type: "ActiveSessions",
-    autoFetch: !!userToken || !!localStorage.getItem("refreshToken"),
+    autoFetch: !!userToken || (typeof window !== "undefined" && !!localStorage.getItem("refreshToken")),
   });
 
   const activeSessions = useMemo(() => {
