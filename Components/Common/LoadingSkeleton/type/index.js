@@ -7,3 +7,4 @@ export * from './AccountTypeLoading';
 export * from './InterviewRoomLoading';
 export * from './InterviewInstructionsLoading';
 export * from './ActiveSessionsLoading';
+export { default as FormLoading } from './FormLoading';

@@ -157,7 +157,7 @@ const AuthPageContent = ({ config, onSubmit, apiError, isLoading }) => {
 
 const AuthPage = (props) => {
   return (
-    <Suspense fallback={<RouteLoading />}>
+    <Suspense fallback={<RouteLoading type="form" />}>
       <AuthPageContent {...props} />
     </Suspense>
   );
