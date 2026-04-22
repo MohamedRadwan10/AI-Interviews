@@ -16,7 +16,7 @@ const RegisterPage = (props) => {
   );
 
   return (
-    <Suspense fallback={<Loading type="page" />}>
+    <Suspense fallback={<Loading type="form" />}>
       <MainComp {...props} />
     </Suspense>
   );
