@@ -44,7 +44,7 @@ export const useInterviewSession = (jobId) => {
   const [interviewFinished, setInterviewFinished] = useState(false);
   const [finishMessage, setFinishMessage] = useState("");
   const [questionIndex, setQuestionIndex] = useState(0);
-  const [totalQuestions, setTotalQuestions] = useState(5);
+  const [totalQuestions, setTotalQuestions] = useState();
 
   const { isConnected, on } = useSignalR(userToken, userId);
 
@@ -152,7 +152,6 @@ export const useInterviewSession = (jobId) => {
     const formData = new FormData();
     formData.append("SessionId", sessionId);
     formData.append("QuestionId", qId);
-    formData.append("id", qId);
     formData.append("index", questionIndex);
     formData.append("currentQuestionIndex", questionIndex);
     formData.append("UserAnswer", answerData.text || "");

@@ -14,20 +14,21 @@ const ProtectedRouter = ({ children }) => {
 
   useEffect(() => {
     if (isPublicRoute) {
-      setChecked(true);
+      if (!checked) setChecked(true);
       return;
     }
 
     if (typeof window !== "undefined") {
       const storedToken = localStorage.getItem("userToken");
       const refreshToken = localStorage.getItem("refreshToken");
-      setChecked(true);
+      
+      if (!checked) setChecked(true);
 
       if (!storedToken && !refreshToken) {
         router.push("/login");
       }
     }
-  }, [router, pathname, isPublicRoute]);
+  }, [router, pathname, isPublicRoute, checked]);
 
   if (isPublicRoute) {
     return <>{children}</>;

@@ -7,12 +7,13 @@ const JobItemCard = ({ data }) => {
   const { navigateTo } = useNavigation();
   
   const title = get(data, "title", "Unknown Title");
-  const companyName = get(data, "companyName", "Unknown Company");
-  const defaultLogo = companyName !== "Unknown Company" 
+  const companyName = get(data, "companyName") || "Unknown Company";
+  
+  const defaultLogo = (typeof companyName === "string" && companyName !== "Unknown Company" && companyName.length > 0)
     ? companyName.substring(0, 2).toUpperCase() 
     : "TC";
     
-  const logo = get(data, "companyLogo", defaultLogo) || defaultLogo;
+  const logo = get(data, "companyLogo") || defaultLogo;
   const type = get(data, "type", get(data, "jobType", "Full Time"));
   const description = get(data, "description") || get(data, "desc", "");
   const jobId = get(data, "id");

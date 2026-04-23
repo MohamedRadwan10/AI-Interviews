@@ -9,11 +9,11 @@ import { Since } from "@/Utils/Filter/date";
 const JobCardContent = ({ job }) => {
   const { navigateTo } = useNavigation();
   const title = get(job, "title", "Unknown Title");
-  const companyName = get(job, "companyName", "Unknown Company");
-  const defaultLogo = companyName !== "Unknown Company" 
+  const companyName = get(job, "companyName") || "Unknown Company";
+  const defaultLogo = (typeof companyName === "string" && companyName !== "Unknown Company" && companyName.length > 0)
     ? companyName.substring(0, 2).toUpperCase() 
     : "TC";
-  const logo = get(job, "companyLogo", defaultLogo) || defaultLogo;
+  const logo = get(job, "companyLogo") || defaultLogo;
   const type = get(job, "type", "Full Time");
   const location = get(job, "locations", "Cairo, Egypt"); 
   const category = get(job, "category", "General");
