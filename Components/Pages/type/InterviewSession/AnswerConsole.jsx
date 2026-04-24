@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
 import { MessageSquare, Mic, Code2, Send } from "lucide-react";
-import MainButton from "../../../Common/MainButton";
-import MainText from "../../../Common/MainText";
+import MainButton from "@/Components/Common/MainButton";
+import MainText from "@/Components/Common/MainText";
 import Editor from "@monaco-editor/react";
 import { useAnswerConsole } from "@/hooks/useInterviewSession";
 import { map } from "lodash-es";
-import MainInput from "../../../Common/Inputs";
+import MainInput from "@/Components/Common/Inputs";
 import { useDarkMode } from "@/Context/DarkModeContext";
 import { languages } from "@/Config/DataConstant";
 

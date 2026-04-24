@@ -1,5 +1,5 @@
 import { Country, State, City } from 'country-state-city';
-import egyptData from '../Data/egypt_data.json';
+import egyptData from '@/Utils/Data/egypt_data.json';
 
 export const getAllCountries = () => {
   return Country.getAllCountries().map((country) => ({

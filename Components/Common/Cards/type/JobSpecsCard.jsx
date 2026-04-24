@@ -1,6 +1,6 @@
 import React from "react";
 import { get, map } from "lodash-es";
-import MainText from "../../MainText";
+import MainText from "@/Components/Common/MainText";
 import { Briefcase } from "lucide-react";
 
 const JobSpecsCard = ({ item }) => {

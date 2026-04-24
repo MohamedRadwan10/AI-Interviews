@@ -1,6 +1,6 @@
 import { get } from "lodash-es";
 import { useMemo } from "react";
-import MainText from "../../MainText";
+import MainText from "@/Components/Common/MainText";
 
 const AccountTypeCard = ({ item, selected, onSelect }) => {
   const type = get(item, "type");

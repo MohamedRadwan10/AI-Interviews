@@ -1,9 +1,9 @@
 "use client";
 import React, { Suspense } from "react";
 import { get } from "lodash-es";
-import MainText from "../../MainText";
+import MainText from "@/Components/Common/MainText";
 import { Briefcase, Play, Clock } from "lucide-react";
-import MainButton from "../../MainButton";
+import MainButton from "@/Components/Common/MainButton";
 import { useNavigation } from "@/hooks/common";
 
 const ActiveSessionCardContent = (props) => {

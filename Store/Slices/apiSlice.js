@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchApiData } from "./apiThunk";
+import { fetchApiData } from "@/Store/Slices/apiThunk";
 
 const initialState = {};
 

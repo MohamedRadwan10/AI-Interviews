@@ -1,12 +1,12 @@
 "use client";
 import React, { useEffect } from "react";
-import MainText from "../../../Common/MainText";
-import AnswerConsole from "./AnswerConsole";
+import MainText from "@/Components/Common/MainText";
+import AnswerConsole from "@/Components/Pages/type/InterviewSession/AnswerConsole";
 import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
 import { useInterviewSession } from "@/hooks/useInterviewSession";
-import { InterviewComplete } from "./InterviewComplete";
+import { InterviewComplete } from "@/Components/Pages/type/InterviewSession/InterviewComplete";
 import { InterviewError } from "@/Components/Errors";
-import { InterviewSidebar } from "./InterviewSidebar";
+import { InterviewSidebar } from "@/Components/Pages/type/InterviewSession/InterviewSidebar";
 import { get } from "lodash-es";
 
 const InterviewRoom = ({ jobId }) => {

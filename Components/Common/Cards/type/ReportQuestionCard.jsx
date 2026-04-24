@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import { get } from "lodash-es";
-import MainText from "../../MainText";
+import MainText from "@/Components/Common/MainText";
 import { ChevronDown, ChevronUp, MessageSquare } from "lucide-react";
-import MainButton from "../../MainButton";
+import MainButton from "@/Components/Common/MainButton";
 
 const ReportQuestionCard = (props) => {
   const data = props.data || props;

@@ -5,8 +5,8 @@ import { get, map } from "lodash-es";
 import MainImage from "@/Components/Common/Image";
 import logoImage from "@/public/assets/logo.png";
 import Link from "next/link";
-import Theme from "./Components/Theme";
-import UserAvatar from "./Components/UserAvatar";
+import Theme from "@/Components/admin/Layout/Components/Theme";
+import UserAvatar from "@/Components/admin/Layout/Components/UserAvatar";
 
 const TopBar = () => {
   const logo = get(logoImage, "src");

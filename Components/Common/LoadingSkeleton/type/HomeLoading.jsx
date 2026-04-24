@@ -1,6 +1,6 @@
 import React from "react";
 import { Skeleton } from "primereact/skeleton";
-import { JobCardLoading } from "./JobCard";
+import { JobCardLoading } from "@/Components/Common/LoadingSkeleton/type/JobCard";
 
 export const HomeLoading = () => {
   return (

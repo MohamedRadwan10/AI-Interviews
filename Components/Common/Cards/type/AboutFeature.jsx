@@ -1,5 +1,5 @@
 import { get } from "lodash-es";
-import MainText from "../../MainText";
+import MainText from "@/Components/Common/MainText";
 
 const FeatureCard = (props) => {
   const icon = get(props, "icon");

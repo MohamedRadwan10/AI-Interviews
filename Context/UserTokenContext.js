@@ -55,7 +55,7 @@ export const UserTokenProvider = ({ children }) => {
       deviceName,
       logout,
     };
-  });
+  }, [userToken, refreshToken, userData, deviceName]);
 
   return (
     <UserTokenContext.Provider value={result}>

@@ -1,6 +1,6 @@
 import { get } from "lodash-es";
-import MainText from "../../MainText";
-import MainButton from "../../MainButton";
+import MainText from "@/Components/Common/MainText";
+import MainButton from "@/Components/Common/MainButton";
 import { useNavigation } from "@/hooks/common";
 
 const JobItemCard = ({ data }) => {

@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useContext } from "react";
-import { useApi } from "./useApi";
+import { useApi } from "@/hooks/useApi";
 import { UserTokenContext } from "@/Context/UserTokenContext";
 import { uniqBy } from "lodash-es";
 

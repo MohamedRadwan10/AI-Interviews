@@ -1,11 +1,11 @@
 import React from "react";
 import { map } from "lodash-es";
-import Pagination from "../../../Common/Pagination";
-import MainText from "../../../Common/MainText";
-import MainButton from "../../../Common/MainButton";
-import MainInput from "../../../Common/Inputs";
+import Pagination from "@/Components/Common/Pagination";
+import MainText from "@/Components/Common/MainText";
+import MainButton from "@/Components/Common/MainButton";
+import MainInput from "@/Components/Common/Inputs";
 import { Search, SlidersHorizontal } from "lucide-react";
-import { useJobs } from "../../../../hooks/useJobs";
+import { useJobs } from "@/hooks/useJobs";
 import MainCard from "@/Components/Common/Cards";
 import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
 import { JobsError } from "@/Components/Errors";

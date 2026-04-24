@@ -2,8 +2,8 @@ import { Inter } from "next/font/google";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
-import "./globals.css";
-import ClientLayout from "./ClientLayout";
+import "@/app/globals.css";
+import ClientLayout from "@/app/ClientLayout";
 import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });

@@ -3,7 +3,7 @@
 import React, { useRef } from "react";
 import { Avatar } from "primereact/avatar";
 import { Menu } from "primereact/menu";
-import { useAuth } from "@/hooks/useAuth";
+import { useLogout } from "@/hooks/useAuth";
 import { useInterviewSessions } from "@/hooks/useInterviewSessions";
 import { useNavigation } from "@/hooks/common";
 import { Badge } from "primereact/badge";
@@ -11,7 +11,7 @@ import MainButton from "@/Components/Common/MainButton";
 
 const UserAvatar = () => {
   const menuRef = useRef(null);
-  const { logout } = useAuth();
+  const { logout } = useLogout();
   const { navigateTo } = useNavigation();
   const { activeSessionsCount } = useInterviewSessions();
 

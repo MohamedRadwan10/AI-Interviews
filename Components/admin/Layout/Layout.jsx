@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from "react";
-import TopBar from "./AppTopbar";
-import ProtectedRouter from "./Protected/ProtectedRoute";
+import TopBar from "@/Components/admin/Layout/AppTopbar";
+import ProtectedRouter from "@/Components/admin/Layout/Protected/ProtectedRoute";
 
 const AppFooter = lazy(() => import("./AppFooter"));
 

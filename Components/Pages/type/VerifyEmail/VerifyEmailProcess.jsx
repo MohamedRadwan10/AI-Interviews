@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import { useVerifyEmail } from "@/hooks/useVerifyEmail";
+import { useVerifyEmail } from "@/hooks/useAuth";
 import MainText from "@/Components/Common/MainText";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { VerifyEmailError } from "@/Components/Errors";

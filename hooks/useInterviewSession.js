@@ -2,8 +2,8 @@
 import { useState, useCallback, useContext, useEffect, useRef, useMemo } from "react";
 import { UserTokenContext } from "@/Context/UserTokenContext";
 import { useUserAccount } from "@/Context/UserAccountContext";
-import { useSignalR } from "./useSignalR";
-import { useApi } from "./useApi";
+import { useSignalR } from "@/hooks/useSignalR";
+import { useApi } from "@/hooks/useApi";
 import { get, uniqBy } from "lodash-es";
 import { useReactMediaRecorder } from "react-media-recorder-2";
 const INVALID_SESSION_ID = "00000000-0000-0000-0000-000000000000";
@@ -149,12 +149,19 @@ export const useInterviewSession = (jobId) => {
 
     const qId = get(parsedQuestion, "id") || get(parsedQuestion, "questionId") || "";
     const formData = new FormData();
+    
     formData.append("SessionId", sessionId);
     formData.append("QuestionId", qId);
     formData.append("index", questionIndex);
     formData.append("currentQuestionIndex", questionIndex);
-    formData.append("UserAnswer", answerData.text || "");
-    formData.append("voiceFile", answerData.voiceFile || new Blob([], { type: "application/octet-stream" }), "voice.wav");
+
+    if (answerData.voiceFile) {
+      formData.append("voiceFile", answerData.voiceFile, "voice.wav");
+      formData.append("UserAnswer", ""); 
+    } else {
+      const textToSubmit = answerData.text || "";
+      formData.append("UserAnswer", textToSubmit);
+    }
 
     const questionOrder = get(parsedQuestion, "order", questionIndex + 1);
     const effectiveTotal = get(parsedQuestion, "totalquestion", totalQuestions);
@@ -163,7 +170,6 @@ export const useInterviewSession = (jobId) => {
       const result = await callNextQuestion({ data: formData });
       const responseData = get(result, "data");
 
-      // Check if backend signals completion via response
       const isCompleted = get(responseData, "isCompleted") || get(responseData, "isFinished") || get(responseData, "isLast") || get(responseData, "completed") === true;
 
       if (isCompleted || (effectiveTotal && questionOrder >= effectiveTotal)) {

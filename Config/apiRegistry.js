@@ -7,11 +7,11 @@ export const AUTH_ENDPOINTS = {
     method: "POST",
   },
   registerCandidate: {
-    url: "/Auth/register/candidate",
+    url: "/Auth/register/candidate", // name, email, password, confirmPassword, deviceName
     method: "POST",
   },
   registerCompany: {
-    url: "/Auth/register/company",
+    url: "/Auth/register/company", // email, password, confirmPassword, deviceName
     method: "POST",
   },
   refreshToken: {
@@ -37,6 +37,14 @@ export const AUTH_ENDPOINTS = {
   verifyEmail: {
     url: "/Auth/confirm-email", // in parametar query userId  , token 
     method: "GET",
+  },
+  CompleteUserData: {
+    url: "/Profile/UserComplete",  // Photo string($binary) CV string($binary) PhoneNumber *string in Body (formdata)
+    method: "POST",
+  },
+  CompleteCompanyData: {
+    url: "/Profile/CompanyComplete", // Name *string  WebsiteUrl string  Industry *string  About string PhoneNumber *string CompanyLogo string($binary) Locations.City  Locations.Country Locations.Government  string in Body (formdata)
+    method: "POST",
   },
   userData: {
     url: "/User/profile",  // token only

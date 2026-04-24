@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { get } from "lodash-es";
-import MainText from "../../MainText";
+import MainText from "@/Components/Common/MainText";
 
 const ReportScoreCard = (props) => {
   const data = props.data || props;

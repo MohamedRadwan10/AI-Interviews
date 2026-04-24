@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
 import { get } from "lodash-es";
-import { useForgetPassword } from "@/hooks/useForgetPassword";
+import { useForgetPassword } from "@/hooks/useAuth";
 import { forgetPasswordConfig } from "@/Config/FieldsConfig";
-import { EmailStep, OTPStep, PasswordStep } from "./StepComponents";
+import { EmailStep, OTPStep, PasswordStep } from "@/Components/Pages/type/ForgetPassword/StepComponents";
 import MainText from "@/Components/Common/MainText";
 import { GenericError } from "@/Components/Errors";
 

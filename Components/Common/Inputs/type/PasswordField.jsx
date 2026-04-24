@@ -1,7 +1,7 @@
 import { get } from "lodash-es";
 import { Password } from "primereact/password";
 import { Divider } from "primereact/divider";
-import MainText from "../../MainText";
+import MainText from "@/Components/Common/MainText";
 
 const PasswordField = (props) => {
   const value = get(props, "value");
