@@ -68,9 +68,9 @@ export const loginConfig = {
 };
 
 export const companyRegisterConfig = {
-  pageTitle: "Register your company",
-  pageSubtitle: "Connect with the best tech talent",
-  submitButtonText: "Register Company",
+  pageTitle: "Welcome to IntelliHire",
+  pageSubtitle: "Step into the future of hiring",
+  submitButtonText: "Create Account",
 
   footerText: "Already have account?",
   footerLinks: [
@@ -83,23 +83,10 @@ export const companyRegisterConfig = {
 
   fields: [
     {
-      field_name: "name",
-      type: "text",
-      label: "Company Name",
-      placeholder: "Enter company name",
-      fieldClassName:
-        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
-      containerClassName: "text-light-black dark:text-dark-white",
-      validation: {
-        required: true,
-        message: "Company name is required",
-      },
-    },
-    {
       field_name: "email",
       type: "email",
-      label: "Business Email",
-      placeholder: "company@example.com",
+      label: "Work Email",
+      placeholder: "hr@techcorp.com",
       fieldClassName:
         "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
       containerClassName: "text-light-black dark:text-dark-white",
@@ -107,94 +94,6 @@ export const companyRegisterConfig = {
         required: true,
         type: "email",
         message: "Valid business email is required",
-      },
-    },
-    {
-      field_name: "websiteUrl",
-      type: "text",
-      label: "Website URL",
-      placeholder: "https://www.company.com",
-      fieldClassName:
-        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
-      containerClassName: "text-light-black dark:text-dark-white",
-      validation: {
-        required: true,
-        message: "Website URL is required",
-      },
-    },
-    {
-      field_name: "industry",
-      type: "text",
-      label: "Industry",
-      placeholder: "e.g. Software, Finance",
-      fieldClassName:
-        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
-      containerClassName: "text-light-black dark:text-dark-white",
-      validation: {
-        required: true,
-        message: "Industry is required",
-      },
-    },
-    {
-      field_name: "phoneNumbers",
-      type: "text",
-      label: "Phone Numbers",
-      placeholder: "Enter phone numbers",
-      fieldClassName:
-        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
-      containerClassName: "text-light-black dark:text-dark-white",
-      validation: {
-        required: true,
-        message: "Phone number is required",
-      },
-    },
-    {
-      field_name: "locations.country",
-      type: "select",
-      label: "Country",
-      placeholder: "Select country",
-      options: getAllCountries(),
-      onValueChange: (val, { setFieldValue }) => {
-        setFieldValue("locations.government", "");
-        setFieldValue("locations.city", "");
-      },
-      fieldClassName:
-        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
-      containerClassName: "text-light-black dark:text-dark-white",
-      validation: {
-        required: true,
-        message: "Country is required",
-      },
-    },
-    {
-      field_name: "locations.government",
-      type: "select",
-      label: "Government",
-      placeholder: "Select government/state",
-      options: (values) => getStatesOfCountry(get(values, "locations.country")),
-      onValueChange: (val, { setFieldValue }) => {
-        setFieldValue("locations.city", "");
-      },
-      fieldClassName:
-        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
-      containerClassName: "text-light-black dark:text-dark-white",
-      validation: {
-        required: true,
-        message: "Government is required",
-      },
-    },
-    {
-      field_name: "locations.city",
-      type: "select",
-      label: "City",
-      placeholder: "Select city",
-      options: (values) => getCitiesOfState(get(values, "locations.country"), get(values, "locations.government")),
-      fieldClassName:
-        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
-      containerClassName: "text-light-black dark:text-dark-white",
-      validation: {
-        required: true,
-        message: "City is required",
       },
     },
     {
@@ -245,7 +144,7 @@ export const companyRegisterConfig = {
 };
 
 export const registerConfig = {
-  pageTitle: "Create your account",
+  pageTitle: "Welcome to IntelliHire",
   pageSubtitle: "Step into the future of hiring",
   submitButtonText: "Create Account",
 
@@ -296,25 +195,6 @@ export const registerConfig = {
       },
     },
     {
-      field_name: "phoneNumber",
-      type: "phone",
-      label: "Phone Number",
-      placeholder: "Enter Your Phone Number",
-      fieldClassName:
-        "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
-      containerClassName: "text-light-black dark:text-dark-white",
-      maxLength: 11,
-      numeric: true,
-      validation: {
-        required: true,
-        pattern: "^(\\+2)?01[0125][0-9]{8}$",
-        message: {
-          required: "phone number is required",
-          pattern: "phone number is invalid",
-        },
-      },
-    },
-    {
       field_name: "password",
       type: "password",
       label: "Password",
@@ -344,51 +224,168 @@ export const registerConfig = {
     {
       field_name: "confirmPassword",
       type: "password",
-      label: "Re-enter Password",
-      placeholder: "Re-enter your password",
+      label: "Confirm Password",
+      placeholder: "Enter your password",
       fieldClassName:
         "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
       containerClassName: "text-light-black dark:text-dark-white",
       validation: {
         required: true,
         min: 8,
-        matches: [
-          {
-            regex: "^[A-Z]",
-            message: "Password must start with an uppercase letter",
-          },
-          {
-            regex: "[a-z]",
-            message: "Password must contain at least one lowercase letter",
-          },
-          {
-            regex: "[0-9]",
-            message: "Password must contain at least one number",
-          },
-        ],
         oneOf: {
           ref: "password",
           message: "Password and Confirm Password do not match",
         },
       },
     },
-    // {
-    //   field_name: "checkBox",
-    //   type: "checkBox",
-    //   label: "I agree to the Terms and Privacy Policy.",
-    //   fieldClassName:
-    //     "w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600",
-    //   containerClassName:
-    //     "flex items-center gap-2 text-light-black dark:text-dark-white",
-    //   validation: {
-    //     required: true,
-    //     oneOf: {
-    //       values: [true],
-    //       message: "You must agree to the Terms and Privacy Policy.",
-    //     },
-    //   },
-    // },
   ],
+};
+
+export const candidateOnboardingConfig = {
+  pageTitle: "Complete your profile",
+  pageSubtitle: "Step into the future of hiring",
+  submitButtonText: "Complete Registration",
+  hideSocial: true,
+  fields: [
+    {
+      field_name: "Photo",
+      type: "upload",
+      uploadType: "image",
+      label: "Profile picture",
+    },
+    {
+      field_name: "CV",
+      type: "upload",
+      uploadType: "file",
+      label: "Upload CV",
+      placeholder: "Click to upload CV",
+    },
+    {
+      field_name: "PhoneNumber",
+      type: "phone",
+      label: "Phone Number",
+      placeholder: "Enter Your Phone Number",
+      validation: {
+        required: true,
+        pattern: "^(\\+2)?01[0125][0-9]{8}$",
+        message: {
+          required: "phone number is required",
+          pattern: "phone number is invalid",
+        },
+      },
+    },
+  ],
+};
+
+export const companyOnboardingConfig = {
+  info: {
+    pageTitle: "Company Info",
+    pageSubtitle: "Let's get to know your organization better",
+    submitButtonText: "Continue",
+    hideSocial: true,
+    fields: [
+      {
+        field_name: "Name",
+        type: "text",
+        label: "Company Name",
+        placeholder: "Tech Corp",
+        validation: { required: true },
+      },
+      {
+        field_name: "Industry",
+        type: "select",
+        label: "Industry",
+        placeholder: "Select Industry",
+        options: [
+          { label: "Software", value: "Software" },
+          { label: "Hardware", value: "Hardware" },
+          { label: "Finance", value: "Finance" },
+          { label: "Healthcare", value: "Healthcare" },
+          { label: "Education", value: "Education" },
+        ],
+        validation: { required: true },
+      },
+      {
+        field_name: "PhoneNumber",
+        type: "phone",
+        label: "Phone Number",
+        placeholder: "Enter Your Phone Number",
+        validation: {
+          required: true,
+          pattern: "^(\\+2)?01[0125][0-9]{8}$",
+          message: {
+            required: "phone number is required",
+            pattern: "phone number is invalid",
+          },
+        },
+      },
+    ],
+  },
+  details: {
+    pageTitle: "Company Details",
+    pageSubtitle: "Add more details about your company",
+    submitButtonText: "Continue",
+    hideSocial: true,
+    fields: [
+      {
+        field_name: "CompanyLogo",
+        type: "upload",
+        uploadType: "image",
+        label: "Company Logo",
+      },
+      {
+        field_name: "WebsiteUrl",
+        type: "text",
+        label: "Website URL",
+        placeholder: "https://example.com",
+        validation: { pattern: "^(https?:\\/\\/)?([\\da-z.-]+)\\.([a-z.]{2,6})([\\/\\w .-]*)*\\/?$" },
+      },
+      {
+        field_name: "About",
+        type: "text",
+        label: "About Company",
+        placeholder: "Brief description...",
+      },
+    ],
+  },
+  location: {
+    pageTitle: "Location",
+    pageSubtitle: "Where is your company headquarters located?",
+    submitButtonText: "Complete Profile",
+    hideSocial: true,
+    fields: [
+      {
+        field_name: "Locations.Country",
+        type: "select",
+        label: "Country",
+        placeholder: "Select Country",
+        options: getAllCountries(),
+        onValueChange: (val, { setFieldValue }) => {
+          setFieldValue("Locations.Government", "");
+          setFieldValue("Locations.City", "");
+        },
+        validation: { required: true },
+      },
+      {
+        field_name: "Locations.Government",
+        type: "select",
+        label: "Governorate",
+        placeholder: "Select Governorate",
+        options: (values) => getStatesOfCountry(get(values, "Locations.Country")),
+        onValueChange: (val, { setFieldValue }) => {
+          setFieldValue("Locations.City", "");
+        },
+        validation: { required: true },
+      },
+      {
+        field_name: "Locations.City",
+        type: "text",
+        label: "Detailed Address",
+        placeholder: "e.g. Building 4, Street 9, Maadi",
+        validation: { required: true },
+      },
+    ],
+  },
 };
 
 export const forgetPasswordConfig = {

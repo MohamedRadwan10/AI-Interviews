@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { map, get, take, drop } from "lodash-es";
-import { useApi } from "./useApi";
+import { useApi } from "@/hooks/useApi";
 
 export const useJobs = () => {
   const [searchTerm, setSearchTerm] = useState("");

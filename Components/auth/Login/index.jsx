@@ -1,10 +1,10 @@
 "use client"; 
 import AuthPage from "@/Components/auth/AuthPage";
 import { loginConfig } from "@/Config/FieldsConfig";
-import { useAuth } from "@/hooks/useAuth";
+import { useLogin } from "@/hooks/useAuth";
 
 const LoginPage = () => {
-  const { login, errors, isLoading } = useAuth();
+  const { login, error: errors, isLoading } = useLogin();
   return <AuthPage config={loginConfig} onSubmit={login} apiError={errors} isLoading={isLoading} />;
 };
 

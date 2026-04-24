@@ -1,6 +1,6 @@
 import React from "react";
 import { get } from "lodash-es";
-import MainText from "../../MainText";
+import MainText from "@/Components/Common/MainText";
 import { FileText, CheckCircle2 } from "lucide-react";
 
 const JobContentCard = ({ item }) => {

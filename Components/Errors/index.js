@@ -1,6 +1,6 @@
-export { default as ReportError } from './type/ReportError';
-export { default as InterviewError } from './type/InterviewError';
-export { default as JobsError } from './type/JobsError';
-export { default as JobDetailsError } from './type/JobDetailsError';
-export { default as VerifyEmailError } from './type/VerifyEmailError';
-export { default as GenericError } from './type/GenericError';
+export { default as ReportError } from '@/Components/Errors/type/ReportError';
+export { default as InterviewError } from '@/Components/Errors/type/InterviewError';
+export { default as JobsError } from '@/Components/Errors/type/JobsError';
+export { default as JobDetailsError } from '@/Components/Errors/type/JobDetailsError';
+export { default as VerifyEmailError } from '@/Components/Errors/type/VerifyEmailError';
+export { default as GenericError } from '@/Components/Errors/type/GenericError';

@@ -1,8 +1,8 @@
 import React, { Suspense } from "react";
 import { get, map } from "lodash-es";
-import MainText from "../../MainText";
+import MainText from "@/Components/Common/MainText";
 import { Briefcase, MapPin, Clock, ChevronRight, GraduationCap } from "lucide-react";
-import MainButton from "../../MainButton";
+import MainButton from "@/Components/Common/MainButton";
 import { useNavigation } from "@/hooks/common";
 import { Since } from "@/Utils/Filter/date";
 

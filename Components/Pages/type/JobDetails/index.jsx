@@ -1,9 +1,9 @@
 import React, { Suspense } from "react";
 import { ArrowLeft } from "lucide-react";
-import { useJobDetails } from "../../../../hooks/useJobs";
-import { useNavigation } from "../../../../hooks/common"; 
-import MainCard from "../../../Common/Cards";
-import MainButton from "../../../Common/MainButton";
+import { useJobDetails } from "@/hooks/useJobs";
+import { useNavigation } from "@/hooks/common"; 
+import MainCard from "@/Components/Common/Cards";
+import MainButton from "@/Components/Common/MainButton";
 import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
 import { JobDetailsError } from "@/Components/Errors";
 

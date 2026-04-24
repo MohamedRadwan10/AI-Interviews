@@ -1,6 +1,6 @@
 import React from "react";
 import { Clock, User, CheckCircle2, AlertCircle } from "lucide-react";
-import MainText from "../../../Common/MainText";
+import MainText from "@/Components/Common/MainText";
 import AudioLevelMeter from "@/Components/Common/AudioLevelMeter";
 import Webcam from "react-webcam";
 import MainImage from "@/Components/Common/Image";

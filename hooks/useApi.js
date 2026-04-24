@@ -1,9 +1,9 @@
 import { useEffect, useCallback, useContext, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { get } from "lodash-es";
-import { API_BASE_URL, AUTH_ENDPOINTS } from "../Config/apiRegistry";
-import { fetchApiData } from "../Store/Slices/apiThunk";
-import { UserTokenContext } from "../Context/UserTokenContext";
+import { API_BASE_URL, AUTH_ENDPOINTS } from "@/Config/apiRegistry";
+import { fetchApiData } from "@/Store/Slices/apiThunk";
+import { UserTokenContext } from "@/Context/UserTokenContext";
 
 export const useApi = ({ type, params = {}, data = null, customHeaders = {}, autoFetch = true, urlSuffix = "" }) => {
   const dispatch = useDispatch();
@@ -34,19 +34,18 @@ export const useApi = ({ type, params = {}, data = null, customHeaders = {}, aut
         headers.Authorization = `Bearer ${tokenToUse}`;
       }
 
-      // Support FormData and avoid sending empty objects if no data is provided
       let finalData = override.data !== undefined ? override.data : data;
       
-      // Merge only if both are plain objects
       if (data && override.data && !(data instanceof FormData) && !(override.data instanceof FormData)) {
         finalData = { ...data, ...override.data };
       }
+      const targetUrl = `${endpointConfig.url}${override.urlSuffix || urlSuffix || ""}`;
 
       try {
         const result = await dispatch(
           fetchApiData({
             key: type,
-            url: `${endpointConfig.url}${override.urlSuffix || urlSuffix || ""}`,
+            url: targetUrl,
             method: endpointConfig.method,
             params: { ...params, ...(override.params || {}) },
             data: finalData,
@@ -55,6 +54,7 @@ export const useApi = ({ type, params = {}, data = null, customHeaders = {}, aut
         ).unwrap();
         return result;
       } catch (error) {
+        console.error(`[useApi] Request Failed [${type}]:`, error);
         throw error;
       }
     },

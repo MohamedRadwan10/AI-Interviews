@@ -1,7 +1,7 @@
 import React from "react";
 import { get } from "lodash-es";
-import MainText from "../../MainText";
-import MainButton from "../../MainButton";
+import MainText from "@/Components/Common/MainText";
+import MainButton from "@/Components/Common/MainButton";
 import { MapPin, Clock, ExternalLink } from "lucide-react";
 import { Since } from "@/Utils/Filter/date";
 import { useNavigation } from "@/hooks/common";

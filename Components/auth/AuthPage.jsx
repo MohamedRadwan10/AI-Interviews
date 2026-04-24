@@ -6,11 +6,11 @@ import MainText from "@/Components/Common/MainText";
 import logoImage from "@/public/assets/logo.png";
 import MainButton from "@/Components/Common/MainButton";
 import Link from "next/link";
-import MainForm from "../Common/MainForm";
+import MainForm from "@/Components/Common/MainForm";
 import { useSearchParams } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
 import { Suspense } from "react";
-import RouteLoading from "../Common/LoadingSkeleton/RouteLoading";
+import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
 import { GenericError } from "@/Components/Errors";
 
 const AuthPageContent = ({ config, onSubmit, apiError, isLoading }) => {
@@ -90,43 +90,47 @@ const AuthPageContent = ({ config, onSubmit, apiError, isLoading }) => {
 
         <MainForm config={config} onSubmit={handleSubmit} isLoading={isLoading} />
 
-        <div className="flex items-center justify-between gap-3 my-4 dark:text-dark-gray text-light-gray text-sm">
-          <div className="w-1/3 h-[1px] dark:bg-dark-gray bg-light-gray"></div>
-          OR CONTINUE WITH
-          <div className="w-1/3 h-[1px] dark:bg-dark-gray bg-light-gray"></div>
-        </div>
+        {!get(config, "hideSocial") && (
+          <>
+            <div className="flex items-center justify-between gap-3 my-4 dark:text-dark-gray text-light-gray text-sm">
+              <div className="w-1/3 h-[1px] dark:bg-dark-gray bg-light-gray"></div>
+              OR CONTINUE WITH
+              <div className="w-1/3 h-[1px] dark:bg-dark-gray bg-light-gray"></div>
+            </div>
 
-        <div className="flex gap-4">
-          <MainButton
-            type="button"
-            className="flex items-center justify-center gap-2 flex-1 dark:bg-dark-primary-1 bg-light-primary py-2 rounded-md text-light-black dark:text-dark-white"
-          >
-            <MainImage
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              alt="Google Logo"
-              width={20}
-              height={20}
-              priority={true}
-              imageClassName="object-contain"
-            />
-            Google
-          </MainButton>
+            <div className="flex gap-4">
+              <MainButton
+                type="button"
+                className="flex items-center justify-center gap-2 flex-1 dark:bg-dark-primary-1 bg-light-primary py-2 rounded-md text-light-black dark:text-dark-white"
+              >
+                <MainImage
+                  src="https://www.svgrepo.com/show/475656/google-color.svg"
+                  alt="Google Logo"
+                  width={20}
+                  height={20}
+                  priority={true}
+                  imageClassName="object-contain"
+                />
+                Google
+              </MainButton>
 
-          <MainButton
-            type="button"
-            className="flex items-center justify-center gap-2 flex-1 dark:bg-dark-primary-1 bg-light-primary py-2 rounded-md text-light-black dark:text-dark-white"
-          >
-            <MainImage
-              src="https://www.svgrepo.com/show/448239/microsoft.svg"
-              alt="Microsoft Logo"
-              width={20}
-              height={20}
-              priority={true}
-              imageClassName="object-contain"
-            />
-            Microsoft
-          </MainButton>
-        </div>
+              <MainButton
+                type="button"
+                className="flex items-center justify-center gap-2 flex-1 dark:bg-dark-primary-1 bg-light-primary py-2 rounded-md text-light-black dark:text-dark-white"
+              >
+                <MainImage
+                  src="https://www.svgrepo.com/show/448239/microsoft.svg"
+                  alt="Microsoft Logo"
+                  width={20}
+                  height={20}
+                  priority={true}
+                  imageClassName="object-contain"
+                />
+                Microsoft
+              </MainButton>
+            </div>
+          </>
+        )}
 
         {footerLinks.length > 0 && (
           <MainText

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Camera, Mic, Play, ShieldCheck, Info } from "lucide-react";
 import { map } from "lodash-es";
-import MainButton from "../../../Common/MainButton";
-import MainText from "../../../Common/MainText";
+import MainButton from "@/Components/Common/MainButton";
+import MainText from "@/Components/Common/MainText";
 import AudioLevelMeter from "@/Components/Common/AudioLevelMeter";
 import Webcam from "react-webcam";
 import { useNavigation } from "@/hooks/common";

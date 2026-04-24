@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { CheckCircle2, FileText, LayoutDashboard, Loader2 } from "lucide-react";
-import MainText from "../../../Common/MainText";
-import MainButton from "../../../Common/MainButton";
+import MainText from "@/Components/Common/MainText";
+import MainButton from "@/Components/Common/MainButton";
 import { useNavigation } from "@/hooks/common";
 
 export const InterviewComplete = ({ message, sessionId }) => {

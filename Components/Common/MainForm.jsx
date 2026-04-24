@@ -1,7 +1,7 @@
 import { map, get, set } from "lodash-es";
 import { useFormik } from "formik";
 import MainButton from "@/Components/Common/MainButton";
-import MainInput from "./Inputs";
+import MainInput from "@/Components/Common/Inputs";
 import { buildValidationSchema } from "@/Utils/Func/ValidationSchema";
 import { useMemo } from "react";
 
