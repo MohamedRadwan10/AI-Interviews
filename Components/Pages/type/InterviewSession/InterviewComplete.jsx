@@ -1,24 +1,56 @@
-import React from "react";
-import { CheckCircle2 } from "lucide-react";
+import React, { useEffect } from "react";
+import { CheckCircle2, FileText, LayoutDashboard, Loader2 } from "lucide-react";
 import MainText from "../../../Common/MainText";
 import MainButton from "../../../Common/MainButton";
+import { useNavigation } from "@/hooks/common";
 
-export const InterviewComplete = ({ message }) => (
-  <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 p-6 text-center animate-in zoom-in-95 duration-500">
-    <div className="w-24 h-24 bg-status-success/10 rounded-full flex items-center justify-center mb-2">
-      <CheckCircle2 className="w-12 h-12 text-status-success" />
+export const InterviewComplete = ({ message, sessionId }) => {
+  const { navigateTo, replaceUrl } = useNavigation();
+
+  useEffect(() => {
+    if (sessionId) {
+      const timer = setTimeout(() => {
+        replaceUrl(`/intelliHire/report/${sessionId}`);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [sessionId, replaceUrl]);
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 p-6 text-center animate-in zoom-in-95 duration-500">
+      <div className="w-24 h-24 bg-status-success/10 rounded-full flex items-center justify-center mb-2">
+        <CheckCircle2 className="w-12 h-12 text-status-success" />
+      </div>
+      <MainText tag="h2" className="text-3xl font-bold text-ui-textMain dark:text-white">
+        Interview Complete!
+      </MainText>
+      <MainText className="text-ui-textMuted dark:text-ui-muted max-w-lg">
+        {message || "Your responses have been successfully submitted and your session is now closed. Your report is being generated and will be available shortly."}
+      </MainText>
+      
+      {sessionId && (
+        <div className="flex items-center gap-2 mt-2 text-brand-primary font-medium">
+          <Loader2 className="w-5 h-5 animate-spin" />
+          <MainText>Redirecting to your report...</MainText>
+        </div>
+      )}
+
+      <div className="flex items-center gap-4 mt-4">
+        {sessionId && (
+          <MainButton
+            onClick={() => navigateTo(`/intelliHire/report/${sessionId}`)}
+            className="flex items-center gap-2 bg-brand-primary text-white px-8 py-3 text-lg rounded-xl font-semibold hover:bg-brand-primaryDark transition-colors shadow-md hover:shadow-lg"
+          >
+            <FileText className="w-5 h-5" /> View Report
+          </MainButton>
+        )}
+        <MainButton
+          onClick={() => navigateTo("/intelliHire")}
+          className="flex items-center gap-2 bg-white dark:bg-dark-primary-3 text-ui-textMain dark:text-white border border-ui-borderLight dark:border-ui-border px-8 py-3 text-lg rounded-xl font-semibold hover:bg-light-main dark:hover:bg-dark-primary-4 transition-colors"
+        >
+          <LayoutDashboard className="w-5 h-5" /> Dashboard
+        </MainButton>
+      </div>
     </div>
-    <MainText tag="h2" className="text-3xl font-bold text-ui-textMain dark:text-white">
-      Interview Complete!
-    </MainText>
-    <MainText className="text-ui-textMuted max-w-lg">
-      {message || "Your responses have been successfully submitted and your session is now closed. Your report is being generated and will be available in your dashboard soon."}
-    </MainText>
-    <MainButton 
-      onClick={() => window.location.href = '/intelliHire'} 
-      className="bg-brand-primary text-white px-8 py-3 mt-4 text-lg"
-    >
-      Return to Dashboard
-    </MainButton>
-  </div>
-);
+  );
+};

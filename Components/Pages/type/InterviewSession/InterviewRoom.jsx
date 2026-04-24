@@ -5,7 +5,7 @@ import AnswerConsole from "./AnswerConsole";
 import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
 import { useInterviewSession } from "@/hooks/useInterviewSession";
 import { InterviewComplete } from "./InterviewComplete";
-import { InterviewError } from "./InterviewError";
+import { InterviewError } from "@/Components/Errors";
 import { InterviewSidebar } from "./InterviewSidebar";
 import { get } from "lodash-es";
 
@@ -23,6 +23,7 @@ const InterviewRoom = ({ jobId }) => {
     isLastQuestion,
     interviewFinished,
     finishMessage,
+    sessionId,
   } = useInterviewSession(jobId);
 
   useEffect(() => {
@@ -31,7 +32,7 @@ const InterviewRoom = ({ jobId }) => {
     }
   }, [isConnected, isSessionStarted, error, isLoading, startInterview]);
 
-  if (interviewFinished) return <InterviewComplete message={finishMessage} />;
+  if (interviewFinished) return <InterviewComplete message={finishMessage} sessionId={sessionId} />;
   if (error) return <InterviewError error={error} />;
   if (!isSessionStarted) return <RouteLoading type="interviewRoom" />;
 

@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { useVerifyEmail } from "@/hooks/useVerifyEmail";
 import MainText from "@/Components/Common/MainText";
 import { CheckCircle2, XCircle } from "lucide-react";
+import { VerifyEmailError } from "@/Components/Errors";
 
 const VerifyEmailContent = () => {
   const { status, error } = useVerifyEmail();
@@ -27,25 +28,7 @@ const VerifyEmailContent = () => {
       );
     }
 
-    if (status === "error") {
-      return (
-        <>
-          <div className="flex justify-center mb-8">
-            <XCircle className="w-16 h-16 text-status-error" />
-          </div>
-          <MainText
-            tag="h1"
-            title="Verification Failed"
-            className="text-3xl font-extrabold text-ui-textMain dark:text-white mb-4 tracking-tight"
-          />
-          <MainText
-            tag="p"
-            title={error}
-            className="text-status-error text-base leading-relaxed"
-          />
-        </>
-      );
-    }
+    if (status === "error") return <VerifyEmailError error={error} />;
 
     return (
       <>

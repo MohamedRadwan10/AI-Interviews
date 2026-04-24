@@ -74,4 +74,8 @@ export const AUTH_ENDPOINTS = {
     url: "/Session/ActiveSessions", // token only
     method: "GET",
   },
+  report: {
+    url: "/Report", // /{SessionId} فى اخر ال endpoint
+    method: "GET",
+  },
 };

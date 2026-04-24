@@ -129,7 +129,6 @@ export const useInterviewSession = (jobId) => {
     try {
       await callEndSession();
       setInterviewFinished(true);
-      setSessionId(null);
       setCurrentQuestion(null);
       setQuestionIndex(0);
     } catch (err) {
@@ -157,9 +156,17 @@ export const useInterviewSession = (jobId) => {
     formData.append("UserAnswer", answerData.text || "");
     formData.append("voiceFile", answerData.voiceFile || new Blob([], { type: "application/octet-stream" }), "voice.wav");
 
+    const questionOrder = get(parsedQuestion, "order", questionIndex + 1);
+    const effectiveTotal = get(parsedQuestion, "totalquestion", totalQuestions);
+
     try {
-      await callNextQuestion({ data: formData });
-      if (questionIndex + 1 >= totalQuestions) {
+      const result = await callNextQuestion({ data: formData });
+      const responseData = get(result, "data");
+
+      // Check if backend signals completion via response
+      const isCompleted = get(responseData, "isCompleted") || get(responseData, "isFinished") || get(responseData, "isLast") || get(responseData, "completed") === true;
+
+      if (isCompleted || (effectiveTotal && questionOrder >= effectiveTotal)) {
         await finishInterview();
       } else {
         setQuestionIndex((prev) => prev + 1);
@@ -171,24 +178,33 @@ export const useInterviewSession = (jobId) => {
     }
   }, [sessionId, currentQuestion, questionIndex, totalQuestions, finishInterview, callNextQuestion]);
 
-  return useMemo(() => ({
-    isSessionStarted,
-    sessionId,
-    currentQuestion,
-    isConnected,
-    isLoading,
-    isSubmitting,
-    startInterview,
-    submitAnswer,
-    finishInterview,
-    isFinishing,
-    error,
-    questionIndex,
-    isLastQuestion: questionIndex + 1 >= totalQuestions,
-    totalQuestions,
-    interviewFinished,
-    finishMessage,
-  }), [
+  return useMemo(() => {
+    let parsedQuestion = currentQuestion;
+    if (typeof currentQuestion === "string") {
+      try { parsedQuestion = JSON.parse(currentQuestion); } catch (e) {}
+    }
+    const questionOrder = get(parsedQuestion, "order", questionIndex + 1);
+    const effectiveTotal = get(parsedQuestion, "totalquestion", totalQuestions);
+
+    return {
+      isSessionStarted,
+      sessionId,
+      currentQuestion,
+      isConnected,
+      isLoading,
+      isSubmitting,
+      startInterview,
+      submitAnswer,
+      finishInterview,
+      isFinishing,
+      error,
+      questionIndex,
+      isLastQuestion: effectiveTotal ? questionOrder >= effectiveTotal : false,
+      totalQuestions: effectiveTotal,
+      interviewFinished,
+      finishMessage,
+    };
+  }, [
     isSessionStarted, sessionId, currentQuestion, isConnected, isLoading, 
     isSubmitting, startInterview, submitAnswer, finishInterview, isFinishing, 
     error, questionIndex, totalQuestions, interviewFinished, finishMessage

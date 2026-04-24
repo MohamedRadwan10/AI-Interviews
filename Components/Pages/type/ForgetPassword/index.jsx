@@ -5,6 +5,7 @@ import { useForgetPassword } from "@/hooks/useForgetPassword";
 import { forgetPasswordConfig } from "@/Config/FieldsConfig";
 import { EmailStep, OTPStep, PasswordStep } from "./StepComponents";
 import MainText from "@/Components/Common/MainText";
+import { GenericError } from "@/Components/Errors";
 
 const ForgetPasswordPage = () => {
   const { step, otp, isLoading, error, handleEmailSubmit, handleOTPSubmit, handlePasswordSubmit, handleOtpChange } = useForgetPassword();
@@ -40,11 +41,7 @@ const ForgetPasswordPage = () => {
           />
         </div>
 
-        {error && (
-          <div className="mb-6 p-4 bg-status-error/10 border border-status-error/20 text-status-error rounded-xl text-sm font-medium text-center">
-            {error}
-          </div>
-        )}
+        <GenericError error={error} className="mb-6 justify-center" />
 
         <div className="transition-all duration-500 ease-in-out">
           {getStepContent()}

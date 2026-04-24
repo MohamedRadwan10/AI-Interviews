@@ -24,6 +24,15 @@ export const UserTokenProvider = ({ children }) => {
         console.error("Failed to parse userData:", e);
       }
     }
+
+    const handleSync = (e) => {
+      const { newToken, newRefreshToken } = e.detail;
+      if (newToken) setUserToken(newToken);
+      if (newRefreshToken) setRefreshToken(newRefreshToken);
+    };
+
+    window.addEventListener("tokenRefreshed", handleSync);
+    return () => window.removeEventListener("tokenRefreshed", handleSync);
   }, []);
 
   const logout = () => {

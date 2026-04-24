@@ -28,21 +28,33 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
+        const accessToken = localStorage.getItem("userToken");
         const refreshToken = localStorage.getItem("refreshToken");
-        if (!refreshToken) throw new Error("No refresh token available");
+        
+        if (!refreshToken || !accessToken) throw new Error("Missing tokens for refresh");
 
         const response = await axios.post(`${API_BASE_URL}${AUTH_ENDPOINTS.refreshToken.url}`, {
+          accessToken: accessToken,
           refreshToken: refreshToken
         });
 
-        const newToken = response.data?.data?.token || response.data?.token;
-        const newRefreshToken = response.data?.data?.refreshToken || response.data?.refreshToken;
+        const responseData = response.data?.data || response.data;
+        const newToken = responseData?.token;
+        const newRefreshToken = responseData?.refreshToken;
 
-        if (!newToken) throw new Error("New token not found in response");
+        if (!newToken || (response.data?.isSuccess === false)) {
+          throw new Error(response.data?.message || "Token refresh failed");
+        }
 
         localStorage.setItem("userToken", newToken);
         if (newRefreshToken) {
           localStorage.setItem("refreshToken", newRefreshToken);
+        }
+
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("tokenRefreshed", { 
+            detail: { newToken, newRefreshToken } 
+          }));
         }
 
         originalRequest.headers.Authorization = `Bearer ${newToken}`;

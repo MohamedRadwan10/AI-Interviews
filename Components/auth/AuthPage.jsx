@@ -11,6 +11,7 @@ import { useSearchParams } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
 import { Suspense } from "react";
 import RouteLoading from "../Common/LoadingSkeleton/RouteLoading";
+import { GenericError } from "@/Components/Errors";
 
 const AuthPageContent = ({ config, onSubmit, apiError, isLoading }) => {
   const logo = get(logoImage, "src");
@@ -65,11 +66,7 @@ const AuthPageContent = ({ config, onSubmit, apiError, isLoading }) => {
           />
         </div>
 
-        {apiError && (
-          <div className="w-full bg-status-error/10 text-status-error p-3 rounded-md mb-6 text-center text-sm font-semibold border border-status-error/20 shadow-sm">
-            {typeof apiError === "object" ? (apiError.message || JSON.stringify(apiError)) : apiError}
-          </div>
-        )}
+        <GenericError error={apiError} className="mb-6 justify-center" />
 
         {isSuccess && (
           <div className="w-full bg-status-success/10 border border-status-success/20 p-4 rounded-xl mb-6 flex items-start gap-3">

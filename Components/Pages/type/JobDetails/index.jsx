@@ -5,6 +5,7 @@ import { useNavigation } from "../../../../hooks/common";
 import MainCard from "../../../Common/Cards";
 import MainButton from "../../../Common/MainButton";
 import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
+import { JobDetailsError } from "@/Components/Errors";
 
 const JobDetailsContent = ({ jobId }) => {
   const { navigateBack } = useNavigation();
@@ -12,13 +13,7 @@ const JobDetailsContent = ({ jobId }) => {
 
   if (loading) return <RouteLoading type="jobDetails" />;
 
-  if (!loading && error) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="text-status-error font-medium">Failed to load job details.</div>
-      </div>
-    );
-  }
+  if (!loading && error) return <JobDetailsError error={error} />;
 
   if (!loading && !job) {
     return (
