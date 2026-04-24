@@ -7,6 +7,7 @@ import AudioLevelMeter from "@/Components/Common/AudioLevelMeter";
 import Webcam from "react-webcam";
 import { useNavigation } from "@/hooks/common";
 import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
+import { GenericError } from "@/Components/Errors";
 
 const INSTRUCTIONS = [
   "Ensure you are in a quiet room with no background noise.",
@@ -99,12 +100,7 @@ const InterviewIntro = ({ jobId }) => {
               </MainButton>
             )}
 
-            {error && (
-              <div className="flex items-center gap-2 p-3 bg-status-error/10 text-status-error rounded-xl text-xs">
-                <Info className="w-4 h-4" />
-                <MainText>{error}</MainText>
-              </div>
-            )}
+            <GenericError error={error} />
           </div>
         </div>
       </div>

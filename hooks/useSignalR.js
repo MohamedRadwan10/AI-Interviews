@@ -64,10 +64,10 @@ export const useSignalR = (token, userId) => {
       }
     });
 
-    connection.on("reportGenerationStarted", (session, message) => {
-      console.log("✅ SignalR reportGenerationStarted:", session, message);
+    connection.on("reportGenerationStarted", (data) => {
+      console.log("✅ SignalR reportGenerationStarted:", data);
       if (callbacksRef.current["reportGenerationStarted"]) {
-        callbacksRef.current["reportGenerationStarted"](session, message);
+        callbacksRef.current["reportGenerationStarted"](data);
       }
     });
 

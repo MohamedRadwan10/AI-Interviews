@@ -1,9 +1,9 @@
 import React from "react";
 import { AlertCircle } from "lucide-react";
-import MainText from "../../../Common/MainText";
-import MainButton from "../../../Common/MainButton";
+import MainText from "@/Components/Common/MainText";
+import MainButton from "@/Components/Common/MainButton";
 
-export const InterviewError = ({ error }) => (
+const InterviewError = ({ error }) => (
   <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 p-6 text-center">
     <AlertCircle className="w-16 h-16 text-status-warning mb-2" />
     <MainText tag="h2" className="text-2xl font-bold">Session Access Denied</MainText>
@@ -22,3 +22,5 @@ export const InterviewError = ({ error }) => (
     </div>
   </div>
 );
+
+export default InterviewError;

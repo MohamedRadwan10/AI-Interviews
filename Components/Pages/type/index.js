@@ -4,6 +4,7 @@ import { AboutLoading } from '@/Components/Common/LoadingSkeleton/type/AboutLoad
 import { JobsLoading } from '@/Components/Common/LoadingSkeleton/type/JobsLoading';
 import { JobDetailsLoading } from '@/Components/Common/LoadingSkeleton/type/JobDetailsLoading';
 import { ActiveSessionsLoading } from '@/Components/Common/LoadingSkeleton/type/ActiveSessionsLoading';
+import { ReportLoading } from '@/Components/Common/LoadingSkeleton/type/ReportLoading';
 
 export const HomePage = dynamic(() => import('./Home'), { loading: () => <HomeLoading /> });
 export const AboutPage = dynamic(() => import('./About'), { loading: () => <AboutLoading /> });
@@ -16,3 +17,4 @@ export const VerifyEmailProcessPage = dynamic(() => import('./VerifyEmail/Verify
 export const InterviewIntroPage = dynamic(() => import('./InterviewSession').then(m => m.InterviewIntroPage));
 export const InterviewRoomPage = dynamic(() => import('./InterviewSession').then(m => m.InterviewRoomPage));
 export const ActiveSessionsPage = dynamic(() => import('./ActiveSessions'), { loading: () => <ActiveSessionsLoading /> });
+export const ReportPage = dynamic(() => import('./Report'), { loading: () => <ReportLoading /> });

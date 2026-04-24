@@ -8,4 +8,6 @@ export const JobHeaderCard = lazy(() => import('./JobHeaderCard'));
 export const JobSpecsCard = lazy(() => import('./JobSpecsCard'));
 export const JobContentCard = lazy(() => import('./JobContentCard'));
 export const ActiveSessionCard = lazy(() => import('./ActiveSessionCard'));
+export const ReportScoreCard = lazy(() => import('./ReportScoreCard'));
+export const ReportQuestionCard = lazy(() => import('./ReportQuestionCard'));
 
