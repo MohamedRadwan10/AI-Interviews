@@ -1,24 +1,17 @@
 import { get } from "lodash-es";
 import { InputText } from "primereact/inputtext";
+import MainText from "@/Components/Common/MainText";
 
 const TextField = (props) => {
-  const field_name = get(props, "field_name");
-  const value = get(props, "value", "");
-  const onChange = get(props, "onChange");
-  const onBlur = get(props, "onBlur");
-  const label = get(props, "label");
-  const placeholder = get(props, "placeholder", "Enter text");
-  const error = get(props, "error");
-  const containerClassName = get(props, "containerClassName", "");
-  const fieldClassName = get(props, "fieldClassName", "");
+  const { field_name, value = "", onChange, onBlur, label, placeholder = "Enter text", error, containerClassName = "", fieldClassName = "", validation } = props;
+  const isRequired = get(validation, "required");
 
   return (
     <div className={`w-full mb-2 ${containerClassName}`}>
-      {label && (
-        <label htmlFor={field_name} className="block mb-1 font-medium">
-          {label}
-        </label>
-      )}
+      <div className="flex items-center gap-1 mb-1">
+        {label && <MainText tag="label" title={label} className="font-medium text-ui-textMuted dark:text-dark-gray text-sm" />}
+        {isRequired && <span className="text-status-error text-xs">*</span>}
+      </div>
       <InputText
         id={field_name}
         name={field_name}
@@ -26,11 +19,11 @@ const TextField = (props) => {
         onChange={onChange}
         onBlur={onBlur}
         placeholder={placeholder}
-        className={`w-full p-2 border rounded ${
-          error ? "border-status-error" : "border-ui-borderLight"
+        className={`w-full p-2 border rounded outline-none focus:border-brand-primary transition-all bg-light-blue50 dark:bg-dark-primary-3 ${
+          error ? "border-status-error" : "border-ui-borderLight dark:border-dark-gray"
         } ${fieldClassName}`}
       />
-      {error && <small className="text-status-error">{error}</small>}
+      {error && <MainText title={error} className="text-status-error text-[10px] mt-1" />}
     </div>
   );
 };

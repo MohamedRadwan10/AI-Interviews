@@ -4,7 +4,7 @@ import React, { useRef } from "react";
 import { Avatar } from "primereact/avatar";
 import { Menu } from "primereact/menu";
 import { useLogout } from "@/hooks/useAuth";
-import { useInterviewSessions } from "@/hooks/useInterviewSessions";
+import { useInterviewSessions } from "@/hooks/useActiveSessions";
 import { useNavigation } from "@/hooks/common";
 import { Badge } from "primereact/badge";
 import MainButton from "@/Components/Common/MainButton";

@@ -21,6 +21,9 @@ export const UserAccountProvider = ({ children }) => {
     userId: data?.id || data?.userId || "",
   }), [data, loading, error, refetch]);
 
+  useEffect(() => {
+    console.log('user account data',data)
+  }, [data])
   return (
     <UserAccountContext.Provider value={value}>
       {children}

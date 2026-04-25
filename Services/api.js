@@ -1,5 +1,6 @@
 import axios from "axios";
 import { API_BASE_URL, AUTH_ENDPOINTS } from "@/Config/apiRegistry";
+import { normalizeUrl } from "@/Utils/Func/UrlHelper";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -21,29 +22,36 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry && 
-        originalRequest.url !== AUTH_ENDPOINTS.login.url && 
-        originalRequest.url !== AUTH_ENDPOINTS.refreshToken.url) {
-      
+    const is401 = error.response?.status === 401;
+    const isRetry = originalRequest._retry;
+    
+    const requestUrl = normalizeUrl(originalRequest.url, API_BASE_URL);
+    const loginUrl = normalizeUrl(AUTH_ENDPOINTS.login.url, API_BASE_URL);
+    const refreshUrl = normalizeUrl(AUTH_ENDPOINTS.refreshToken.url, API_BASE_URL);
+
+    if (is401 && !isRetry && requestUrl !== loginUrl && requestUrl !== refreshUrl) {
       originalRequest._retry = true;
 
       try {
         const accessToken = localStorage.getItem("userToken");
         const refreshToken = localStorage.getItem("refreshToken");
         
-        if (!refreshToken || !accessToken) throw new Error("Missing tokens for refresh");
+        if (!refreshToken || !accessToken) {
+          throw new Error("Missing tokens for refresh");
+        }
 
-        const response = await axios.post(`${API_BASE_URL}${AUTH_ENDPOINTS.refreshToken.url}`, {
+        const refreshFullUrl = `${API_BASE_URL}${AUTH_ENDPOINTS.refreshToken.url}`;
+        const response = await axios.post(refreshFullUrl, {
           accessToken: accessToken,
           refreshToken: refreshToken
         });
 
         const responseData = response.data?.data || response.data;
-        const newToken = responseData?.token;
+        const newToken = responseData?.token || responseData?.accessToken;
         const newRefreshToken = responseData?.refreshToken;
 
-        if (!newToken || (response.data?.isSuccess === false)) {
-          throw new Error(response.data?.message || "Token refresh failed");
+        if (!newToken || responseData?.isSuccess === false) {
+          throw new Error(responseData?.message || "Token refresh failed");
         }
 
         localStorage.setItem("userToken", newToken);
@@ -57,13 +65,19 @@ api.interceptors.response.use(
           }));
         }
 
-        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
+        
+        if (originalRequest.headers.set) {
+          originalRequest.headers.set("Authorization", `Bearer ${newToken}`);
+        }
+
         return api(originalRequest);
       } catch (refreshError) {
-        console.error("Refresh token failed:", refreshError);
+        console.error("Token refresh failed, logging out...", refreshError);
         localStorage.removeItem("userToken");
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("userData");
+        
         if (typeof window !== "undefined") {
           window.location.href = "/login";
         }

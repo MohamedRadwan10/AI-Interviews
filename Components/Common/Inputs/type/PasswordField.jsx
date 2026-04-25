@@ -4,20 +4,14 @@ import { Divider } from "primereact/divider";
 import MainText from "@/Components/Common/MainText";
 
 const PasswordField = (props) => {
-  const value = get(props, "value");
-  const onChange = get(props, "onChange");
-  const label = get(props, "label");
-  const onBlur = get(props, "onBlur");
-  const error = get(props, "error");
-  const field_name = get(props, "field_name");
-  const containerClassName = get(props, "containerClassName", "");
-  const fieldClassName = get(props, "fieldClassName", "");
+  const { field_name, value = "", onChange, onBlur, label, placeholder = "Enter your password", error, containerClassName = "", fieldClassName = "", validation } = props;
+  const isRequired = get(validation, "required");
 
   const footer = (
     <>
       <Divider />
       <MainText title="Suggestions" className="mt-2 text-sm font-semibold" />
-      <ul className="pl-2 ml-2 mt-0 line-height-3">
+      <ul className="pl-2 ml-2 mt-0 text-xs">
         <li>At least one lowercase</li>
         <li>At least one uppercase</li>
         <li>At least one numeric</li>
@@ -28,46 +22,27 @@ const PasswordField = (props) => {
 
   return (
     <div className={`w-full mb-2 ${containerClassName}`}>
-      <label htmlFor={field_name} className="block mb-1 font-medium">
-        {label}
-      </label>
-      <div className="w-full">
-        <Password
-          id={field_name}
-          name={field_name}
-          value={value}
-          onChange={(e) => {
-            const target = get(e, "target");
-            const eventValue = get(e, "value");
-            const newValue = target ? get(target, "value") : eventValue;
-            if (onChange) {
-              onChange({
-                target: {
-                  name: field_name,
-                  value: newValue,
-                },
-              });
-            }
-          }}
-          footer={footer}
-          onBlur={onBlur}
-          placeholder="Enter your password"
-          toggleMask
-          feedback={true}
-          promptLabel="Pick a password"
-          weakLabel="Too simple"
-          mediumLabel="Average complexity"
-          strongLabel="Complex password"
-          inputClassName={`!w-full p-2 border rounded ${
-            error ? "border-status-error" : "border-ui-borderLight"
-          } ${fieldClassName}`}
-          className={`w-full`}
-          panelClassName="password-panel"
-          style={{ width: "100%" }}
-          inputStyle={{ width: "100%" }}
-        />
-        {error && <small className="text-status-error block mt-1">{error}</small>}
+      <div className="flex items-center gap-1 mb-1">
+        {label && <MainText tag="label" title={label} className="font-medium text-ui-textMuted dark:text-dark-gray text-sm" />}
+        {isRequired && <span className="text-status-error text-xs">*</span>}
       </div>
+      <Password
+        id={field_name}
+        name={field_name}
+        value={value}
+        onChange={onChange}
+        onBlur={onBlur}
+        footer={footer}
+        placeholder={placeholder}
+        toggleMask
+        feedback={true}
+        inputClassName={`!w-full p-2 border rounded outline-none focus:border-brand-primary transition-all bg-light-blue50 dark:bg-dark-primary-3 ${
+          error ? "border-status-error" : "border-ui-borderLight dark:border-dark-gray"
+        } ${fieldClassName}`}
+        className="w-full"
+        style={{ width: "100%" }}
+      />
+      {error && <MainText title={error} className="text-status-error text-[10px] mt-1" />}
     </div>
   );
 };

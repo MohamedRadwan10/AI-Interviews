@@ -56,10 +56,9 @@ const MainForm = (props) => {
           return (
             <MainInput
               key={fieldName}
+              {...field}
               field_name={fieldName}
               type={fieldType}
-              label={get(field, "label")}
-              placeholder={get(field, "placeholder")}
               value={get(values, fieldName)}
               error={get(touched, fieldName) && get(errors, fieldName)}
               onChange={(e) => {
@@ -73,8 +72,6 @@ const MainForm = (props) => {
                 }
               }}
               onBlur={formik.handleBlur}
-              fieldClassName={get(field, "fieldClassName")}
-              containerClassName={get(field, "containerClassName")}
               options={options}
             />
           );

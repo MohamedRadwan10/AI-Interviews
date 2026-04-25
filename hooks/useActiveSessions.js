@@ -1,7 +1,7 @@
 "use client";
-import { useMemo, useContext } from "react";
-import { useApi } from "@/hooks/useApi";
+import { useContext, useMemo } from "react";
 import { UserTokenContext } from "@/Context/UserTokenContext";
+import { useApi } from "@/hooks/useApi";
 import { uniqBy } from "lodash-es";
 
 export const useInterviewSessions = () => {
@@ -9,7 +9,7 @@ export const useInterviewSessions = () => {
 
   const { data, loading, error, refetch } = useApi({
     type: "ActiveSessions",
-    autoFetch: !!userToken,
+    autoFetch: !!userToken || (typeof window !== "undefined" && !!localStorage.getItem("refreshToken")),
   });
 
   const activeSessions = useMemo(() => {
