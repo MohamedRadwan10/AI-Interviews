@@ -1,18 +1,29 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Avatar } from "primereact/avatar";
 import { Menu } from "primereact/menu";
 import { useLogout } from "@/hooks/useAuth";
-import { useInterviewSessions } from "@/hooks/useActiveSessions";
+import { useUserAccount } from "@/Context/UserAccountContext";
+import { getImageUrl } from "@/Utils/Func/UrlHelper";
 import { useNavigation } from "@/hooks/common";
-import { Badge } from "primereact/badge";
+import { get } from "lodash-es";
 import MainButton from "@/Components/Common/MainButton";
 
 const UserAvatar = () => {
   const menuRef = useRef(null);
   const { logout } = useLogout();
+  const { accountData } = useUserAccount();
   const { navigateTo } = useNavigation();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  
+  const photo = get(accountData, "photo");
+  const photoUrl = isMounted ? getImageUrl(photo) : null;
+
   const items = [
     {
       label: "Logout",
@@ -35,9 +46,11 @@ const UserAvatar = () => {
           className="p-0 border-none bg-transparent cursor-pointer rounded-full focus:outline-none focus:ring-2 focus:ring-light-secondary"
         >
           <Avatar 
-            icon="pi pi-user" 
+            image={photoUrl || null}
+            icon={!photoUrl ? "pi pi-user" : null} 
             shape="circle" 
-            className="bg-dark-primary-2 text-dark-black" 
+            size="large"
+            className={`${photoUrl ? "" : "bg-dark-primary-2 text-dark-black"}`} 
           />
         </MainButton>
       </div>

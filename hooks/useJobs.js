@@ -69,9 +69,6 @@ export const usePostJob = () => {
   const postJobApi = useApi({ type: "postJob", autoFetch: false });
 
   const postJob = useCallback(async (values) => {
-    console.log("[usePostJob] Attempting submit. userData:", userData);
-    console.log("[usePostJob] Form values:", values);
-    
     const userRole = userData?.userType || userData?.role || userData?.Role;
     if (userRole?.toLowerCase() !== "company") {
       console.error("[usePostJob] Access Denied: User is not a company. Role found:", userRole);

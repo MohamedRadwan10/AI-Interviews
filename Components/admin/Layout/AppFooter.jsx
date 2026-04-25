@@ -3,17 +3,36 @@ import React from "react";
 import { get, map } from "lodash-es";
 import { DataConstant } from "@/Config/DataConstant";
 import { navigation } from "@/Config/LayoutConfig";
+import { useUserAccount } from "@/Context/UserAccountContext";
+import { useState, useEffect } from "react";
 import FooterBrand from "./Components/FooterBrand";
 import FooterColumn from "./Components/FooterColumn";
 import FooterBottom from "./Components/FooterBottom";
 
 const AppFooter = () => {
+  const { accountData } = useUserAccount();
+  const userType = get(accountData, "userType");
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const brandDesc = get(DataConstant, "footer.brand.desc", "");
   const configSections = get(DataConstant, "footer.sections", []);
   const copyright = get(DataConstant, "footer.copyright", "");
 
+  const filteredNavigation = navigation.filter((item) => {
+    if (item.label === "Post Job" && userType === "Individual") {
+      return false;
+    }
+    return true;
+  });
+
+  const displayNavigation = isMounted ? filteredNavigation : navigation;
+
   const allSections = [
-    { title: "Platform", links: navigation },
+    { title: "Platform", links: displayNavigation },
     ...configSections.filter(s => s.title !== "Navigation")
   ];
 

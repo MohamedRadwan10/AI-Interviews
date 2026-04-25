@@ -4,14 +4,32 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { map, get } from "lodash-es";
 import { navigation } from "@/Config/LayoutConfig";
+import { useUserAccount } from "@/Context/UserAccountContext";
+import { useState, useEffect } from "react";
 
 const NavMenu = () => {
   const pathname = usePathname();
+  const { accountData } = useUserAccount();
+  const userType = get(accountData, "userType");
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const filteredNavigation = navigation.filter((item) => {
+    if (item.label === "Post Job" && userType === "Individual") {
+      return false;
+    }
+    return true;
+  });
+
+  const displayNavigation = isMounted ? filteredNavigation : navigation;
 
   return (
     <nav className="hidden lg:flex items-center bg-light-primary/50 dark:bg-dark-primary-3/30 backdrop-blur-md px-2 py-1.5 rounded-2xl border border-ui-borderLight/50 dark:border-dark-gray/50 shadow-inner">
       <ul className="flex items-center gap-1">
-        {map(navigation, (item) => {
+        {map(displayNavigation, (item) => {
           const label = get(item, "label");
           const path = get(item, "path");
           const isActive = pathname === path;
