@@ -20,10 +20,15 @@ async function handler(request, { params }) {
     }
 
     let body = null;
+    let contentType = request.headers.get("content-type") || "";
+
     if (!["GET", "HEAD"].includes(request.method)) {
-      const contentType = request.headers.get("content-type") || "";
       if (contentType.includes("multipart/form-data")) {
-        body = await request.arrayBuffer();
+        const formData = await request.formData();
+        body = formData;
+        forwardHeaders.delete("content-type");
+      } else if (contentType.includes("application/json")) {
+        body = await request.text();
       } else {
         body = await request.text();
       }

@@ -259,6 +259,10 @@ export const candidateOnboardingConfig = {
       uploadType: "file",
       label: "Upload CV",
       placeholder: "Click to upload CV",
+      validation: {
+        required: true,
+        message: "CV is required",
+      },
     },
     {
       field_name: "PhoneNumber",

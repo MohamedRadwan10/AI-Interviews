@@ -1,28 +1,10 @@
 import { get } from "lodash-es";
 import { Checkbox } from "primereact/checkbox";
+import MainText from "@/Components/Common/MainText";
 
 const CheckBoxField = (props) => {
-  const value = get(props, "value");
-  const onChange = get(props, "onChange");
-  const onBlur = get(props, "onBlur");
-  const label = get(props, "label");
-  const containerClassName = get(props, "containerClassName", "");
-  const error = get(props, "error");
-  const field_name = get(props, "field_name");
-  const fieldClassName = get(props, "fieldClassName", "");
-
-  const handleChange = (e) => {
-    const isChecked = get(e, "checked");
-    if (onChange) {
-      onChange({
-        target: {
-          name: field_name,
-          type: "checkbox",
-          checked: isChecked,
-        },
-      });
-    }
-  };
+  const { field_name, value = false, onChange, onBlur, label, error, containerClassName = "", fieldClassName = "", validation } = props;
+  const isRequired = get(validation, "required");
 
   return (
     <div className={`w-full mb-4 ${containerClassName}`}>
@@ -30,17 +12,17 @@ const CheckBoxField = (props) => {
         <Checkbox
           inputId={field_name}
           name={field_name}
-          checked={value || false}
-          onChange={handleChange}
+          checked={value}
+          onChange={(e) => onChange?.({ target: { name: field_name, checked: e.checked } })}
           onBlur={onBlur}
           className={fieldClassName}
-          invalid={!!error}
         />
-        <label htmlFor={field_name} className="cursor-pointer">
-          {label}
-        </label>
+        <div className="flex items-center gap-1">
+          {label && <MainText tag="label" htmlFor={field_name} title={label} className="cursor-pointer font-medium text-ui-textMuted dark:text-dark-gray text-sm" />}
+          {isRequired && <span className="text-status-error text-xs">*</span>}
+        </div>
       </div>
-      {error && <small className="text-status-error block mt-1">{error}</small>}
+      {error && <MainText title={error} className="text-status-error text-[10px] mt-1" />}
     </div>
   );
 };

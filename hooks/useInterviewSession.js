@@ -6,29 +6,8 @@ import { useSignalR } from "@/hooks/useSignalR";
 import { useApi } from "@/hooks/useApi";
 import { get, uniqBy } from "lodash-es";
 import { useReactMediaRecorder } from "react-media-recorder-2";
+import { formatTime, delay } from "@/Utils/Func/Common";
 const INVALID_SESSION_ID = "00000000-0000-0000-0000-000000000000";
-
-export const useInterviewSessions = () => {
-  const { userToken } = useContext(UserTokenContext);
-
-  const { data, loading, error, refetch } = useApi({
-    type: "ActiveSessions",
-    autoFetch: !!userToken || (typeof window !== "undefined" && !!localStorage.getItem("refreshToken")),
-  });
-
-  const activeSessions = useMemo(() => {
-    const rawData = Array.isArray(data) ? data : [];
-    return uniqBy(rawData, (item) => item.jobid);
-  }, [data]);
-
-  return useMemo(() => ({
-    activeSessions,
-    activeSessionsCount: activeSessions.length,
-    isLoading: loading,
-    error,
-    refetch,
-  }), [activeSessions, loading, error, refetch]);
-};
 
 export const useInterviewSession = (jobId) => {
   const { userToken } = useContext(UserTokenContext);
@@ -176,7 +155,7 @@ export const useInterviewSession = (jobId) => {
       console.log("[submitAnswer] responseData:", responseData, "| isCompleted:", isCompleted, "| questionOrder:", questionOrder, "| effectiveTotal:", effectiveTotal);
 
       if (isCompleted || (effectiveTotal && questionOrder >= effectiveTotal)) {
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        await delay(1500);
         await finishInterview();
       } else {
         setQuestionIndex((prev) => prev + 1);
@@ -275,12 +254,6 @@ export const useInterviewSidebar = (isSessionStarted) => {
     }, 500);
     return () => clearInterval(checkStream);
   }, []);
-
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
 
   return { timeLeft, formatTime, webcamRef, stream };
 };

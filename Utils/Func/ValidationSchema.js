@@ -5,7 +5,7 @@ export const buildValidationSchema = (fields) => {
   const shapeConfig = {};
 
   fields.forEach((field) => {
-    let schema = Yup.string();
+    let schema = field.type === "upload" ? Yup.mixed() : Yup.string();
 
     if (field.validation) {
       const messages = field.validation.message || {};
