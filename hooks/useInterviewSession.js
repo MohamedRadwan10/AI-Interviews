@@ -157,10 +157,12 @@ export const useInterviewSession = (jobId) => {
 
     if (answerData.voiceFile) {
       formData.append("voiceFile", answerData.voiceFile, "voice.wav");
-      formData.append("UserAnswer", ""); 
+      formData.append("UserAnswer", "");
+      console.log("[submitAnswer] Sending VOICE answer");
     } else {
       const textToSubmit = answerData.text || "";
       formData.append("UserAnswer", textToSubmit);
+      console.log("[submitAnswer] Sending TEXT answer:", textToSubmit);
     }
 
     const questionOrder = get(parsedQuestion, "order", questionIndex + 1);
@@ -171,8 +173,10 @@ export const useInterviewSession = (jobId) => {
       const responseData = get(result, "data");
 
       const isCompleted = get(responseData, "isCompleted") || get(responseData, "isFinished") || get(responseData, "isLast") || get(responseData, "completed") === true;
+      console.log("[submitAnswer] responseData:", responseData, "| isCompleted:", isCompleted, "| questionOrder:", questionOrder, "| effectiveTotal:", effectiveTotal);
 
       if (isCompleted || (effectiveTotal && questionOrder >= effectiveTotal)) {
+        await new Promise((resolve) => setTimeout(resolve, 1500));
         await finishInterview();
       } else {
         setQuestionIndex((prev) => prev + 1);
