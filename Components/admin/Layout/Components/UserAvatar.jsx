@@ -13,16 +13,7 @@ const UserAvatar = () => {
   const menuRef = useRef(null);
   const { logout } = useLogout();
   const { navigateTo } = useNavigation();
-  const { activeSessionsCount } = useInterviewSessions();
-
   const items = [
-    {
-      label: `Active Sessions (${activeSessionsCount})`,
-      icon: "pi pi-play",
-      command: () => {
-        navigateTo("/intelliHire/active-sessions");
-      },
-    },
     {
       label: "Logout",
       icon: "pi pi-sign-out",
@@ -49,13 +40,6 @@ const UserAvatar = () => {
             className="bg-dark-primary-2 text-dark-black" 
           />
         </MainButton>
-        {activeSessionsCount > 0 && (
-          <Badge 
-            value={activeSessionsCount} 
-            severity="danger" 
-            className="absolute -top-1 -right-1 pointer-events-none"
-          />
-        )}
       </div>
       <Menu model={items} popup ref={menuRef} id="popup_menu" />
     </>

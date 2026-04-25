@@ -28,7 +28,6 @@ export const useJobs = () => {
     },
   });
 
-  console.log("[useJobs] API Data:", data);
   const rawJobs = get(data, "jobs", Array.isArray(data) ? data : get(data, "items", get(data, "data", [])));
   const totalCount = get(data, "totalCount", get(data, "total", rawJobs?.length || 0));
   const isServerPaginated = !!get(data, "totalCount");
@@ -87,7 +86,6 @@ export const usePostJob = () => {
         endedAt: values.endedAt instanceof Date ? values.endedAt.toISOString() : values.endedAt,
       };
       const data = await postJobApi.refetch({ data: payload });
-      console.log("[usePostJob] API Response Success:", data);
       if (data) navigateTo("/intelliHire/jobs");
       return data;
     } catch (err) { 
@@ -105,7 +103,6 @@ export const useEditJob = (jobId) => {
   const editJobApi = useApi({ type: "editJob", autoFetch: false, urlSuffix: `/${jobId}` });
 
   const editJob = useCallback(async (values) => {
-    console.log("[useEditJob] Attempting edit. userData:", userData);
     
     const userRole = userData?.userType || userData?.role || userData?.Role;
     if (userRole?.toLowerCase() !== "company") {

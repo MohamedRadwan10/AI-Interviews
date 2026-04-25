@@ -1,67 +1,66 @@
-import MainText from "@/Components/Common/MainText";
-import React from "react";
-import { navigation } from "@/Config/LayoutConfig";
-import { get, map } from "lodash-es";
-import MainImage from "@/Components/Common/Image";
-import logoImage from "@/public/assets/logo.png";
-import Link from "next/link";
+"use client";
+import React, { useState, useEffect } from "react";
 import Theme from "@/Components/admin/Layout/Components/Theme";
 import UserAvatar from "@/Components/admin/Layout/Components/UserAvatar";
+import Logo from "./Components/Logo";
+import NavMenu from "./Components/NavMenu";
+import { Bell, Menu } from "lucide-react";
+import { useInterviewSessions } from "@/hooks/useActiveSessions";
+import { useNavigation } from "@/hooks/common";
+import MainButton from "@/Components/Common/MainButton";
+import MainText from "@/Components/Common/MainText";
 
 const TopBar = () => {
-  const logo = get(logoImage, "src");
+  const [scrolled, setScrolled] = useState(false);
+  const { activeSessionsCount } = useInterviewSessions();
+  const { navigateTo } = useNavigation();
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header className="shadow-sm py-4">
-      <div className="container mx-auto">
-        <div className="w-full flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
-          <div className="flex items-center justify-center md:justify-start gap-2 w-full md:w-1/3">
-            <MainImage
-              src={logo}
-              alt="IntelliHire Logo"
-              width={60}
-              height={40}
-              priority={true}
-              imageClassName="object-contain"
-            />
-            <Link href="/intelliHire" className="flex items-center">
-              <MainText
-                tag="span"
-                title="Intelli"
-                className="text-2xl m-0 font-bold text-light-black dark:text-dark-white"
-              />
-              <MainText
-                tag="span"
-                title="Hire"
-                className="text-2xl m-0 font-bold text-light-secondary dark:text-dark-secondary"
-              />
-            </Link>
+    <header className={`sticky top-0 z-50 transition-all duration-500 w-full px-4 md:px-8 pt-4 pb-2 ${
+      scrolled ? "bg-light-primary/80 dark:bg-dark-primary-4/80 backdrop-blur-xl shadow-lg" : "bg-transparent"
+    }`}>
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+        <div className="flex-1 lg:flex-none">
+          <Logo />
+        </div>
+
+        <NavMenu />
+
+        <div className="flex items-center gap-2 md:gap-4 shrink-0">
+          <div className="relative">
+            <MainButton 
+              onClick={() => navigateTo("/intelliHire/active-sessions")}
+              className="p-2.5 rounded-2xl bg-white/50 dark:bg-white/5 border border-ui-borderLight dark:border-dark-gray text-ui-textMuted dark:text-ui-muted hover:text-brand-primary dark:hover:text-brand-accent transition-all relative"
+            >
+              <Bell className="w-5 h-5" />
+              {activeSessionsCount > 0 && (
+                <MainText 
+                  tag="span"
+                  title={activeSessionsCount.toString()}
+                  className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-status-error text-[10px] font-bold text-white border-2 border-light-primary dark:border-dark-primary-4 animate-bounce"
+                />
+              )}
+            </MainButton>
           </div>
 
-          <nav className="flex justify-center gap-3 w-full md:w-1/3 overflow-x-auto pb-2 md:pb-0">
-            <ul className="flex items-center space-x-6 md:space-x-8 px-2 md:px-0">
-              {map(navigation, (item) => {
-                const label = get(item, "label");
-                const path = get(item, "path");
-
-                return (
-                  <li key={path} className="whitespace-nowrap">
-                    <Link href={path}>
-                      <MainText
-                        title={label}
-                        className="cursor-pointer transition-colors duration-200 text-light-black dark:text-dark-white whitespace-nowrap"
-                      />
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-
-          <div className="flex justify-center md:justify-end items-center gap-4 w-full md:w-1/3">
-            <Theme />
+          <div className="h-8 w-[1px] bg-ui-borderLight dark:bg-dark-gray mx-1 hidden sm:block"></div>
+          
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:block">
+              <Theme />
+            </div>
             <UserAvatar />
           </div>
+          
+          <MainButton className="lg:hidden p-2.5 rounded-2xl bg-brand-primary text-white shadow-lg shadow-brand-primary/20">
+            <Menu className="w-5 h-5" />
+          </MainButton>
         </div>
       </div>
     </header>
