@@ -8,3 +8,13 @@ export const normalizeUrl = (url, baseUrl = "") => {
   
   return clean(cleanedUrl.replace(cleanedBase, ""));
 };
+
+export const getImageUrl = (path) => {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  
+  const baseUrl = "https://intellhire.runasp.net";
+  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  
+  return `${baseUrl}${cleanPath}`;
+};

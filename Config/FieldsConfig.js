@@ -444,3 +444,143 @@ export const forgetPasswordConfig = {
     ],
   },
 };
+
+export const postJobConfig = {
+  pageTitle: "Create Job Post",
+  pageSubtitle: "Find the perfect candidate for your organization",
+  submitButtonText: "Publish Job Opportunity",
+  sections: [
+    {
+      id: "basic",
+      title: "Basic Info",
+      fields: [
+        {
+          field_name: "title",
+          type: "text",
+          label: "Job Title",
+          placeholder: "e.g. Senior Frontend Developer",
+          validation: { required: true },
+          gridClassName: "col-span-2",
+        },
+        {
+          field_name: "category",
+          type: "select",
+          label: "Job Category",
+          placeholder: "Select Category",
+          options: [
+            { label: "Software Engineering", value: "Software" },
+            { label: "Product Management", value: "Product" },
+            { label: "UI/UX Design", value: "Design" },
+            { label: "Digital Marketing", value: "Marketing" },
+            { label: "Data Science", value: "Data" },
+          ],
+          validation: { required: true },
+        },
+        {
+          field_name: "type",
+          type: "select",
+          label: "Job Type",
+          placeholder: "Select Type",
+          options: [
+            { label: "Full Time", value: "FullTime" },
+            { label: "Part Time", value: "PartTime" },
+            { label: "Remote", value: "Remote" },
+            { label: "Contract", value: "Contract" },
+          ],
+          validation: { required: true },
+        },
+        // {
+        //   field_name: "location",
+        //   type: "text",
+        //   label: "Location",
+        //   placeholder: "e.g. Cairo, Egypt or Remote",
+        //   validation: { required: true },
+        //   gridClassName: "col-span-2",
+        // },
+      ],
+    },
+    {
+      id: "details",
+      title: "Requirements & Level",
+      fields: [
+        {
+          field_name: "careerLevel",
+          type: "select",
+          label: "Career Level",
+          placeholder: "Select Level",
+          options: [
+            { label: "Intern", value: "Intern" },
+            { label: "Junior", value: "Junior" },
+            { label: "Mid-Level", value: "Mid" },
+            { label: "Senior", value: "Senior" },
+            { label: "Manager", value: "Manager" },
+          ],
+          validation: { required: true },
+        },
+        {
+          field_name: "experienceYears",
+          type: "text",
+          label: "Years of Experience",
+          placeholder: "e.g. 3",
+          validation: { required: true },
+        },
+        {
+          field_name: "startedAt",
+          type: "date",
+          label: "Posting Date",
+          placeholder: "When to start?",
+          validation: { required: true },
+        },
+        {
+          field_name: "endedAt",
+          type: "date",
+          label: "Application Deadline",
+          placeholder: "When to end?",
+          validation: { required: true },
+        },
+      ],
+    },
+    {
+      id: "skills",
+      title: "Core Skills",
+      fields: [
+        {
+          field_name: "requiredSkills",
+          type: "text",
+          label: "Technical Skills",
+          placeholder: "React, TypeScript, Node.js...",
+          validation: { required: true },
+          gridClassName: "col-span-2",
+        },
+      ],
+    },
+    {
+      id: "description",
+      title: "Job Description",
+      fields: [
+        {
+          field_name: "description",
+          type: "text",
+          label: "The Role",
+          placeholder: "Detail the responsibilities and daily tasks...",
+          validation: { required: true },
+          gridClassName: "col-span-2",
+        },
+      ],
+    },
+    {
+      id: "requirements",
+      title: "Required Qualifications",
+      fields: [
+        {
+          field_name: "requirements",
+          type: "text",
+          label: "Qualifications",
+          placeholder: "Education, certifications, or specific achievements...",
+          validation: { required: true },
+          gridClassName: "col-span-2",
+        },
+      ],
+    },
+  ],
+};

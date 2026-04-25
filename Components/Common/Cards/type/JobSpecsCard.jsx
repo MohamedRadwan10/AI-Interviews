@@ -7,7 +7,7 @@ const JobSpecsCard = ({ item }) => {
   const careerLevel = get(item, "careerLevel", "Not specified");
   const experience = get(item, "experienceYears", "0 to 1 Years");
   const category = get(item, "category", "General");
-  const skillsStr = get(item, "skills", category);
+  const skillsStr = get(item, "skillsAndTools", category);
   
   const tags = typeof skillsStr === "string" ? skillsStr.split(",").map(tag => tag.trim()) : [category];
 

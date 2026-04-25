@@ -8,4 +8,5 @@ export * from '@/Components/Common/LoadingSkeleton/type/InterviewRoomLoading';
 export * from '@/Components/Common/LoadingSkeleton/type/InterviewInstructionsLoading';
 export * from '@/Components/Common/LoadingSkeleton/type/ActiveSessionsLoading';
 export * from '@/Components/Common/LoadingSkeleton/type/ReportLoading';
+export * from '@/Components/Common/LoadingSkeleton/type/PostJobLoading';
 export { default as FormLoading } from '@/Components/Common/LoadingSkeleton/type/FormLoading';
