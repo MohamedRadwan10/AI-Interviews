@@ -8,7 +8,18 @@ import { useNavigation } from "@/hooks/common";
 import MainImage from "@/Components/Common/Image";
 import { getImageUrl } from "@/Utils/Func/UrlHelper";
 
+import { useUserAccount } from "@/Context/UserAccountContext";
+import { useState, useEffect } from "react";
+
 const JobHeaderCard = ({ item }) => {
+  const { accountData } = useUserAccount();
+  const userType = get(accountData, "userType");
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { navigateTo } = useNavigation();
   const id = get(item, "id") || get(item, "_id");
   const title = get(item, "title");
@@ -85,14 +96,16 @@ const JobHeaderCard = ({ item }) => {
         </div>
       </div>
       
-      <div className="shrink-0 w-full md:w-auto mt-4 md:mt-auto flex justify-end">
-        <MainButton 
-          onClick={() => navigateTo(`/intelliHire/interview-session/${id}`)}
-          className="w-full flex justify-center items-center md:w-48 px-6 py-3 rounded-xl bg-brand-primary hover:bg-brand-primaryDark text-white font-medium transition-colors border-0"
-        >
-          Apply Now
-        </MainButton>
-      </div>
+      {isMounted && userType === "Individual" && (
+        <div className="shrink-0 w-full md:w-auto mt-4 md:mt-auto flex justify-end">
+          <MainButton 
+            onClick={() => navigateTo(`/intelliHire/interview-session/${id}`)}
+            className="w-full flex justify-center items-center md:w-48 px-6 py-3 rounded-xl bg-brand-primary hover:bg-brand-primaryDark text-white font-medium transition-colors border-0"
+          >
+            Apply Now
+          </MainButton>
+        </div>
+      )}
     </div>
   );
 };
