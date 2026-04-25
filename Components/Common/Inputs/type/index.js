@@ -7,3 +7,4 @@ export const CheckBoxField = lazy(() => import("./CheckBoxField"));
 export const PhoneField = lazy(() => import("./PhoneField"));
 export const SelectField = lazy(() => import("./SelectField"));
 export const UploadField = lazy(() => import("./UploadField"));
+export const DateField = lazy(() => import("./DateField"));

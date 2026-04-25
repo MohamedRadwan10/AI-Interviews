@@ -7,6 +7,14 @@ const nextConfig = {
     });
     return config;
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "intellhire.runasp.net",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

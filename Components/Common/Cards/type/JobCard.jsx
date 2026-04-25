@@ -5,22 +5,26 @@ import { Briefcase, MapPin, Clock, ChevronRight, GraduationCap } from "lucide-re
 import MainButton from "@/Components/Common/MainButton";
 import { useNavigation } from "@/hooks/common";
 import { Since } from "@/Utils/Filter/date";
+import MainImage from "@/Components/Common/Image";
+import { getImageUrl } from "@/Utils/Func/UrlHelper";
 
 const JobCardContent = ({ job }) => {
   const { navigateTo } = useNavigation();
   const title = get(job, "title", "Unknown Title");
   const companyName = get(job, "companyName") || "Unknown Company";
-  const defaultLogo = (typeof companyName === "string" && companyName !== "Unknown Company" && companyName.length > 0)
+  const rawLogo = get(job, "companyLogo");
+  const logoUrl = getImageUrl(rawLogo);
+  
+  const defaultLogoText = (typeof companyName === "string" && companyName !== "Unknown Company" && companyName.length > 0)
     ? companyName.substring(0, 2).toUpperCase() 
     : "TC";
-  const logo = get(job, "companyLogo") || defaultLogo;
   const type = get(job, "type", "Full Time");
   const location = get(job, "locations", "Cairo, Egypt"); 
   const category = get(job, "category", "General");
   const careerLevel = get(job, "careerLevel");
-  const skillsStr = get(job, "skills", category);
+  const skillsStr = get(job, "skillsAndTools", category);
   const tags = typeof skillsStr === "string" ? skillsStr.split(",").map(tag => tag.trim()) : [category]; 
-  const startDateTime = get(job, "startDateTime");
+  const startDateTime = get(job, "startedAt");
   const endDateTime = get(job, "endDateTime");
   const formattedStart = Since(startDateTime);
   const formattedEnd = Since(endDateTime);
@@ -30,8 +34,20 @@ const JobCardContent = ({ job }) => {
   return (
     <div className="flex flex-col justify-between p-6 rounded-2xl bg-white dark:bg-dark-primary-4 border border-ui-borderLight dark:border-ui-border shadow-sm transition-all hover:shadow-md h-full">
       <div className="flex items-start gap-4 mb-4">
-        <div className="flex items-center justify-center w-12 h-12 rounded-xl border border-ui-borderLight dark:border-ui-border bg-light-primary dark:bg-dark-primary-3 text-lg font-bold text-ui-textMuted dark:text-white shrink-0">
-          {logo}
+        <div className="flex items-center justify-center w-12 h-12 rounded-xl border border-ui-borderLight dark:border-ui-border bg-light-primary dark:bg-dark-primary-3 overflow-hidden shrink-0">
+          {logoUrl ? (
+            <MainImage 
+              src={logoUrl} 
+              alt={companyName}
+              width={48}
+              height={48}
+              imageClassName="object-cover w-full h-full"
+            />
+          ) : (
+            <span className="text-lg font-bold text-ui-textMuted dark:text-white">
+              {defaultLogoText}
+            </span>
+          )}
         </div>
         <div>
           <MainText tag="h3" title={title} className="font-semibold text-lg text-ui-textMain dark:text-white"/>

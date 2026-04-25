@@ -86,4 +86,12 @@ export const AUTH_ENDPOINTS = {
     url: "/Report", // /{SessionId} فى اخر ال endpoint
     method: "GET",
   },
+  postJob: {
+    url: "/Employer/post-job", //  in body : { title *string careerLevel *string experienceYears *integer type *string location *string requiredSkills *string description *string requirements *string}
+    method: "POST",
+  },
+  editJob: {
+    url: "/Jobs",  //  /${jobId} in parameters and in body : { title *string careerLevel *string experienceYears *integer type *string location *string skillsAndTools *string description *string requirements *string  startedAt *date endedAt *date}
+    method: "PUT",
+  },
 };
