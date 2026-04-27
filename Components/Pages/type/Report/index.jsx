@@ -13,7 +13,6 @@ import ReportRecommendation from "@/Components/Sections/ReportRecommendation";
 const ReportPage = ({ sessionId }) => {
   const { userId } = useUserAccount();
   const {
-    jobTitle, company, sessionDate,
     overallScore, scoreLevel, totalQuestions, questionsAnswered, accuracyPercent,
     feedback, strengthPoints, weaknessesPoints, improvementsTips, skillAnalysis,
     scoreBreakdown, recommendationReason, redFlags, performanceLabel, hiringRecommendation,

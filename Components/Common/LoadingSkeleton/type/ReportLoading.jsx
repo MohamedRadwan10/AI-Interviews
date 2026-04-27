@@ -31,13 +31,27 @@ export const ReportLoading = () => {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6">
-        <div className="w-full lg:w-1/3 shrink-0">
+        <div className="w-full lg:w-1/3 shrink-0 flex flex-col gap-6">
+          <div className="rounded-[20px] bg-white dark:bg-[#1a1d24] p-6 border border-ui-borderLight dark:border-ui-border/50 flex flex-col gap-6">
+            <div className="flex items-center gap-3">
+              <Skeleton shape="circle" size="3rem" className="dark:!bg-dark-primary-3 shrink-0" />
+              <Skeleton width="60%" height="1.5rem" className="dark:!bg-dark-primary-3" />
+            </div>
+            <div className="flex flex-col gap-4">
+              <Skeleton width="100%" height="4rem" borderRadius="12px" className="dark:!bg-dark-primary-3" />
+              <Skeleton width="100%" height="6rem" borderRadius="12px" className="dark:!bg-dark-primary-3" />
+            </div>
+          </div>
+
           <div className="rounded-[20px] bg-white dark:bg-[#1a1d24] p-6 border border-ui-borderLight dark:border-ui-border/50 flex flex-col gap-6">
             <div className="flex flex-col gap-4">
               <Skeleton width="6rem" height="1.25rem" className="dark:!bg-dark-primary-3" />
               {[1, 2, 3, 4].map((i) => (
                 <div key={i} className="space-y-2">
-                  <div className="flex justify-between"><Skeleton width="4rem" /><Skeleton width="2rem" /></div>
+                  <div className="flex justify-between">
+                    <Skeleton width="4rem" className="dark:!bg-dark-primary-3" />
+                    <Skeleton width="2rem" className="dark:!bg-dark-primary-3" />
+                  </div>
                   <Skeleton width="100%" height="6px" className="dark:!bg-dark-primary-3" />
                 </div>
               ))}

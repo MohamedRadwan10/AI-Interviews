@@ -13,6 +13,7 @@
     "@monaco-editor/react": "^4.7.0",
     "@reduxjs/toolkit": "^2.11.2",
     "axios": "^1.13.6",
+    "chart.js": "^4.5.1",
     "country-state-city": "^3.2.1",
     "egypt-cities": "^0.0.7",
     "formik": "^2.4.9",

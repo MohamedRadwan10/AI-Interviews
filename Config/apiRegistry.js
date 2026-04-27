@@ -94,4 +94,8 @@ export const AUTH_ENDPOINTS = {
     url: "/Jobs",  //  /${jobId} in parameters and in body : { title *string careerLevel *string experienceYears *integer type *string location *string skillsAndTools *string description *string requirements *string  startedAt *date endedAt *date}
     method: "PUT",
   },
+  candidateDashboard: {
+    url: "/User/dashboard",  // token only
+    method: "GET",
+  },
 };

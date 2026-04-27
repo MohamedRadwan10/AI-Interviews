@@ -21,3 +21,4 @@ export const ActiveSessionsPage = dynamic(() => import('./ActiveSessions'), { lo
 export const ReportPage = dynamic(() => import('./Report'), { loading: () => <ReportLoading /> });
 export const PostJobPage = dynamic(() => import('./PostJob'), { loading: () => <PostJobLoading /> });
 export const EditJobPage = dynamic(() => import('./EditJob'), { loading: () => <PostJobLoading /> });
+export const DashboardPage = dynamic(() => import('./Dashboard'));
