@@ -3,9 +3,11 @@ import { CheckCircle2, FileText, LayoutDashboard, Loader2 } from "lucide-react";
 import MainText from "@/Components/Common/MainText";
 import MainButton from "@/Components/Common/MainButton";
 import { useNavigation } from "@/hooks/common";
+import { useUserAccount } from "@/Context/UserAccountContext";
 
-export const InterviewComplete = ({ message, sessionId }) => {
+export const InterviewComplete = ({ message, sessionId}) => {
   const { navigateTo, replaceUrl } = useNavigation();
+  const {id} = useUserAccount();
 
   useEffect(() => {
     if (sessionId) {

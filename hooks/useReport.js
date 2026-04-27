@@ -4,14 +4,17 @@ import { useApi } from "./useApi";
 import { UserTokenContext } from "@/Context/UserTokenContext";
 import { get, map, size } from "lodash-es";
 
-export const useReport = (sessionId) => {
+export const useReport = (sessionId, userId) => {
   const { userToken } = useContext(UserTokenContext);
 
   const { data, loading, error, refetch } = useApi({
     type: "report",
-    urlSuffix: `/${sessionId}`,
-    autoFetch: !!sessionId && !!userToken,
+    urlSuffix: `/${sessionId}/${userId}`,
+    autoFetch: !!sessionId && !!userToken && !!userId,
   });
+
+  console.log("report data", data);
+  
 
   return useMemo(() => {
     const report = get(data, "report", data) || {};
@@ -30,6 +33,11 @@ export const useReport = (sessionId) => {
     const weaknessesPoints = get(report, "weaknessesPoints", "");
     const improvementsTips = get(report, "improvementsTips", "");
     const skillAnalysis = get(report, "skillAnalysis", []);
+
+    const recommendationReason = get(report, "recommendationReason", "");
+    const redFlags = get(report, "redFlags", "");
+    const performanceLabel = get(report, "performanceLabel", "");
+    const hiringRecommendation = get(report, "hiringRecommendation", "");
 
     const scoreBreakdown = map(questionsArray, (q, index) => ({
       index: index + 1,
@@ -59,6 +67,10 @@ export const useReport = (sessionId) => {
       skillAnalysis,
       scoreBreakdown,
       scoreLevel,
+      recommendationReason,
+      redFlags,
+      performanceLabel,
+      hiringRecommendation,
       isLoading: loading,
       error,
       refetch,

@@ -6,8 +6,8 @@ import Webcam from "react-webcam";
 import MainImage from "@/Components/Common/Image";
 import { useInterviewSidebar } from "@/hooks/useInterviewSession";
 
-export const InterviewSidebar = ({ isConnected, isSessionStarted }) => {
-  const { timeLeft, formatTime, webcamRef, stream } = useInterviewSidebar(isSessionStarted);
+export const InterviewSidebar = ({ isConnected, isSessionStarted, questionTime }) => {
+  const { timeLeft, formatTime, webcamRef, stream } = useInterviewSidebar(isSessionStarted, questionTime);
 
   return (
     <div className="lg:col-span-3 space-y-6">

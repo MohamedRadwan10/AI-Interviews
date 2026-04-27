@@ -83,7 +83,7 @@ export const AUTH_ENDPOINTS = {
     method: "GET",
   },
   report: {
-    url: "/Report", // /{SessionId} فى اخر ال endpoint
+    url: "/Report", // /{SessionId} , /${userId} فى اخر ال endpoint
     method: "GET",
   },
   postJob: {

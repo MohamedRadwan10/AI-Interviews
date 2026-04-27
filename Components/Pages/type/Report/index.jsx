@@ -7,14 +7,18 @@ import ReportQuestionList from "@/Components/Lists/ReportQuestionList";
 import ReportTips from "@/Components/Sections/ReportTips";
 import LoadingSkeleton from "@/Components/Common/LoadingSkeleton";
 import { ReportError } from "@/Components/Errors";
+import { useUserAccount } from "@/Context/UserAccountContext";
+import ReportRecommendation from "@/Components/Sections/ReportRecommendation";
 
 const ReportPage = ({ sessionId }) => {
+  const { userId } = useUserAccount();
   const {
     jobTitle, company, sessionDate,
     overallScore, scoreLevel, totalQuestions, questionsAnswered, accuracyPercent,
     feedback, strengthPoints, weaknessesPoints, improvementsTips, skillAnalysis,
-    scoreBreakdown, isLoading, error, refetch,
-  } = useReport(sessionId);
+    scoreBreakdown, recommendationReason, redFlags, performanceLabel, hiringRecommendation,
+    isLoading, error, refetch,
+  } = useReport(sessionId, userId);
 
   if (isLoading) return (
     <div className="min-h-screen bg-light-primary dark:bg-dark-primary-1 py-10 px-4 sm:px-6 lg:px-8">
@@ -36,8 +40,14 @@ const ReportPage = ({ sessionId }) => {
           accuracyPercent={accuracyPercent}
         />
 
-        <div className="flex flex-col lg:flex-row gap-6">
-          <div className="w-full lg:w-1/3 shrink-0">
+        <div className="flex flex-col lg:flex-row gap-6 mt-6">
+          <div className="w-full lg:w-1/3 shrink-0 flex flex-col gap-6">
+            <ReportRecommendation 
+              recommendationReason={recommendationReason}
+              redFlags={redFlags}
+              performanceLabel={performanceLabel}
+              hiringRecommendation={hiringRecommendation}
+            />
             <ReportSidebar
               skillAnalysis={skillAnalysis}
               strengthPoints={strengthPoints}
