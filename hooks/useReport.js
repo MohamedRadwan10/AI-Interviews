@@ -11,10 +11,7 @@ export const useReport = (sessionId, userId) => {
     type: "report",
     urlSuffix: `/${sessionId}/${userId}`,
     autoFetch: !!sessionId && !!userToken && !!userId,
-  });
-
-  console.log("report data", data);
-  
+  });  
 
   return useMemo(() => {
     const report = get(data, "report", data) || {};

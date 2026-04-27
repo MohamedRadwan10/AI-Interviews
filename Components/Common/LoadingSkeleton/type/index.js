@@ -10,3 +10,4 @@ export * from '@/Components/Common/LoadingSkeleton/type/ActiveSessionsLoading';
 export * from '@/Components/Common/LoadingSkeleton/type/ReportLoading';
 export * from '@/Components/Common/LoadingSkeleton/type/PostJobLoading';
 export { default as FormLoading } from '@/Components/Common/LoadingSkeleton/type/FormLoading';
+export * from '@/Components/Common/LoadingSkeleton/type/CandidateDashboardLoading';
