@@ -144,7 +144,7 @@ export const useInterviewSession = (jobId) => {
       console.log("[submitAnswer] Sending TEXT answer:", textToSubmit);
     }
 
-    const questionOrder = get(parsedQuestion, "order", questionIndex + 1);
+    const questionOrder = questionIndex + 1;
     const effectiveTotal = get(parsedQuestion, "totalquestion", totalQuestions);
 
     try {
@@ -172,7 +172,7 @@ export const useInterviewSession = (jobId) => {
     if (typeof currentQuestion === "string") {
       try { parsedQuestion = JSON.parse(currentQuestion); } catch (e) {}
     }
-    const questionOrder = get(parsedQuestion, "order", questionIndex + 1);
+    const questionOrder = questionIndex + 1;
     const effectiveTotal = get(parsedQuestion, "totalquestion", totalQuestions);
 
     return {
@@ -233,10 +233,19 @@ export const useAnswerConsole = (onSubmit) => {
   };
 };
 
-export const useInterviewSidebar = (isSessionStarted) => {
-  const [timeLeft, setTimeLeft] = useState(1200);
+export const useInterviewSidebar = (isSessionStarted, questionTime) => {
+  const [timeLeft, setTimeLeft] = useState(0);
   const webcamRef = useRef(null);
   const [stream, setStream] = useState(null);
+
+  useEffect(() => {
+    if (questionTime) {
+      const parsedTime = parseInt(questionTime, 10);
+      setTimeLeft(!isNaN(parsedTime) ? parsedTime * 60 : 0);
+    } else {
+      setTimeLeft(0);
+    }
+  }, [questionTime]);
 
   useEffect(() => {
     if (isSessionStarted && timeLeft > 0) {
