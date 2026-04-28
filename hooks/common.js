@@ -1,6 +1,8 @@
+"use client";
 import { useRouter, usePathname } from "next/navigation";
-import { useMemo, useState, useEffect, useRef } from "react";
-import { filter, get, includes, toLower } from "lodash-es";
+import { useMemo, useState, useEffect, useRef, useContext, useCallback } from "react";
+import { filter, get, includes, toLower, isString } from "lodash-es";
+import { ToastContext } from "@/Context/ToastContext";
 
 export const useNavigation = () => {
   const router = useRouter();
@@ -82,6 +84,7 @@ export const useUpload = ({ uploadType, value, onChange, accept: customAccept, p
 
   return { preview, accept, placeholder, fileUploadRef, onSelect, triggerUpload, formattedSize };
 };
+
 export const useSearch = ({ data, searchFields, initialTerm = "" }) => {
   const [searchTerm, setSearchTerm] = useState(initialTerm);
 
@@ -98,4 +101,50 @@ export const useSearch = ({ data, searchFields, initialTerm = "" }) => {
   }, [data, searchTerm, searchFields]);
 
   return { searchTerm, setSearchTerm, filteredData };
+};
+
+export const useToast = () => {
+  const out = useContext(ToastContext);
+  return out?.ref;
+};
+
+export const useMainNotify = () => {
+  const toast = useToast();
+  
+  const main = useCallback(
+    (title, msg, type = 'success') => {
+      if (toast?.current) {
+        toast.current.show({
+          severity: type,
+          summary: title,
+          detail: msg,
+          life: 4000
+        });
+      }
+    },
+    [toast]
+  );
+
+  const success = useCallback(
+    (title, msg) => {
+      main(title, msg, 'success');
+    },
+    [main]
+  );
+
+  const error = useCallback(
+    (title, msg) => {
+      main(title, msg, 'error');
+    },
+    [main]
+  );
+
+  const info = useCallback(
+    (title, msg) => {
+      main(title, msg, 'info');
+    },
+    [main]
+  );
+
+  return useMemo(() => ({ success, error, info }), [success, error, info]);
 };

@@ -1,4 +1,5 @@
-import React, { Suspense } from "react";
+"use client";
+import React, { Suspense, useMemo } from "react";
 import { get, map } from "lodash-es";
 import MainText from "@/Components/Common/MainText";
 import { Briefcase, MapPin, Clock, ChevronRight, GraduationCap } from "lucide-react";
@@ -34,34 +35,39 @@ const JobCardContent = ({ job }) => {
   const postedAt = formattedStart ? (formattedEnd ? `${formattedStart} - Ends: ${formattedEnd}` : formattedStart) : "Just now";
   const jobId = get(job, "id");
 
+  const onSeeDetails = () => navigateTo(`/intelliHire/jobs/${jobId}`);
+  const detailsIcon = <ChevronRight className="w-4 h-4" />;
+
+  const logoContent = useMemo(() => {
+    if (logoUrl) {
+      return <MainImage src={logoUrl} alt={companyName} width={48} height={48} imageClassName="object-cover w-full h-full" />;
+    }
+    return <span className="text-lg font-bold text-ui-textMuted dark:text-white">{defaultLogoText}</span>;
+  }, [logoUrl, companyName, defaultLogoText]);
+
+  const careerLevelContent = useMemo(() => {
+    if (!careerLevel) return null;
+    return (
+      <>
+        <span className="text-ui-borderLight dark:text-ui-textMuted text-[10px]">●</span>
+        <MainText tag="span" className="flex items-center gap-1">
+          <GraduationCap className="w-3.5 h-3.5" /> {careerLevel}
+        </MainText>
+      </>
+    );
+  }, [careerLevel]);
+
   return (
     <div className="flex flex-col justify-between p-6 rounded-2xl bg-white dark:bg-dark-primary-4 border border-ui-borderLight dark:border-ui-border shadow-sm transition-all hover:shadow-md h-full">
       <div className="flex items-start gap-4 mb-4">
         <div className="flex items-center justify-center w-12 h-12 rounded-xl border border-ui-borderLight dark:border-ui-border bg-light-primary dark:bg-dark-primary-3 overflow-hidden shrink-0">
-          {logoUrl ? (
-            <MainImage 
-              src={logoUrl} 
-              alt={companyName}
-              width={48}
-              height={48}
-              imageClassName="object-cover w-full h-full"
-            />
-          ) : (
-            <span className="text-lg font-bold text-ui-textMuted dark:text-white">
-              {defaultLogoText}
-            </span>
-          )}
+          {logoContent}
         </div>
         <div>
           <MainText tag="h3" title={title} className="font-semibold text-lg text-ui-textMain dark:text-white"/>
           <div className="flex items-center gap-2 text-ui-textMuted dark:text-ui-muted text-sm mt-0.5">
             <MainText tag="span" title={companyName} />
-            {careerLevel && <span className="text-ui-borderLight dark:text-ui-textMuted text-[10px]">●</span>}
-            {careerLevel && (
-              <MainText tag="span" className="flex items-center gap-1">
-                <GraduationCap className="w-3.5 h-3.5" /> {careerLevel}
-              </MainText>
-            )}
+            {careerLevelContent}
           </div>
         </div>
       </div>
@@ -85,9 +91,7 @@ const JobCardContent = ({ job }) => {
         <MainText className="flex items-center gap-1.5 text-xs text-ui-muted">
           <Clock className="w-3 h-3" /> {postedAt}
         </MainText>
-        <MainButton onClick={() => navigateTo(`/intelliHire/jobs/${jobId}`)} className="text-sm font-semibold text-brand-primary dark:text-brand-accent hover:text-brand-primaryDark dark:hover:text-brand-accent/80 flex items-center gap-1">
-          See Details <ChevronRight className="w-4 h-4" />
-        </MainButton>
+        <MainButton onClick={onSeeDetails} className="text-sm font-semibold text-brand-primary dark:text-brand-accent hover:text-brand-primaryDark dark:hover:text-brand-accent/80 flex items-center gap-1" title={"See Details"} icon={detailsIcon} />
       </div>
     </div>
   );

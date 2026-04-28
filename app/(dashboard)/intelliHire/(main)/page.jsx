@@ -1,8 +1,11 @@
-"use client";
-
 import MainPage from "@/Components/Pages";
 
-const page = () => {
+export const metadata = {
+  title: "Home | IntelliHire",
+  description: "Welcome to IntelliHire, the AI-powered interview platform.",
+};
+
+const Page = () => {
   return (
     <div>
       <MainPage type="home" />
@@ -10,4 +13,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

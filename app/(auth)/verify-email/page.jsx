@@ -1,9 +1,13 @@
-"use client";
 import { VerifyEmailProcessPage } from "@/Components/Pages/type/index";
 import React, { Suspense } from "react";
 import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
 
-const page = () => {
+export const metadata = {
+  title: "Verify Email | IntelliHire",
+  description: "Verifying your email address to secure your IntelliHire account.",
+};
+
+const Page = () => {
   return (
     <Suspense fallback={<RouteLoading />}>
        <VerifyEmailProcessPage />
@@ -11,4 +15,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

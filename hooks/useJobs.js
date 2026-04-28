@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useContext, useCallback } from "react";
 import { map, get, take, drop } from "lodash-es";
 import { useApi } from "@/hooks/useApi";
 import { UserTokenContext } from "@/Context/UserTokenContext";
-import { useNavigation } from "@/hooks/common";
+import { useNavigation, useMainNotify } from "@/hooks/common";
 
 export const useJobs = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -67,11 +67,12 @@ export const usePostJob = () => {
   const { userData } = useContext(UserTokenContext);
   const { navigateTo } = useNavigation();
   const postJobApi = useApi({ type: "postJob", autoFetch: false });
+  const { success, error: notifyError } = useMainNotify();
 
   const postJob = useCallback(async (values) => {
     const userRole = userData?.userType || userData?.role || userData?.Role;
     if (userRole?.toLowerCase() !== "company") {
-      console.error("[usePostJob] Access Denied: User is not a company. Role found:", userRole);
+      notifyError("Access Denied", "Only companies can post jobs");
       throw new Error("Only companies can post jobs");
     }
 
@@ -83,13 +84,16 @@ export const usePostJob = () => {
         endedAt: values.endedAt instanceof Date ? values.endedAt.toISOString() : values.endedAt,
       };
       const data = await postJobApi.refetch({ data: payload });
-      if (data) navigateTo("/intelliHire/jobs");
+      if (data) {
+        success("Job Posted", "New job opportunity created successfully.");
+        navigateTo("/intelliHire/jobs");
+      }
       return data;
     } catch (err) { 
-      console.error("[usePostJob] API Error:", err);
+      notifyError("Post Job Failed", get(err, "response.data.message") || "An error occurred while creating the job.");
       throw err; 
     }
-  }, [postJobApi, navigateTo, userData]);
+  }, [postJobApi, navigateTo, userData, success, notifyError]);
 
   return { postJob, isLoading: postJobApi.loading, error: postJobApi.error };
 };
@@ -98,12 +102,12 @@ export const useEditJob = (jobId) => {
   const { userData } = useContext(UserTokenContext);
   const { navigateTo } = useNavigation();
   const editJobApi = useApi({ type: "editJob", autoFetch: false, urlSuffix: `/${jobId}` });
+  const { success, error: notifyError } = useMainNotify();
 
   const editJob = useCallback(async (values) => {
-    
     const userRole = userData?.userType || userData?.role || userData?.Role;
     if (userRole?.toLowerCase() !== "company") {
-      console.error("[useEditJob] Access Denied: User is not a company. Role found:", userRole);
+      notifyError("Access Denied", "Only companies can edit jobs");
       throw new Error("Only companies can edit jobs");
     }
 
@@ -116,14 +120,36 @@ export const useEditJob = (jobId) => {
         endedAt: values.endedAt instanceof Date ? values.endedAt.toISOString() : values.endedAt,
       };
       const data = await editJobApi.refetch({ data: payload });
-      console.log("[useEditJob] API Response Success:", data);
-      if (data) navigateTo("/intelliHire/jobs");
+      if (data) {
+        success("Job Updated", "Job details have been updated successfully.");
+        navigateTo("/intelliHire/jobs");
+      }
       return data;
     } catch (err) { 
-      console.error("[useEditJob] API Error:", err);
+      notifyError("Edit Job Failed", get(err, "response.data.message") || "An error occurred while updating the job.");
       throw err; 
     }
-  }, [editJobApi, navigateTo, userData]);
+  }, [editJobApi, navigateTo, userData, success, notifyError]);
 
   return { editJob, isLoading: editJobApi.loading, error: editJobApi.error };
+};
+
+export const useDeleteJob = () => {
+  const deleteJobApi = useApi({ type: "deleteJob", autoFetch: false });
+  const { success, error: notifyError } = useMainNotify();
+
+  const deleteJob = useCallback(async (jobId) => {
+    try {
+      const data = await deleteJobApi.refetch({ urlSuffix: `/${jobId}` });
+      if (data) {
+        success("Job Deleted", "The job has been successfully removed.");
+      }
+      return data;
+    } catch (err) {
+      notifyError("Delete Job Failed", get(err, "response.data.message") || "An error occurred while deleting the job.");
+      throw err;
+    }
+  }, [deleteJobApi, success, notifyError]);
+
+  return { deleteJob, isLoading: deleteJobApi.loading, error: deleteJobApi.error };
 };

@@ -1,9 +1,12 @@
-"use client";
-
 import RegisterPage from "@/Components/auth/Register";
 import React from "react";
 
-const page = () => {
+export const metadata = {
+  title: "Candidate Registration | IntelliHire",
+  description: "Create a candidate account on IntelliHire to start practicing interviews.",
+};
+
+const Page = () => {
   return (
     <div>
       <RegisterPage type={'candidate'}/>
@@ -11,4 +14,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

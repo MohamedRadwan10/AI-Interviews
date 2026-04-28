@@ -21,6 +21,8 @@ export const DashboardPage = () => {
 
   if (loading) return <LoadingSkeleton type="CandidateDashboard" />;
 
+  const handleSearchChange = (e) => setSearchTerm(e.target.value);
+
   const tableColumns = [
     { field: "roleApplied", header: "Role Applied" },
     { field: "company", header: "Company" },
@@ -30,11 +32,15 @@ export const DashboardPage = () => {
       field: "hasReport", 
       header: "Status", 
       type: "custom", 
-      body: (r) => (
-        <span className={`px-2 py-1 rounded-full text-xs font-bold ${r.hasReport ? 'bg-status-success/10 text-status-success' : 'bg-status-warning/10 text-status-warning'}`}>
-          {r.hasReport ? "Completed" : "Pending"}
-        </span>
-      )
+      body: (r) => {
+        const statusText = r.hasReport ? "Completed" : "Pending";
+        const statusClass = `px-2 py-1 rounded-full text-xs font-bold ${r.hasReport ? 'bg-status-success/10 text-status-success' : 'bg-status-warning/10 text-status-warning'}`;
+        return (
+          <span className={statusClass}>
+            {statusText}
+          </span>
+        );
+      }
     },
     { 
       field: "action", 
@@ -65,14 +71,12 @@ export const DashboardPage = () => {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-3">
               <Clock className="w-5 h-5 text-brand-primary" />
-              <MainText tag="h3" className="text-lg font-bold text-ui-textMain dark:text-white">
-                Interview History
-              </MainText>
+              <MainText tag="h3" title={"Interview History"} className="text-lg font-bold text-ui-textMain dark:text-white" />
             </div>
             <div className="w-full md:w-64">
               <MainInput
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={handleSearchChange}
                 placeholder="Search..."
                 icon={<Search className="w-4 h-4 text-ui-textMuted" />}
                 className="w-full rounded-2xl bg-slate-50 dark:bg-dark-primary-3"

@@ -1,9 +1,12 @@
-"use client";
-
 import LoginPage from "@/Components/auth/Login";
 import React from "react";
 
-const page = () => {
+export const metadata = {
+  title: "Login | IntelliHire",
+  description: "Log in to your IntelliHire account to access your dashboard.",
+};
+
+const Page = () => {
   return (
     <div>
       <LoginPage />
@@ -11,4 +14,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

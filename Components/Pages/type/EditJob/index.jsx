@@ -15,6 +15,8 @@ const EditJobPage = (props) => {
 
   if (isJobLoading) return <LoadingSkeleton type="post-job" />;
 
+  const updatingText = `Updating: ${get(job, "title", "Job")}`;
+
   return (
     <div className="w-full py-10 px-4">
       <div className="flex items-center gap-3 mb-8">
@@ -22,18 +24,13 @@ const EditJobPage = (props) => {
           <Edit3 className="w-8 h-8" />
         </div>
         <div className="flex flex-col gap-1">
-          <MainText title="Edit Job Post" className="text-3xl font-bold text-ui-textMain dark:text-dark-white" />
-          <MainText title={`Updating: ${get(job, "title", "Job")}`} className="text-ui-textMuted dark:text-dark-gray text-sm mt-1" />
+          <MainText title={"Edit Job Post"} className="text-3xl font-bold text-ui-textMain dark:text-dark-white" />
+          <MainText title={updatingText} className="text-ui-textMuted dark:text-dark-gray text-sm mt-1" />
         </div>
       </div>
 
       <div className="w-full max-w-5xl mx-auto">
-        <SectionedForm 
-          config={postJobConfig} 
-          initialValues={job}
-          onSubmit={editJob} 
-          isLoading={isLoading} 
-        />
+        <SectionedForm config={postJobConfig} initialValues={job} onSubmit={editJob} isLoading={isLoading} />
       </div>
     </div>
   );

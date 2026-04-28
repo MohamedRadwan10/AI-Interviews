@@ -1,9 +1,10 @@
-import { get } from "lodash-es";
+import { getVal } from "@/Utils/Func/Common";
 import MainText from "@/Components/Common/MainText";
 
 const SectionHeader = (props) => {
-  const title = get(props, "title");
-  const subtitle = get(props, "subtitle");
+  const title = getVal(props, null, "title");
+  const subtitle = getVal(props, null, "subtitle");
+
 
   return (
     <div className="text-center max-w-xl mx-auto mb-12">

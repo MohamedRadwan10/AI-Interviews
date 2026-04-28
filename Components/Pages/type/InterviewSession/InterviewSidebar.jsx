@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Clock, User, CheckCircle2, AlertCircle } from "lucide-react";
 import MainText from "@/Components/Common/MainText";
 import AudioLevelMeter from "@/Components/Common/AudioLevelMeter";
@@ -8,6 +8,14 @@ import { useInterviewSidebar } from "@/hooks/useInterviewSession";
 
 export const InterviewSidebar = ({ isConnected, isSessionStarted, questionTime }) => {
   const { timeLeft, formatTime, webcamRef, stream } = useInterviewSidebar(isSessionStarted, questionTime);
+
+  const connectionIcon = useMemo(() => {
+    return isConnected ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4 animate-bounce" />;
+  }, [isConnected]);
+
+  const connectionText = useMemo(() => {
+    return isConnected ? "Real-time AI Connected" : "Connecting to AI...";
+  }, [isConnected]);
 
   return (
     <div className="lg:col-span-3 space-y-6">
@@ -53,9 +61,9 @@ export const InterviewSidebar = ({ isConnected, isSessionStarted, questionTime }
       </div>
 
       <div className={`p-4 rounded-2xl border flex items-center gap-3 transition-colors ${isConnected ? "bg-status-success/5 border-status-success/20 text-status-success" : "bg-status-warning/5 border-status-warning/20 text-status-warning"}`}>
-        {isConnected ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4 animate-bounce" />}
+        {connectionIcon}
         <MainText className="text-xs font-medium">
-          {isConnected ? "Real-time AI Connected" : "Connecting to AI..."}
+          {connectionText}
         </MainText>
       </div>
     </div>

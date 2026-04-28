@@ -1,3 +1,4 @@
+"use client";
 import React, { Suspense } from "react";
 import { useVerifyEmail } from "@/hooks/useAuth";
 import MainText from "@/Components/Common/MainText";

@@ -11,41 +11,33 @@ export const getJobApplicantsColumns = (onViewApplicant) => [
     field: "fullName",
     align: "left",
     type: "custom",
-    body: (rowData) => (
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-light-main dark:bg-dark-primary-4 flex items-center justify-center overflow-hidden shrink-0">
-          {rowData.photo ? (
-            <Image 
-              src={rowData.photo.startsWith('http') ? rowData.photo : `${IMAGE_BASE_URL}${rowData.photo}`} 
-              alt={rowData.fullName} 
-              width={40} 
-              height={40} 
-              className="object-cover w-full h-full"
-            />
-          ) : (
-            <User size={20} className="text-ui-muted" />
-          )}
+    body: (rowData) => {
+      const { photo, fullName, jobTitle } = rowData;
+      const photoUrl = photo ? (photo.startsWith('http') ? photo : `${IMAGE_BASE_URL}${photo}`) : null;
+      return (
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-light-main dark:bg-dark-primary-4 flex items-center justify-center overflow-hidden shrink-0">
+            {photoUrl ? <Image src={photoUrl} alt={fullName} width={40} height={40} className="object-cover w-full h-full" /> : <User size={20} className="text-ui-muted" />}
+          </div>
+          <div className="flex flex-col">
+            <MainText title={fullName} className="font-bold text-ui-textMain dark:text-dark-white" />
+            {jobTitle && <MainText title={jobTitle} className="text-xs text-ui-textMuted" />}
+          </div>
         </div>
-        <div className="flex flex-col">
-          <MainText title={rowData.fullName} className="font-bold text-ui-textMain dark:text-dark-white" />
-          {rowData.jobTitle && (
-            <MainText title={rowData.jobTitle} className="text-xs text-ui-textMuted" />
-          )}
-        </div>
-      </div>
-    )
+      );
+    }
   },
   {
     header: "Overall Score",
     field: "overallScore",
     align: "center",
     type: "custom",
-    body: (rowData) => (
-      <MainText 
-        title={rowData.overallScore ? `${rowData.overallScore.toFixed(1)} / 10` : "N/A"} 
-        className={`font-bold ${rowData.overallScore >= 7 ? 'text-status-success' : rowData.overallScore >= 5 ? 'text-status-warning' : 'text-status-error'}`} 
-      />
-    )
+    body: (rowData) => {
+      const score = rowData.overallScore;
+      const scoreText = score ? `${score.toFixed(1)} / 10` : "N/A";
+      const scoreClass = `font-bold ${score >= 7 ? 'text-status-success' : score >= 5 ? 'text-status-warning' : 'text-status-error'}`;
+      return <MainText title={scoreText} className={scoreClass} />;
+    }
   },
   {
     header: "Status",
@@ -54,7 +46,8 @@ export const getJobApplicantsColumns = (onViewApplicant) => [
     type: "badge",
     body: (rowData) => {
       const statuses = { 0: "accepted", 1: "rejected", 2: "pending" };
-      return statuses[rowData.status] || "pending";
+      const statusText = statuses[rowData.status] || "pending";
+      return statusText;
     }
   },
   {
@@ -62,13 +55,10 @@ export const getJobApplicantsColumns = (onViewApplicant) => [
     field: "userId",
     align: "center",
     type: "custom",
-    body: (rowData) => (
-      <MainButton 
-        title="View Report"
-        icon={<Eye size={16} />}
-        className="bg-brand-primary hover:bg-brand-primaryDark text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm transition-all"
-        onClick={() => onViewApplicant(rowData)}
-      />
-    )
+    body: (rowData) => {
+      const onClick = () => onViewApplicant(rowData);
+      const icon = <Eye size={16} />;
+      return <MainButton title="View Report" icon={icon} className="bg-brand-primary hover:bg-brand-primaryDark text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm transition-all" onClick={onClick} />;
+    }
   }
 ];
