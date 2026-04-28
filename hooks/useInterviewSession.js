@@ -232,10 +232,11 @@ export const useInterviewSession = (jobId) => {
     submitAnswer,
     finishInterview,
     error,
-    questionIndex,
+    questionIndex:questionIndex,
     totalQuestions: effectiveTotalQuestions,
     interviewFinished,
     finishMessage,
+    isQuestionReady: !!parsedCurrentQuestion,
     timeLeft,
     isLastQuestion: (questionIndex + 1) >= effectiveTotalQuestions
   }), [isSessionStarted, sessionId, parsedCurrentQuestion, isConnected, loadingStates, startInterview, submitAnswer, finishInterview, error, questionIndex, effectiveTotalQuestions, interviewFinished, finishMessage, timeLeft]);
