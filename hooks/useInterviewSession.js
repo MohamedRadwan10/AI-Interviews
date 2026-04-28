@@ -216,6 +216,9 @@ export const useInterviewSession = (jobId) => {
   }, [timeLeft, isSessionStarted, currentQuestion, loadingStates.submitting, interviewFinished, submitAnswer]);
 
   const parsedCurrentQuestion = useMemo(() => parseQuestion(currentQuestion), [currentQuestion]);
+  const effectiveTotalQuestions = useMemo(() => {
+    return get(parsedCurrentQuestion, "totalquestion") || totalQuestions || 15;
+  }, [parsedCurrentQuestion, totalQuestions]);
 
   return useMemo(() => ({
     isSessionStarted,
@@ -230,12 +233,12 @@ export const useInterviewSession = (jobId) => {
     finishInterview,
     error,
     questionIndex,
-    totalQuestions,
+    totalQuestions: effectiveTotalQuestions,
     interviewFinished,
     finishMessage,
     timeLeft,
-    isLastQuestion: (questionIndex + 1) >= totalQuestions
-  }), [isSessionStarted, sessionId, parsedCurrentQuestion, isConnected, loadingStates, startInterview, submitAnswer, finishInterview, error, questionIndex, totalQuestions, interviewFinished, finishMessage, timeLeft]);
+    isLastQuestion: (questionIndex + 1) >= effectiveTotalQuestions
+  }), [isSessionStarted, sessionId, parsedCurrentQuestion, isConnected, loadingStates, startInterview, submitAnswer, finishInterview, error, questionIndex, effectiveTotalQuestions, interviewFinished, finishMessage, timeLeft]);
 };
 
 export const useAnswerConsole = (onSubmit) => {
