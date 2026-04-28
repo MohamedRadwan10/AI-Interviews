@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { map } from "lodash-es";
 import Pagination from "@/Components/Common/Pagination";
@@ -16,6 +17,8 @@ const JobsPage = () => {
   if (loading) return <RouteLoading type="jobs" />;
   if (error) return <JobsError error={error} />;
 
+  const handleSearchChange = (e) => setSearchTerm(e.target.value);
+
   return (
     <div className="min-h-screen bg-light-primary dark:bg-dark-primary-1 py-12 px-4 sm:px-6 lg:px-8 font-sans transition-colors duration-200">
       <div className="max-w-7xl mx-auto">
@@ -28,7 +31,7 @@ const JobsPage = () => {
                 type="text"
                 placeholder="Job title, Keywords, or company"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={handleSearchChange}
                 fieldClassName="w-full pl-11 pr-4 py-3 rounded-xl border border-ui-borderLight dark:border-ui-border bg-white dark:bg-dark-primary-3 focus:outline-none focus:ring-0 text-ui-textMain dark:text-ui-muted"
               />
             </div>

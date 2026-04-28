@@ -4,8 +4,8 @@ import { useState } from "react";
 import { map, get } from "lodash-es";
 import MainButton from "@/Components/Common/MainButton";
 import MainText from "@/Components/Common/MainText";
-import { useRouter } from "next/navigation";
 import MainCard from "@/Components/Common/Cards";
+import { useNavigation } from "@/hooks/common";
 
 const accountTypes = [
   {
@@ -25,27 +25,26 @@ const accountTypes = [
 
 const AccountType = () => {
   const [selected, setSelected] = useState();
-  const router = useRouter();
+  const { navigateTo } = useNavigation();
 
   const handleCreate = () => {
     if (!selected) return;
-    router.push(`/${selected}-register`);
+    navigateTo(`/${selected}-register`);
   };
 
-  const pageTitle = "How do you want to use the platform?";
-  const pageSubtitle = "Select the account type to continue";
+
 
   return (
     <div className="min-h-screen dark:bg-dark-primary-1 bg-light-primary flex flex-col items-center justify-center px-6">
       <MainText
         tag="h1"
-        title={pageTitle}
+        title={"How do you want to use the platform?"}
         className="text-light-black dark:text-dark-white text-2xl font-semibold mb-2"
       />
 
       <MainText
         tag="p"
-        title={pageSubtitle}
+        title={"Select the account type to continue"}
         className="text-ui-muted dark:text-ui-muted text-sm mb-10"
       />
 

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useMemo } from "react";
 import { map, get, take } from "lodash-es";
 import { DataConstant } from "@/Config/DataConstant";
 import MainText from "@/Components/Common/MainText";
@@ -25,6 +25,21 @@ const Home = () => {
   const bullets = get(redefining, "bullets", []);
   const featuredJobs = take(jobs, 3);
 
+  const onBrowseJobs = () => navigateTo("/intelliHire/jobs");
+  const heroCta = get(hero, "cta");
+  const redefiningCta = get(redefining, "cta");
+  const arrowIcon = <ArrowRight className="w-5 h-5" />;
+
+  const featuredJobsContent = useMemo(() => {
+    if (loading) {
+      return [1, 2, 3].map((i) => <JobCardLoading key={i} />);
+    }
+    return map(featuredJobs, (job) => {
+      const jobId = get(job, "id");
+      return <MainCard key={jobId} type="jobItem" data={job} />;
+    });
+  }, [loading, featuredJobs]);
+
   return (
     <div className="min-h-screen font-sans bg-light-primary dark:bg-dark-primary-1 transition-colors duration-300">
       <section className="relative pt-24 pb-48 px-6 text-center overflow-hidden">
@@ -33,12 +48,7 @@ const Home = () => {
           <MainText tag="h1" title={get(hero, "title")} className="text-4xl md:text-6xl font-extrabold text-light-black dark:text-dark-white mb-2 tracking-tight" />
           <MainText tag="h2" title={get(hero, "subtitle")} className="text-2xl md:text-3xl font-bold text-light-secondary dark:text-brand-accent mb-6" />
           <MainText tag="p" title={get(hero, "desc")} className="text-base md:text-lg text-ui-textMuted dark:text-ui-muted max-w-2xl mx-auto mb-10 whitespace-pre-line leading-relaxed" />
-          <MainButton 
-            onClick={() => navigateTo("/intelliHire/jobs")}
-            className="p-button-rounded bg-light-secondary dark:bg-brand-primary dark:hover:bg-brand-primaryDark text-white border-none px-8 py-3.5 text-lg font-bold shadow-xl flex items-center gap-2 mx-auto transform hover:scale-105 transition-all"
-          >
-            {get(hero, "cta")} <ArrowRight className="w-5 h-5" />
-          </MainButton>
+          <MainButton onClick={onBrowseJobs} className="p-button-rounded bg-light-secondary dark:bg-brand-primary dark:hover:bg-brand-primaryDark text-white border-none px-8 py-3.5 text-lg font-bold shadow-xl flex items-center gap-2 mx-auto transform hover:scale-105 transition-all" title={heroCta} icon={arrowIcon} />
         </div>
       </section>
 
@@ -51,14 +61,7 @@ const Home = () => {
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {loading ? (
-              [1, 2, 3].map((i) => <JobCardLoading key={i} />)
-            ) : (
-              map(featuredJobs, (job) => {
-                const jobId = get(job, "id");
-                return <MainCard key={jobId} type="jobItem" data={job} />;
-              })
-            )}
+            {featuredJobsContent}
           </div>
         </div>
       </section>
@@ -77,12 +80,7 @@ const Home = () => {
                   </div>
                 ))}
               </div>
-              <MainButton 
-                onClick={() => navigateTo("/intelliHire/jobs")}
-                className="p-button-rounded bg-light-secondary dark:bg-brand-primary dark:hover:bg-brand-primaryDark text-white border-none px-10 py-4 text-lg font-bold shadow-xl flex items-center gap-2 transform hover:scale-105 transition-all"
-              >
-                {get(redefining, "cta")} <ArrowRight className="w-5 h-5" />
-              </MainButton>
+              <MainButton onClick={onBrowseJobs} className="p-button-rounded bg-light-secondary dark:bg-brand-primary dark:hover:bg-brand-primaryDark text-white border-none px-10 py-4 text-lg font-bold shadow-xl flex items-center gap-2 transform hover:scale-105 transition-all" title={redefiningCta} icon={arrowIcon} />
             </div>
             <div className="relative group">
               <div className="absolute inset-0 bg-light-secondary/10 dark:bg-brand-accent/10 blur-[60px] rounded-full scale-75 group-hover:scale-100 transition-transform duration-700"></div>

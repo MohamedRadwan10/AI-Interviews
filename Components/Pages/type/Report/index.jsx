@@ -16,6 +16,7 @@ const ReportPage = ({ sessionId }) => {
     overallScore, scoreLevel, totalQuestions, questionsAnswered, accuracyPercent,
     feedback, strengthPoints, weaknessesPoints, improvementsTips, skillAnalysis,
     scoreBreakdown, recommendationReason, redFlags, performanceLabel, hiringRecommendation,
+    duration, averageResponseTimeSeconds, sessionDate, overallRating,
     isLoading, error, refetch,
   } = useReport(sessionId, userId);
 
@@ -37,6 +38,10 @@ const ReportPage = ({ sessionId }) => {
           questionsAnswered={questionsAnswered}
           totalQuestions={totalQuestions}
           accuracyPercent={accuracyPercent}
+          duration={duration}
+          averageResponseTimeSeconds={averageResponseTimeSeconds}
+          sessionDate={sessionDate}
+          overallRating={overallRating}
         />
 
         <div className="flex flex-col lg:flex-row gap-6 mt-6">

@@ -1,13 +1,7 @@
-"use client";
 import Layout from "@/Components/admin/Layout/Layout";
-import { ReduxProvider } from "@/Store/ReduxProvider";
 
 const MainLayout = ({ children }) => {
-  return (
-    <ReduxProvider>
-      <Layout>{children}</Layout>
-    </ReduxProvider>
-  );
+  return <Layout>{children}</Layout>;
 };
 
 export default MainLayout;

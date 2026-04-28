@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { set, get, keys, forEach } from "lodash-es";
 import { UserTokenContext } from "@/Context/UserTokenContext";
-import { useNavigation } from "@/hooks/common";
+import { useNavigation, useMainNotify } from "@/hooks/common";
 import { useApi } from "@/hooks/useApi";
 import { API_BASE_URL, AUTH_ENDPOINTS } from "@/Config/apiRegistry";
 
@@ -20,7 +20,8 @@ export const useLogin = () => {
   const { setUserToken, setRefreshToken, setUserData, deviceName } = useContext(UserTokenContext);
   const loginApi = useApi({ type: "login", autoFetch: false });
   const afterLogin = useAfterLogin();
-
+  const { success, error: notifyError } = useMainNotify();
+  
   const login = useCallback(async (values) => {
     try {
       const payload = { ...values, deviceName };
@@ -44,13 +45,15 @@ export const useLogin = () => {
           setUserData(user);
         }
         
+        success("Login Successful", "Welcome back!");
         afterLogin(user);
       }
       return data;
     } catch (err) {
+      notifyError("Login Failed", get(err, "response.data.message") || "Please check your credentials.");
       throw err;
     }
-  }, [deviceName, loginApi, setUserToken, setRefreshToken, setUserData, afterLogin]);
+  }, [deviceName, loginApi, setUserToken, setRefreshToken, setUserData, afterLogin, success, notifyError]);
 
   return { login, isLoading: loginApi.loading, error: loginApi.error };
 };
@@ -60,6 +63,7 @@ export const useRegister = () => {
   const { navigateTo } = useNavigation();
   const registerCandidateApi = useApi({ type: "registerCandidate", autoFetch: false });
   const registerCompanyApi = useApi({ type: "registerCompany", autoFetch: false });
+  const { success, error: notifyError } = useMainNotify();
 
   const register = useCallback(async (type, values) => {
     const apiHook = type === "company" ? registerCompanyApi : registerCandidateApi;
@@ -75,15 +79,19 @@ export const useRegister = () => {
         });
         payload = transformed;
       }
+      console.log(`[useRegister] Registering ${type}:`, payload);
       const data = await apiHook.refetch({ data: payload });
+      console.log(`[useRegister] Register Success:`, data);
       if (data) {
+        success("Registration Successful", "Please check your email for verification.");
         navigateTo("/verify-email-request");
       }
       return data;
     } catch (err) {
+      notifyError("Registration Failed", get(err, "response.data.message") || "An error occurred during registration.");
       throw err;
     }
-  }, [deviceName, registerCandidateApi, registerCompanyApi, navigateTo]);
+  }, [deviceName, registerCandidateApi, registerCompanyApi, navigateTo, success, notifyError]);
 
   const registerCandidate = useCallback((values) => register("candidate", values), [register]);
   const registerCompany = useCallback((values) => register("company", values), [register]);
@@ -98,6 +106,7 @@ export const useLogout = () => {
   const { navigateTo } = useNavigation();
   const { logout: logoutContext, deviceName } = useContext(UserTokenContext);
   const logoutApi = useApi({ type: "logout", autoFetch: false });
+  const { success } = useMainNotify();
 
   const logout = useCallback(async () => {
     try {
@@ -114,10 +123,11 @@ export const useLogout = () => {
     } catch (err) {
       console.error("Logout API failed (Backend error), proceeding with local logout.");
     } finally {
+      success("Logged Out", "You have been successfully logged out.");
       navigateTo("/login");
       logoutContext();
     }
-  }, [logoutApi, navigateTo, logoutContext, deviceName]);
+  }, [logoutApi, navigateTo, logoutContext, deviceName, success]);
 
   return { logout, isLoading: logoutApi.loading, error: logoutApi.error };
 };
@@ -126,6 +136,7 @@ export const useCompleteProfile = () => {
   const { navigateTo } = useNavigation();
   const completeUserApi = useApi({ type: "CompleteUserData", autoFetch: false });
   const completeCompanyApi = useApi({ type: "CompleteCompanyData", autoFetch: false });
+  const { success, error: notifyError } = useMainNotify();
 
   const completeProfile = useCallback(async (role, values) => {
     const apiHook = role === "company" ? completeCompanyApi : completeUserApi;
@@ -145,13 +156,15 @@ export const useCompleteProfile = () => {
       });
       const data = await apiHook.refetch({ data: formData });
       if (data) {
+        success("Profile Updated", "Your profile has been successfully completed.");
         navigateTo("/intelliHire");
       }
       return data;
     } catch (err) {
+      notifyError("Update Failed", get(err, "response.data.message") || "An error occurred while updating your profile.");
       throw err;
     }
-  }, [completeUserApi, completeCompanyApi, navigateTo]);
+  }, [completeUserApi, completeCompanyApi, navigateTo, success, notifyError]);
 
   return { 
     completeProfile, 
@@ -166,6 +179,7 @@ export const useVerifyEmail = () => {
   const [status, setStatus] = useState("loading");
   const [error, setError] = useState(null);
   const { setUserToken, setRefreshToken, setUserData } = useContext(UserTokenContext);
+  const { success, error: notifyError } = useMainNotify();
 
   const userId = searchParams.get("userId") || searchParams.get("userid") || searchParams.get("uid");
   let token = searchParams.get("token") || searchParams.get("Token");
@@ -203,6 +217,7 @@ export const useVerifyEmail = () => {
            setUserData(responseData);
         }
         
+        success("Email Verified", "Your email has been successfully verified.");
         setStatus("success");
         
         setTimeout(() => {
@@ -217,12 +232,14 @@ export const useVerifyEmail = () => {
           }
         }, 2000);
       } catch (err) {
+        const msg = get(err, "response.data.message") || "Verification failed.";
+        notifyError("Verification Error", msg);
         setStatus("error");
-        setError(get(err, "response.data.message"));
+        setError(msg);
       }
     };
     confirmEmail();
-  }, [userId, token, router, setRefreshToken, setUserData, setUserToken]);
+  }, [userId, token, router, setRefreshToken, setUserData, setUserToken, success, notifyError]);
 
   return { status, error, userId, token };
 };
@@ -234,7 +251,8 @@ export const useForgetPassword = () => {
   const [token, setToken] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const router = useRouter();
+  const { navigateTo } = useNavigation();
+  const { success, error: notifyError, info } = useMainNotify();
 
   const handleEmailSubmit = async (values) => {
     setIsLoading(true);
@@ -248,9 +266,12 @@ export const useForgetPassword = () => {
         url: `${API_BASE_URL}${config.url}`,
         data: { email: emailValue }, 
       });
+      success("Reset Code Sent", "Please check your email for the verification code.");
       setStep(2);
     } catch (err) {
-      setError(get(err, "response.data.message"));
+      const msg = get(err, "response.data.message") || "Failed to send reset code.";
+      notifyError("Request Failed", msg);
+      setError(msg);
     } finally {
       setIsLoading(false);
     }
@@ -269,9 +290,12 @@ export const useForgetPassword = () => {
         data: { email, code },
       });
       setToken(get(response, "data.token") || get(response, "data.data.token") || code);
+      info("OTP Verified", "Code confirmed. You can now set your new password.");
       setStep(3);
     } catch (err) {
-      setError(get(err, "response.data.message"));
+      const msg = get(err, "response.data.message") || "Invalid or expired code.";
+      notifyError("OTP Error", msg);
+      setError(msg);
     } finally {
       setIsLoading(false);
     }
@@ -292,9 +316,12 @@ export const useForgetPassword = () => {
           confirmPassword: get(values, "confirmPassword"),
         },
       });
-      router.push("/login?success=true");
+      success("Password Changed", "Your password has been successfully updated.");
+      navigateTo("/login?success=true");
     } catch (err) {
-      setError(get(err, "response.data.message"));
+      const msg = get(err, "response.data.message") || "Failed to reset password.";
+      notifyError("Reset Failed", msg);
+      setError(msg);
     } finally {
       setIsLoading(false);
     }

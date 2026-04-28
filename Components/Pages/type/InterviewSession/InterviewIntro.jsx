@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+"use client";
+import React, { useState, useEffect, useMemo } from "react";
 import { Camera, Mic, Play, ShieldCheck, Info } from "lucide-react";
 import { map } from "lodash-es";
 import MainButton from "@/Components/Common/MainButton";
@@ -64,6 +65,35 @@ const InterviewIntro = ({ jobId }) => {
     }
   };
 
+  const handleEnterRoom = () => navigateTo(`/intelliHire/interview-session/${jobId}/room`);
+
+  const previewContent = useMemo(() => {
+    if (stream) {
+      return <Webcam audio={false} className="w-full h-full object-cover" mirrored />;
+    }
+    return (
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-ui-textMuted p-4 text-center">
+        <Camera className="w-12 h-12 mb-2 opacity-20" />
+        <MainText className="text-sm">Camera preview will appear here</MainText>
+      </div>
+    );
+  }, [stream]);
+
+  const actionButton = useMemo(() => {
+    if (!stream) {
+      return (
+        <MainButton onClick={handleAllowAccess} className="w-full py-4 bg-ui-textMain dark:bg-dark-primary-2 text-white rounded-2xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+          <Mic className="w-4 h-4" /> Allow Camera & Mic
+        </MainButton>
+      );
+    }
+    return (
+      <MainButton onClick={handleEnterRoom} className="w-full py-4 bg-brand-primary text-white rounded-2xl flex items-center justify-center gap-2 hover:bg-brand-primaryDark shadow-lg shadow-brand-primary/20">
+        Enter Interview Room <Play className="w-4 h-4 fill-current" />
+      </MainButton>
+    );
+  }, [stream, handleAllowAccess, handleEnterRoom]);
+
   return (
     <div className="flex flex-col lg:flex-row items-stretch gap-8 max-w-7xl mx-auto p-6 animate-in fade-in duration-700">
       <div className="flex-1 space-y-6">
@@ -77,29 +107,11 @@ const InterviewIntro = ({ jobId }) => {
           </MainText>
 
           <div className="relative aspect-[4/3] bg-light-primary dark:bg-dark-primary-3 rounded-2xl overflow-hidden border mb-6">
-            {stream ? (
-              <Webcam audio={false} className="w-full h-full object-cover" mirrored />
-            ) : (
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-ui-textMuted p-4 text-center">
-                <Camera className="w-12 h-12 mb-2 opacity-20" />
-                <MainText className="text-sm">Camera preview will appear here</MainText>
-              </div>
-            )}
+            {previewContent}
           </div>
 
           <div className="space-y-4">
-            {/* {stream && <AudioLevelMeter stream={stream} />} */}
-
-            {!stream ? (
-              <MainButton onClick={handleAllowAccess} className="w-full py-4 bg-ui-textMain dark:bg-dark-primary-2 text-white rounded-2xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
-                <Mic className="w-4 h-4" /> Allow Camera & Mic
-              </MainButton>
-            ) : (
-              <MainButton onClick={() => navigateTo(`/intelliHire/interview-session/${jobId}/room`)} className="w-full py-4 bg-brand-primary text-white rounded-2xl flex items-center justify-center gap-2 hover:bg-brand-primaryDark shadow-lg shadow-brand-primary/20">
-                Enter Interview Room <Play className="w-4 h-4 fill-current" />
-              </MainButton>
-            )}
-
+            {actionButton}
             <GenericError error={error} />
           </div>
         </div>

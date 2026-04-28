@@ -1,16 +1,19 @@
+"use client";
 import { map, get, set } from "lodash-es";
 import { useFormik } from "formik";
+import { getVal } from "@/Utils/Func/Common";
 import MainButton from "@/Components/Common/MainButton";
 import MainInput from "@/Components/Common/Inputs";
 import { buildValidationSchema } from "@/Utils/Func/ValidationSchema";
 import { useMemo } from "react";
 
 const MainForm = (props) => {
-  const config = get(props, "config", {});
-  const onSubmit = get(props, "onSubmit");
-  const isLoading = get(props, "isLoading", false);
-  const fields = get(config, "fields", []);
-  const submitButtonText = get(config, "submitButtonText");
+  const gv = (obj, path, fb) => getVal(obj, null, path, fb);
+  const config = gv(props, "config", {});
+  const onSubmit = gv(props, "onSubmit");
+  const isLoading = gv(props, "isLoading", false);
+  const fields = gv(config, "fields", []);
+  const submitButtonText = gv(config, "submitButtonText");
 
   const validationSchema = useMemo(
     () => buildValidationSchema(fields),
@@ -19,14 +22,14 @@ const MainForm = (props) => {
 
   const formik = useFormik({
     initialValues: fields.reduce((acc, field) => {
-      const fieldName = get(field, "field_name");
-      const fieldType = get(field, "type");
+      const fieldName = gv(field, "field_name");
+      const fieldType = gv(field, "type");
       set(acc, fieldName, fieldType === "checkBox" ? false : "");
       return acc;
     }, {}),
     validationSchema,
     onSubmit: async (values, actions) => {
-      if (onSubmit) {
+      if (typeof onSubmit === "function") {
         try {
           await onSubmit(values);
         } catch (error) {
@@ -36,22 +39,36 @@ const MainForm = (props) => {
     },
   });
 
-  const isValid = get(formik, "isValid");
-  const isSubmitting = get(formik, "isSubmitting");
-  const values = get(formik, "values", {});
-  const touched = get(formik, "touched", {});
-  const errors = get(formik, "errors", {});
+  const isValid = gv(formik, "isValid");
+  const isSubmitting = gv(formik, "isSubmitting");
+  const values = gv(formik, "values", {});
+  const touched = gv(formik, "touched", {});
+  const errors = gv(formik, "errors", {});
 
   return (
     <form onSubmit={formik.handleSubmit} className="w-full">
       <div className="flex flex-col gap-1">
         {map(fields, (field) => {
-          const fieldName = get(field, "field_name");
-          const fieldType = get(field, "type");
-          const onValueChange = get(field, "onValueChange");
+          const fieldName = gv(field, "field_name");
+          const fieldType = gv(field, "type");
+          const onValueChange = gv(field, "onValueChange");
 
-          const rawOptions = get(field, "options");
+          const rawOptions = gv(field, "options");
           const options = typeof rawOptions === "function" ? rawOptions(values) : rawOptions;
+          
+          const fieldValue = gv(values, fieldName);
+          const fieldError = gv(touched, fieldName) !== "N/A" && gv(errors, fieldName) !== "N/A" ? gv(errors, fieldName) : null;
+
+          const handleFieldChange = (e) => {
+            const isCheck = fieldType === "checkBox";
+            const val = isCheck ? get(e, "target.checked", e) : get(e, "target.value", e);
+            
+            formik.setFieldValue(fieldName, val);
+            
+            if (typeof onValueChange === "function") {
+              onValueChange(val, { setFieldValue: formik.setFieldValue });
+            }
+          };
 
           return (
             <MainInput
@@ -59,18 +76,9 @@ const MainForm = (props) => {
               {...field}
               field_name={fieldName}
               type={fieldType}
-              value={get(values, fieldName)}
-              error={get(touched, fieldName) && get(errors, fieldName)}
-              onChange={(e) => {
-                const isCheck = fieldType === "checkBox";
-                const val = isCheck ? get(e, "target.checked", e) : get(e, "target.value", e);
-                
-                formik.setFieldValue(fieldName, val);
-                
-                if (onValueChange) {
-                  onValueChange(val, { setFieldValue: formik.setFieldValue });
-                }
-              }}
+              value={fieldValue}
+              error={fieldError}
+              onChange={handleFieldChange}
               onBlur={formik.handleBlur}
               options={options}
             />

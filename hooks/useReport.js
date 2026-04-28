@@ -21,9 +21,13 @@ export const useReport = (sessionId, userId) => {
     const jobTitle = get(report, "roleApplied", "Interview Report");
     const company = get(report, "company", "");
     const sessionDate = get(report, "createdAt", null);
+    const duration = get(report, "duration", "");
+    const averageResponseTimeSeconds = get(report, "averageResponseTimeSeconds", "");
+    const overallRating = get(report, "overallRating", 0);
     const totalQuestions = get(report, "totalQuestionsCount", size(questionsArray));
     const questionsAnswered = get(report, "questionsAnsweredCount", 0);
     const accuracyPercent = get(report, "accuracyPercent", 0);
+    const accuracyLabel = get(report, "accuracyLabel", "");
 
     const feedback = get(report, "performanceSummary", "");
     const strengthPoints = get(report, "strengthPoints", "");
@@ -41,6 +45,8 @@ export const useReport = (sessionId, userId) => {
       question: get(q, "questionText", ""),
       answer: get(q, "userAnswer", "No User Answer"),
       idealAnswer: get(q, "idealAnswer", ""),
+      responseTime: get(q, "responseTime", ""),
+      type: get(q, "type", ""),
     }));
 
     const scoreLevel =
@@ -57,6 +63,10 @@ export const useReport = (sessionId, userId) => {
       totalQuestions,
       questionsAnswered,
       accuracyPercent,
+      accuracyLabel,
+      averageResponseTimeSeconds,
+      duration,
+      overallRating,
       feedback,
       strengthPoints,
       weaknessesPoints,

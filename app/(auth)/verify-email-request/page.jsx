@@ -1,29 +1,16 @@
-"use client";
-import { VerifyEmailRequestPage } from "@/Components/Pages/type/index";
-import React, { Suspense, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import React, { Suspense } from "react";
 import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
+import VerifyEmailRequestClient from "./VerifyEmailRequestClient";
 
-const PageContent = () => {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  
-  useEffect(() => {
-    const userId = searchParams.get("userId") || searchParams.get("userid");
-    const token = searchParams.get("token");
-    
-    if (userId && token) {
-      router.replace(`/verify-email?userId=${userId}&token=${encodeURIComponent(token)}`);
-    }
-  }, [searchParams, router]);
-
-  return <VerifyEmailRequestPage />;
+export const metadata = {
+  title: "Request Email Verification | IntelliHire",
+  description: "Request a new email verification link for your IntelliHire account.",
 };
 
 const Page = () => {
   return (
     <Suspense fallback={<RouteLoading />}>
-       <PageContent />
+       <VerifyEmailRequestClient />
     </Suspense>
   );
 };

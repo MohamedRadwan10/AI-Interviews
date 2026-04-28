@@ -1,8 +1,18 @@
-import React from "react";
+import React, { useMemo } from "react";
 import MainText from "@/Components/Common/MainText";
 import { map } from "lodash-es";
 
 export const DashboardAnalysis = ({ strengthPoints, improvements }) => {
+  const noStrengthsMessage = useMemo(() => {
+    if (strengthPoints?.length) return null;
+    return <MainText className="text-sm text-ui-textMuted dark:text-ui-muted italic">No strength points recorded yet.</MainText>;
+  }, [strengthPoints]);
+
+  const noImprovementsMessage = useMemo(() => {
+    if (improvements?.length) return null;
+    return <MainText className="text-sm text-ui-textMuted dark:text-ui-muted italic">No improvements recorded yet.</MainText>;
+  }, [improvements]);
+
   if (!strengthPoints?.length && !improvements?.length) return null;
 
   return (
@@ -17,9 +27,7 @@ export const DashboardAnalysis = ({ strengthPoints, improvements }) => {
               {point}
             </MainText>
           ))}
-          {!strengthPoints.length && (
-            <MainText className="text-sm text-ui-textMuted dark:text-ui-muted italic">No strength points recorded yet.</MainText>
-          )}
+          {noStrengthsMessage}
         </div>
       </div>
 
@@ -33,9 +41,7 @@ export const DashboardAnalysis = ({ strengthPoints, improvements }) => {
               {point}
             </MainText>
           ))}
-          {!improvements.length && (
-            <MainText className="text-sm text-ui-textMuted dark:text-ui-muted italic">No improvements recorded yet.</MainText>
-          )}
+          {noImprovementsMessage}
         </div>
       </div>
     </div>

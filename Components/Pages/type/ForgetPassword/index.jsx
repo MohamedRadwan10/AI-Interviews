@@ -1,16 +1,16 @@
 "use client";
-import React from "react";
-import { get } from "lodash-es";
-import { useForgetPassword } from "@/hooks/useAuth";
-import { forgetPasswordConfig } from "@/Config/FieldsConfig";
+import React, { useMemo } from "react";
+import { getVal } from "@/Utils/Func/Common";
 import { EmailStep, OTPStep, PasswordStep } from "@/Components/Pages/type/ForgetPassword/StepComponents";
+import { useForgetPassword } from "@/hooks/useAuth";
 import MainText from "@/Components/Common/MainText";
 import { GenericError } from "@/Components/Errors";
+import { forgetPasswordConfig } from "@/Config/FieldsConfig";
 
 const ForgetPasswordPage = () => {
   const { step, otp, isLoading, error, handleEmailSubmit, handleOTPSubmit, handlePasswordSubmit, handleOtpChange } = useForgetPassword();
 
-  const getStepContent = () => {
+  const stepContent = useMemo(() => {
     switch (step) {
       case 1:
         return <EmailStep config={forgetPasswordConfig.emailStep} onSubmit={handleEmailSubmit} isLoading={isLoading} />;
@@ -21,9 +21,12 @@ const ForgetPasswordPage = () => {
       default:
         return null;
     }
-  };
+  }, [step, handleEmailSubmit, handleOTPSubmit, handlePasswordSubmit, handleOtpChange, otp, isLoading]);
 
-  const config = get(forgetPasswordConfig, step === 1 ? "emailStep" : step === 2 ? "otpStep" : "passwordStep");
+  const stepKey = step === 1 ? "emailStep" : step === 2 ? "otpStep" : "passwordStep";
+  const config = getVal(forgetPasswordConfig, null, stepKey);
+  const pageTitle = getVal(config, null, "pageTitle");
+  const pageSubtitle = getVal(config, null, "pageSubtitle");
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-light-primary dark:bg-dark-primary-1 px-4 py-12">
@@ -31,21 +34,19 @@ const ForgetPasswordPage = () => {
         <div className="text-center mb-10">
           <MainText
             tag="h1"
-            title={get(config, "pageTitle")}
+            title={pageTitle}
             className="text-3xl font-extrabold text-ui-textMain dark:text-white mb-3 tracking-tight"
           />
           <MainText
             tag="p"
-            title={get(config, "pageSubtitle")}
-            className="text-ui-textMuted dark:text-ui-muted text-sm leading-relaxed max-w-[280px] mx-auto"
+            title={pageSubtitle}
+            className="text-ui-textMuted dark:text-ui-muted text-lg"
           />
         </div>
 
-        <GenericError error={error} className="mb-6 justify-center" />
+        {stepContent}
 
-        <div className="transition-all duration-500 ease-in-out">
-          {getStepContent()}
-        </div>
+        <GenericError error={error} className="mt-6" />
       </div>
     </div>
   );

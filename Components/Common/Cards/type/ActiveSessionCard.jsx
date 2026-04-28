@@ -1,5 +1,5 @@
 "use client";
-import React, { Suspense } from "react";
+import React from "react";
 import { get } from "lodash-es";
 import MainText from "@/Components/Common/MainText";
 import { Briefcase, Play, Clock } from "lucide-react";
@@ -13,6 +13,10 @@ const ActiveSessionCardContent = (props) => {
   const jobTitle = get(session, "jobtitle") || get(session, "jobTitle") || "Unknown Job";
   const sessionId = get(session, "sessionid") || get(session, "sessionId");
   const jobId = get(session, "jobid") || get(session, "jobId");
+
+  const sessionIdText = `Session ID: ${sessionId?.substring(0, 8)}...`;
+  const onResume = () => navigateTo(`/intelliHire/interview-session/${jobId}`);
+  const resumeIcon = <Play className="w-4 h-4" />;
 
   return (
     <div className="flex flex-col justify-between p-6 rounded-2xl bg-white dark:bg-dark-primary-4 border border-ui-borderLight dark:border-ui-border shadow-sm transition-all hover:shadow-md h-full">
@@ -31,19 +35,12 @@ const ActiveSessionCardContent = (props) => {
       </div>
 
       <div className="flex flex-col gap-2 mb-6">
-        <MainText title={`Session ID: ${sessionId?.substring(0, 8)}...`} className="text-xs text-ui-muted" />
+        <MainText title={sessionIdText} className="text-xs text-ui-muted" />
       </div>
 
       <div className="flex items-center justify-between pt-4 border-t border-ui-borderLight dark:border-ui-border mt-auto">
-        <MainText className="text-xs text-ui-muted">
-          Resume your interview
-        </MainText>
-        <MainButton 
-          onClick={() => navigateTo(`/intelliHire/interview-session/${jobId}`)} 
-          className="text-sm font-semibold bg-brand-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-brand-primary/90 transition-colors"
-        >
-          <Play className="w-4 h-4" /> Resume
-        </MainButton>
+        <MainText className="text-xs text-ui-muted">Resume your interview</MainText>
+        <MainButton onClick={onResume} className="text-sm font-semibold bg-brand-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-brand-primary/90 transition-colors" icon={resumeIcon} title={"Resume"} />
       </div>
     </div>
   );
@@ -51,9 +48,7 @@ const ActiveSessionCardContent = (props) => {
 
 const ActiveSessionCard = (props) => {
   return (
-    <Suspense fallback={null}>
       <ActiveSessionCardContent {...props} />
-    </Suspense>
   );
 };
 

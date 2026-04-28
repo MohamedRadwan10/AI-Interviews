@@ -2,22 +2,25 @@
 import React from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { get, map } from "lodash-es";
+import { getVal } from "@/Utils/Func/Common";
+import { map } from "lodash-es";
 import MainText from "@/Components/Common/MainText";
 import MainButton from "@/Components/Common/MainButton";
 
 const MainTable = ({ data, columns, emptyMessage = "No records found" }) => {
   const renderCell = (rowData, col) => {
-    const value = get(rowData, col.field);
-    const type = get(col, "type", "text");
+    const value = getVal(rowData, null, col.field);
+    const type = getVal(col, null, "type", "text");
+    const buttonLabel = getVal(col, null, "buttonLabel", "View");
 
     if (type === "button") {
+      const handleBtnClick = () => col.onClick && col.onClick(rowData);
       return (
         <MainButton
-          onClick={() => col.onClick && col.onClick(rowData)}
+          onClick={handleBtnClick}
           className="p-button-text p-button-sm text-brand-primary hover:bg-brand-primary/10 transition-colors font-bold"
         >
-          {col.buttonLabel || "View"}
+          {buttonLabel}
         </MainButton>
       );
     }
@@ -40,12 +43,14 @@ const MainTable = ({ data, columns, emptyMessage = "No records found" }) => {
     }
     
     if (type === "custom") {
-      return col.body ? col.body(rowData) : value;
+      const customBody = col.body ? col.body(rowData) : value;
+      return customBody;
     }
 
+    const displayValue = value || "-";
     return (
       <MainText className="text-sm font-medium text-ui-textMain dark:text-white">
-        {value || "-"}
+        {displayValue}
       </MainText>
     );
   };
