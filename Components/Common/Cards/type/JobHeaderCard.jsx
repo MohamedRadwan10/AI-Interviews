@@ -7,7 +7,6 @@ import { Since } from "@/Utils/Filter/date";
 import { useNavigation } from "@/hooks/common";
 import MainImage from "@/Components/Common/Image";
 import { getImageUrl } from "@/Utils/Func/UrlHelper";
-
 import { useUserAccount } from "@/Context/UserAccountContext";
 import { useState, useEffect } from "react";
 
@@ -28,10 +27,13 @@ const JobHeaderCard = ({ item }) => {
   const logoUrl = getImageUrl(rawLogo);
   const defaultLogoText = companyName !== "Unknown Company" ? companyName?.substring(0, 2).toUpperCase() : "TC";
   const type = get(item, "type", "Full Time");
-  const location = get(item, "locations") || get(item, "location") || "Cairo, Egypt";
+  const rawLocation = get(item, "locations") || get(item, "location");
+  const city = get(item, "city");
+  const country = get(item, "country");
+  const location = rawLocation || (city && country && city !== "N/A" ? `${city}, ${country}` : "Cairo, Egypt");
   const applyUrl = get(item, "companyUrl", "#");
   const description = get(item, "description");
-  const startDateTime = get(item, "startedAt") || get(item, "startDateTime");
+  const startDateTime = get(item, "startDateTime") || get(item, "startedAt");
   const endDateTime = get(item, "endDateTime");
   const formattedStart = Since(startDateTime);
   const formattedEnd = Since(endDateTime);

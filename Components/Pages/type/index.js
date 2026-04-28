@@ -6,6 +6,7 @@ import { JobDetailsLoading } from '@/Components/Common/LoadingSkeleton/type/JobD
 import { ActiveSessionsLoading } from '@/Components/Common/LoadingSkeleton/type/ActiveSessionsLoading';
 import { ReportLoading } from '@/Components/Common/LoadingSkeleton/type/ReportLoading';
 import { PostJobLoading } from '@/Components/Common/LoadingSkeleton/type/PostJobLoading';
+import { JobApplicantsLoading } from '@/Components/Common/LoadingSkeleton/type/JobApplicantsLoading';
 
 export const HomePage = dynamic(() => import('./Home'), { loading: () => <HomeLoading /> });
 export const AboutPage = dynamic(() => import('./About'), { loading: () => <AboutLoading /> });
@@ -22,3 +23,4 @@ export const ReportPage = dynamic(() => import('./Report'), { loading: () => <Re
 export const PostJobPage = dynamic(() => import('./PostJob'), { loading: () => <PostJobLoading /> });
 export const EditJobPage = dynamic(() => import('./EditJob'), { loading: () => <PostJobLoading /> });
 export const DashboardPage = dynamic(() => import('./Dashboard'));
+export const JobApplicantsPage = dynamic(() => import('./JobApplicants'), { loading: () => <JobApplicantsLoading /> });

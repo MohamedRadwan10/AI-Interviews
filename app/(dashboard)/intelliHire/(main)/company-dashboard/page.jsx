@@ -12,15 +12,14 @@ export default function Page() {
   const userType = get(accountData, "userType");
 
   useEffect(() => {
-    if (!loading && userType && userType !== "Individual") {
-      router.replace("/intelliHire/company-dashboard");
+    if (!loading && userType === "Individual") {
+      router.replace("/intelliHire/dashboard");
     }
   }, [userType, loading, router]);
 
-
-  if (userType !== "Individual") {
+  if (userType === "Individual") {
     return null;
   }
 
-  return <MainPages type="dashboard" compType="candidate" />;
+  return <MainPages type="dashboard" compType="company" />;
 }

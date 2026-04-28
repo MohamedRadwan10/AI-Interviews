@@ -1,5 +1,6 @@
 import { useRouter, usePathname } from "next/navigation";
 import { useMemo, useState, useEffect, useRef } from "react";
+import { filter, get, includes, toLower } from "lodash-es";
 
 export const useNavigation = () => {
   const router = useRouter();
@@ -80,4 +81,21 @@ export const useUpload = ({ uploadType, value, onChange, accept: customAccept, p
   }, [value]);
 
   return { preview, accept, placeholder, fileUploadRef, onSelect, triggerUpload, formattedSize };
+};
+export const useSearch = ({ data, searchFields, initialTerm = "" }) => {
+  const [searchTerm, setSearchTerm] = useState(initialTerm);
+
+  const filteredData = useMemo(() => {
+    if (!searchTerm || !data) return data;
+    
+    const term = toLower(searchTerm);
+    return filter(data, (item) => {
+      return searchFields.some((field) => {
+        const value = get(item, field, "");
+        return includes(toLower(String(value)), term);
+      });
+    });
+  }, [data, searchTerm, searchFields]);
+
+  return { searchTerm, setSearchTerm, filteredData };
 };

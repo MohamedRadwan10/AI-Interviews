@@ -11,12 +11,11 @@ const apiSlice = createSlice({
     builder
       .addCase(fetchApiData.pending, (state, action) => {
         const { key } = action.meta.arg;
-        if (!state[key]) {
-          state[key] = { data: null, loading: true, error: null };
-        } else {
-          state[key].loading = true;
-          state[key].error = null;
-        }
+        state[key] = { 
+          data: null, 
+          loading: true, 
+          error: null 
+        };
       })
       .addCase(fetchApiData.fulfilled, (state, { payload }) => {
         const { key, data } = payload;

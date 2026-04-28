@@ -6,8 +6,10 @@ import { Briefcase } from "lucide-react";
 const JobSpecsCard = ({ item }) => {
   const careerLevel = get(item, "careerLevel", "Not specified");
   const experience = get(item, "experienceYears", "0 to 1 Years");
-  const category = get(item, "category", "General");
-  const skillsStr = get(item, "skillsAndTools", category);
+  const rawCategory = get(item, "category", "General");
+  const subCategory = get(item, "subCtegory") || get(item, "subCategory");
+  const category = subCategory ? `${rawCategory} (${subCategory})` : rawCategory;
+  const skillsStr = get(item, "skillsAndTools", rawCategory);
   
   const tags = typeof skillsStr === "string" ? skillsStr.split(",").map(tag => tag.trim()) : [category];
 

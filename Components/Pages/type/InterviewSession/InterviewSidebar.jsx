@@ -49,7 +49,7 @@ export const InterviewSidebar = ({ isConnected, isSessionStarted, questionTime }
           </div>
         </div>
 
-        {stream && <AudioLevelMeter stream={stream} />}
+        {/* {stream && <AudioLevelMeter stream={stream} />} */}
       </div>
 
       <div className={`p-4 rounded-2xl border flex items-center gap-3 transition-colors ${isConnected ? "bg-status-success/5 border-status-success/20 text-status-success" : "bg-status-warning/5 border-status-warning/20 text-status-warning"}`}>

@@ -1,4 +1,5 @@
 export const BACKEND_BASE_URL = "https://intellhire.runasp.net/api";
+export const IMAGE_BASE_URL = "https://intellhire.runasp.net";
 export const API_BASE_URL = "/api/proxy";
 
 export const AUTH_ENDPOINTS = {
@@ -94,8 +95,20 @@ export const AUTH_ENDPOINTS = {
     url: "/Jobs",  //  /${jobId} in parameters and in body : { title *string careerLevel *string experienceYears *integer type *string location *string skillsAndTools *string description *string requirements *string  startedAt *date endedAt *date}
     method: "PUT",
   },
+  deleteJob: {
+    url: "/Jobs",  //  /${jobId} in parameters
+    method: "DELETE",
+  },
   candidateDashboard: {
     url: "/User/dashboard",  // token only
     method: "GET",
+  },
+  employerDashboard: {
+    url: "/Employer/dashboard",  // token only
+    method: "GET",
+  },
+  candidateJobStatus: {
+    url: "/Employer/sessions",  // in parameters: sessionId  /{sessionId}/status in end of url and in body : { status *integer (0:Accepted, 1:Rejected, 2:Pending )} 
+    method: "PATCH",
   },
 };
