@@ -1,5 +1,6 @@
 import RegisterPage from "@/Components/auth/Register";
 import React from "react";
+import RoleGuard from "@/Components/Common/RoleGuard";
 
 export const metadata = {
   title: "Company Registration | IntelliHire",
@@ -8,9 +9,11 @@ export const metadata = {
 
 const Page = () => {
   return (
-    <div>
-      <RegisterPage type={'company'}/>
-    </div>
+    <RoleGuard allowedRoles={["Company"]}>
+      <div>
+        <RegisterPage type={'company'}/>
+      </div>
+    </RoleGuard>
   );
 };
 

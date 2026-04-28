@@ -17,6 +17,7 @@
     "country-state-city": "^3.2.1",
     "egypt-cities": "^0.0.7",
     "formik": "^2.4.9",
+    "html2pdf.js": "^0.14.0",
     "jsonwebtoken": "^9.0.3",
     "lodash-es": "^4.17.23",
     "lucide-react": "^0.577.0",

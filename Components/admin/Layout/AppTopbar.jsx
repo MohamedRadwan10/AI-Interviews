@@ -9,11 +9,15 @@ import { useInterviewSessions } from "@/hooks/useActiveSessions";
 import { useNavigation } from "@/hooks/common";
 import MainButton from "@/Components/Common/MainButton";
 import MainText from "@/Components/Common/MainText";
+import { useUserAccount } from "@/Context/UserAccountContext";
+import { get } from "lodash-es";
 
 const TopBar = () => {
   const [scrolled, setScrolled] = useState(false);
   const { activeSessionsCount } = useInterviewSessions();
   const { navigateTo } = useNavigation();
+  const { accountData } = useUserAccount();
+  const userType = get(accountData, "userType");
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -36,21 +40,23 @@ const TopBar = () => {
         <NavMenu />
 
         <div className="flex items-center gap-2 md:gap-4 shrink-0">
-          <div className="relative">
-            <MainButton 
-              onClick={handleSessionsClick}
-              className="p-2.5 rounded-2xl bg-white/50 dark:bg-white/5 border border-ui-borderLight dark:border-dark-gray text-ui-textMuted dark:text-ui-muted hover:text-brand-primary dark:hover:text-brand-accent transition-all"
-            >
-              <Bell className="w-5 h-5" />
-            </MainButton>
-            {activeSessionsCount > 0 && (
-              <MainText 
-                tag="span"
-                title={sessionsCountLabel}
-                className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-status-error text-[10px] font-bold text-white border-2 border-light-primary dark:border-dark-primary-4 animate-bounce pointer-events-none"
-              />
-            )}
-          </div>
+          {userType !== "Company" && (
+            <div className="relative">
+              <MainButton 
+                onClick={handleSessionsClick}
+                className="p-2.5 rounded-2xl bg-white/50 dark:bg-white/5 border border-ui-borderLight dark:border-dark-gray text-ui-textMuted dark:text-ui-muted hover:text-brand-primary dark:hover:text-brand-accent transition-all"
+              >
+                <Bell className="w-5 h-5" />
+              </MainButton>
+              {activeSessionsCount > 0 && (
+                <MainText 
+                  tag="span"
+                  title={sessionsCountLabel}
+                  className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-status-error text-[10px] font-bold text-white border-2 border-light-primary dark:border-dark-primary-4 animate-bounce pointer-events-none"
+                />
+              )}
+            </div>
+          )}
 
           <div className="h-8 w-[1px] bg-ui-borderLight dark:bg-dark-gray mx-1 hidden sm:block"></div>
           

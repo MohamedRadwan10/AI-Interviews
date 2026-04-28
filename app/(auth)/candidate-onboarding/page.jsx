@@ -2,12 +2,15 @@
 
 import OnboardingPage from "@/Components/auth/Onboarding";
 import React from "react";
+import RoleGuard from "@/Components/Common/RoleGuard";
 
 const page = () => {
   return (
-    <div>
-      <OnboardingPage type={'candidate'}/>
-    </div>
+    <RoleGuard allowedRoles={["Individual"]}>
+      <div>
+        <OnboardingPage type={'candidate'}/>
+      </div>
+    </RoleGuard>
   );
 };
 

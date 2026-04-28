@@ -16,30 +16,25 @@ export const useInterviewSession = (jobId) => {
   const { userId } = useUserAccount();
   const { success } = useMainNotify();
 
-  // --- Session State ---
   const [sessionId, setSessionId] = useState(null);
   const [isSessionStarted, setIsSessionStarted] = useState(false);
   const [interviewFinished, setInterviewFinished] = useState(false);
   const [finishMessage, setFinishMessage] = useState("");
 
-  // --- Question State ---
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [totalQuestions, setTotalQuestions] = useState(0);
 
-  // --- Timer State ---
   const [timeLeft, setTimeLeft] = useState(null);
   const [initialTime, setInitialTime] = useState(0);
 
-  // --- UI Status ---
   const [loadingStates, setLoadingStates] = useState({
-    session: false,
+    session: true,
     submitting: false,
     finishing: false,
   });
   const [error, setError] = useState(null);
 
-  // --- External Hooks ---
   const { isConnected, on } = useSignalR(userToken, userId);
 
   const { refetch: callStartSession } = useApi({ type: "startSession", autoFetch: false, urlSuffix: `/${jobId}` });
@@ -48,7 +43,6 @@ export const useInterviewSession = (jobId) => {
   const { refetch: callCheckActiveSession } = useApi({ type: "checkActiveSession", autoFetch: false, urlSuffix: `/${jobId}` });
   const { refetch: callGetSessionDetails } = useApi({ type: "getSessionDetails", autoFetch: false });
 
-  // --- Helpers ---
   const parseQuestion = (q) => {
     if (!q) return null;
     try {
@@ -58,7 +52,6 @@ export const useInterviewSession = (jobId) => {
     }
   };
 
-  // --- Session Logic ---
   const restoreSession = useCallback(async (sId) => {
     setLoadingStates(prev => ({ ...prev, session: true }));
     try {
@@ -93,25 +86,30 @@ export const useInterviewSession = (jobId) => {
       setLoadingStates(prev => ({ ...prev, finishing: false }));
     }
   }, [sessionId, jobId, callEndSession, success]);
-
-  // --- Effects ---
   
   // 1. Initial Check
   useEffect(() => {
-    if (!jobId) return;
+    if (!jobId) {
+       setLoadingStates(prev => ({ ...prev, session: false }));
+       return;
+    }
     const init = async () => {
+      setLoadingStates(prev => ({ ...prev, session: true }));
       try {
         const res = await callCheckActiveSession();
-        const activeSId = get(res, "data.sessionid") || get(res, "data.sessionId");
-        if (activeSId && activeSId !== INVALID_SESSION_ID) {
-          restoreSession(activeSId);
+        const activeSId = get(res, "data.sessionid") || get(res, "data.sessionId") || get(res, "data");
+        if (activeSId && activeSId !== INVALID_SESSION_ID && typeof activeSId === "string") {
+          await restoreSession(activeSId);
+        } else {
+          setLoadingStates(prev => ({ ...prev, session: false }));
         }
-      } catch (err) {}
+      } catch (err) {
+        setLoadingStates(prev => ({ ...prev, session: false }));
+      }
     };
     init();
   }, [jobId, restoreSession, callCheckActiveSession]);
 
-  // 2. SignalR Listeners
   useEffect(() => {
     on("nextQuestionReady", data => setCurrentQuestion(data));
     on("reportGenerationStarted", data => {
@@ -125,10 +123,8 @@ export const useInterviewSession = (jobId) => {
     const parsed = parseQuestion(currentQuestion);
     if (!parsed) return;
 
-    // Check for seconds first (from session details)
     let totalSeconds = parseInt(get(parsed, "remainingSeconds"), 10);
 
-    // If not found or invalid, check for minutes (from start/next question)
     if (isNaN(totalSeconds) || totalSeconds <= 0) {
       const minutes = parseInt(get(parsed, "time"), 10);
       if (!isNaN(minutes) && minutes > 0) {
@@ -150,7 +146,6 @@ export const useInterviewSession = (jobId) => {
     }
   }, [isSessionStarted, timeLeft, interviewFinished, loadingStates.submitting]);
 
-  // --- Main Actions ---
   const startInterview = useCallback(async () => {
     setError(null);
     setLoadingStates(prev => ({ ...prev, session: true }));

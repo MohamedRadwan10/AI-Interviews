@@ -1,34 +1,31 @@
 import { useState, useCallback, useMemo } from "react";
-import axios from "axios";
 
 export const useDownloadReport = () => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState(null);
 
-  const downloadAsFile = useCallback(async ({ url, fileName = "report", fileType = "pdf" }) => {
+  const downloadAsFile = useCallback(async ({ printElementId, fileName = "report" }) => {
     setIsDownloading(true);
     setDownloadError(null);
 
     try {
-      const token = typeof window !== "undefined" ? localStorage.getItem("userToken") : null;
+      const html2pdf = (await import("html2pdf.js")).default;
+      
+      const element = document.getElementById(printElementId);
+      if (!element) {
+        throw new Error("Element not found for PDF generation");
+      }
 
-      const response = await axios.get(url, {
-        headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          "Accept": fileType === "pdf" ? "application/pdf" : "*/*",
-        },
-        responseType: "blob",
-      });
+      const opt = {
+        margin:       0.2,
+        filename:     `${fileName}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, logging: false },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
 
-      const blob = response.data;
-      const blobUrl = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = blobUrl;
-      link.download = `${fileName}.${fileType}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(blobUrl);
+      await html2pdf().set(opt).from(element).save();
+      
     } catch (err) {
       console.error("Download error:", err);
       setDownloadError(err.message || "Failed to download file");
