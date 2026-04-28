@@ -1,4 +1,5 @@
 import MainPages from "@/Components/Pages";
+import RoleGuard from "@/Components/Common/RoleGuard";
 
 export const metadata = {
   title: "Job Applicants",
@@ -7,5 +8,9 @@ export const metadata = {
 
 export default async function Page({ params }) {
   const { id } = await params;
-  return <MainPages type="JobApplicants" id={id} />;
+  return (
+    <RoleGuard allowedRoles={["Company"]}>
+      <MainPages type="JobApplicants" id={id} />
+    </RoleGuard>
+  );
 }

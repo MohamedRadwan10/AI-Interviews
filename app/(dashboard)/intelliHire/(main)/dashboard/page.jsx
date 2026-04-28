@@ -2,24 +2,17 @@
 
 import MainPages from "@/Components/Pages";
 import { useUserAccount } from "@/Context/UserAccountContext";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { get } from "lodash-es";
+import AccessDenied from "@/Components/Common/AccessDenied";
 
 export default function Page() {
   const { accountData, loading } = useUserAccount();
-  const router = useRouter();
   const userType = get(accountData, "userType");
 
-  useEffect(() => {
-    if (!loading && userType && userType !== "Individual") {
-      router.replace("/intelliHire/company-dashboard");
-    }
-  }, [userType, loading, router]);
-
+  if (loading) return null;
 
   if (userType !== "Individual") {
-    return null;
+    return <AccessDenied />;
   }
 
   return <MainPages type="dashboard" compType="candidate" />;

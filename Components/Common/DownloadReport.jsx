@@ -15,8 +15,10 @@ const DownloadReport = ({
   const { isDownloading, downloadAsFile, printContent } = useDownloadReport();
 
   const handleDownload = () => {
-    if (downloadUrl) {
-      downloadAsFile({ url: downloadUrl, fileName, fileType });
+    if (printElementId) {
+      downloadAsFile({ printElementId, fileName });
+    } else if (downloadUrl) {
+      console.warn("No printElementId provided for download");
     }
   };
 

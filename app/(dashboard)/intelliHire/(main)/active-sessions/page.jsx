@@ -1,5 +1,6 @@
 import React from "react";
 import MainPage from "@/Components/Pages";
+import RoleGuard from "@/Components/Common/RoleGuard";
 
 export const metadata = {
   title: "Active Sessions | IntelliHire",
@@ -7,7 +8,11 @@ export const metadata = {
 };
 
 const Page = () => {
-  return <MainPage type="activeSessions" />;
+  return (
+    <RoleGuard allowedRoles={["Individual"]}>
+      <MainPage type="activeSessions" />
+    </RoleGuard>
+  );
 };
 
 export default Page;
