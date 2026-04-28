@@ -11,3 +11,5 @@ export * from '@/Components/Common/LoadingSkeleton/type/ReportLoading';
 export * from '@/Components/Common/LoadingSkeleton/type/PostJobLoading';
 export { default as FormLoading } from '@/Components/Common/LoadingSkeleton/type/FormLoading';
 export * from '@/Components/Common/LoadingSkeleton/type/CandidateDashboardLoading';
+export * from '@/Components/Common/LoadingSkeleton/type/CompanyDashboardLoading';
+export * from '@/Components/Common/LoadingSkeleton/type/JobApplicantsLoading';

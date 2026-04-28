@@ -1,5 +1,6 @@
 import { getAllCountries, getStatesOfCountry, getCitiesOfState } from "@/Utils/Func/LocationData";
 import { get } from "lodash-es";
+import { jobCategories, jobSubCategories } from "./JobCategoriesConfig";
 
 export const loginConfig = {
   pageTitle: "Welcome back to IntelliHire",
@@ -467,13 +468,15 @@ export const postJobConfig = {
           type: "select",
           label: "Job Category",
           placeholder: "Select Category",
-          options: [
-            { label: "Software Engineering", value: "Software" },
-            { label: "Product Management", value: "Product" },
-            { label: "UI/UX Design", value: "Design" },
-            { label: "Digital Marketing", value: "Marketing" },
-            { label: "Data Science", value: "Data" },
-          ],
+          options: jobCategories,
+          validation: { required: true },
+        },
+        {
+          field_name: "subCategory",
+          type: "select",
+          label: "Job Subcategory",
+          placeholder: "Select Subcategory",
+          options: (values) => jobSubCategories[values?.category] || [],
           validation: { required: true },
         },
         {

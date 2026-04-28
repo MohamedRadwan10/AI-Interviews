@@ -60,33 +60,42 @@ const MainTable = ({ data, columns, emptyMessage = "No records found" }) => {
           root: { className: "w-full overflow-hidden rounded-3xl" },
           table: { className: "w-full border-collapse" },
           thead: { className: "border-b border-ui-borderLight dark:border-ui-border" },
-          headerRow: { className: "text-left" },
+          headerRow: { className: "text-center" },
           tbody: { className: "!bg-white dark:!bg-dark-primary-4" },
           bodyRow: { className: "!bg-transparent hover:!bg-slate-50 dark:hover:!bg-dark-primary-3/50 transition-colors border-b border-ui-borderLight dark:border-ui-border/50" },
           emptyMessage: { className: "p-6 text-center text-ui-textMuted dark:text-ui-muted" }
         }}
       >
-        {map(columns, (col, index) => (
-          <Column
-            key={index}
-            field={col.field}
-            header={
-              <MainText className="text-xs font-bold text-ui-textMuted dark:text-ui-muted uppercase tracking-wider py-4 px-6 block">
-                {col.header}
-              </MainText>
-            }
-            body={(rowData) => (
-              <div className="py-4 px-6">
-                {renderCell(rowData, col)}
-              </div>
-            )}
-            style={col.style}
-            pt={{
-              headerCell: { className: "!bg-light-blue50 dark:!bg-dark-primary-3 p-0 border-none" },
-              bodyCell: { className: "p-0 border-none !bg-transparent" }
-            }}
-          />
-        ))}
+        {map(columns, (col, index) => {
+          const align = col.align || "center";
+          const alignClass = align === "left" ? "justify-start" : align === "right" ? "justify-end" : "justify-center";
+          const textAlign = align === "left" ? "text-left" : align === "right" ? "text-right" : "text-center";
+
+          return (
+            <Column
+              key={index}
+              field={col.field}
+              header={
+                <div className={`flex ${alignClass} items-center w-full py-4 px-6`}>
+                  <MainText className={`text-xs font-bold text-ui-textMuted dark:text-ui-muted uppercase tracking-wider ${textAlign}`}>
+                    {col.header}
+                  </MainText>
+                </div>
+              }
+              body={(rowData) => (
+                <div className={`py-4 px-6 flex ${alignClass} items-center w-full`}>
+                  {renderCell(rowData, col)}
+                </div>
+              )}
+              style={col.style}
+              pt={{
+                headerCell: { className: `!bg-light-blue50 dark:!bg-dark-primary-3 p-0 border-none ${textAlign}` },
+                headerContent: { className: alignClass },
+                bodyCell: { className: `p-0 border-none !bg-transparent ${textAlign}` }
+              }}
+            />
+          );
+        })}
       </DataTable>
     </div>
   );

@@ -22,6 +22,14 @@ const NavMenu = () => {
       return false;
     }
     return true;
+  }).map((item) => {
+    if (item.label === "Dashboard") {
+      return {
+        ...item,
+        path: userType === "Individual" ? "/intelliHire/dashboard" : "/intelliHire/company-dashboard"
+      };
+    }
+    return item;
   });
 
   const displayNavigation = isMounted ? filteredNavigation : navigation;

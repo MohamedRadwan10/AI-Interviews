@@ -88,7 +88,7 @@ const InterviewIntro = ({ jobId }) => {
           </div>
 
           <div className="space-y-4">
-            {stream && <AudioLevelMeter stream={stream} />}
+            {/* {stream && <AudioLevelMeter stream={stream} />} */}
 
             {!stream ? (
               <MainButton onClick={handleAllowAccess} className="w-full py-4 bg-ui-textMain dark:bg-dark-primary-2 text-white rounded-2xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">

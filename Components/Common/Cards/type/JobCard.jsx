@@ -19,12 +19,15 @@ const JobCardContent = ({ job }) => {
     ? companyName.substring(0, 2).toUpperCase() 
     : "TC";
   const type = get(job, "type", "Full Time");
-  const location = get(job, "locations", "Cairo, Egypt"); 
+  const rawLocation = get(job, "locations");
+  const city = get(job, "city");
+  const country = get(job, "country");
+  const location = rawLocation || (city && country && city !== "N/A" ? `${city}, ${country}` : "Cairo, Egypt"); 
   const category = get(job, "category", "General");
   const careerLevel = get(job, "careerLevel");
   const skillsStr = get(job, "skillsAndTools", category);
   const tags = typeof skillsStr === "string" ? skillsStr.split(",").map(tag => tag.trim()) : [category]; 
-  const startDateTime = get(job, "startedAt");
+  const startDateTime = get(job, "startDateTime") || get(job, "startedAt");
   const endDateTime = get(job, "endDateTime");
   const formattedStart = Since(startDateTime);
   const formattedEnd = Since(endDateTime);

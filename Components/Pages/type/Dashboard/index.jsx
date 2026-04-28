@@ -1,9 +1,7 @@
 "use client";
 
 import { get, startCase } from "lodash-es";
-import { Suspense } from "react";
 import * as PageComponents from "@/Components/Pages/type/Dashboard/type";
-import Loading from "@/Components/Common/LoadingSkeleton";
 
 const MainCard = (props) => {
   const type = get(props, "compType", "");
@@ -13,11 +11,7 @@ const MainCard = (props) => {
   const defaultDashboard = get(PageComponents, "CandidateDashboard");
   const MainComp = get(PageComponents, componentKey, defaultDashboard);
 
-  return (
-    <Suspense fallback={<Loading type="CandidateDashboard" />}>
-      <MainComp {...props} {...(data || {})} item={data} />
-    </Suspense>
-  );
+  return <MainComp {...props} {...(data || {})} item={data} />;
 };
 
 export default MainCard;
