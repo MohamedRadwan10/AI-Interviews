@@ -151,8 +151,11 @@ export const useInterviewSession = (jobId) => {
     setLoadingStates(prev => ({ ...prev, session: true }));
     try {
       const result = await callStartSession();
-      const sId = get(result, "data.sessionid") || get(result, "data.id") || result.data;
-      if (!sId) throw new Error("Session ID missing");
+      let sId = get(result, "data.sessionId") || get(result, "data.sessionid") || get(result, "data.id") || get(result, "data");
+      if (typeof sId === "object" && sId !== null) {
+        sId = sId.sessionId || sId.id || sId.sessionid;
+      }
+      if (!sId || typeof sId !== "string") throw new Error("Session ID missing or invalid");
       setSessionId(sId);
       setIsSessionStarted(true);
       return sId;
@@ -166,7 +169,6 @@ export const useInterviewSession = (jobId) => {
   const submitAnswer = useCallback(async (answerData) => {
     if (!sessionId || !currentQuestion) return;
     
-    // Snapshot time and question before clearing
     const timeTaken = initialTime - (timeLeft || 0);
     const parsed = parseQuestion(currentQuestion);
     const qId = get(parsed, "id") || get(parsed, "questionId");
