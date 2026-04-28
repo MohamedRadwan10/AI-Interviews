@@ -26,6 +26,8 @@ const InterviewRoom = ({ jobId }) => {
     finishMessage,
     sessionId,
     timeLeft,
+    isQuestionReady,
+    isFinishing,
   } = useInterviewSession(jobId);
 
   useEffect(() => {
@@ -90,7 +92,7 @@ const InterviewRoom = ({ jobId }) => {
             <div className="flex items-center gap-2 text-brand-primary">
               <div className="w-1.5 h-6 bg-brand-primary rounded-full" />
               <MainText className="uppercase tracking-widest text-xs font-bold">
-                Question {questionIndex + 1}
+                {isQuestionReady ? `Question ${questionIndex + 1}` : "System Status"}
               </MainText>
             </div>
             
@@ -101,7 +103,14 @@ const InterviewRoom = ({ jobId }) => {
           </div>
 
           <MainText tag="h2" className="text-2xl font-semibold leading-relaxed text-ui-textMain dark:text-white">
-            {questionText}
+            {isQuestionReady 
+              ? questionText 
+              : (isFinishing || (isSubmitting && isLastQuestion))
+                ? "Submitting your responses and generating your comprehensive feedback report... Please wait."
+                : isSubmitting
+                  ? "Analyzing your answer and preparing the next question... Please wait."
+                  : "Reviewing the job's requirements and your background to prepare your interview questions... We’re about to start"
+            }
           </MainText>
         </div>
 
@@ -109,7 +118,8 @@ const InterviewRoom = ({ jobId }) => {
           <AnswerConsole 
             onSubmit={submitAnswer} 
             isSubmitting={isSubmitting} 
-            isLastQuestion={isLastQuestion} 
+            isLastQuestion={isLastQuestion}
+            isQuestionReady={isQuestionReady}
           />
         </div>
 

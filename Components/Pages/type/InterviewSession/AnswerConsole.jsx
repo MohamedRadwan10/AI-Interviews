@@ -9,7 +9,7 @@ import MainInput from "@/Components/Common/Inputs";
 import { useDarkMode } from "@/Context/DarkModeContext";
 import { languages } from "@/Config/DataConstant";
 
-const AnswerConsole = ({ onSubmit, isSubmitting = false, isLastQuestion = false }) => {
+const AnswerConsole = ({ onSubmit, isSubmitting = false, isLastQuestion = false, isQuestionReady = true }) => {
   const {
     activeTab, setActiveTab,
     textAnswer, setTextAnswer,
@@ -88,17 +88,19 @@ const AnswerConsole = ({ onSubmit, isSubmitting = false, isLastQuestion = false 
   }, [activeTab, language, codeAnswer, isDarkMode]);
 
   const submitButton = useMemo(() => {
+    const isDisabled = isSubmitting || !hasAnswer || !isQuestionReady;
     const submitBtnTitle = isSubmitting ? "Submitting..." : (isLastQuestion ? "Submit & End Interview" : "Send Answer");
     const submitBtnIcon = <Send className="w-4 h-4" />;
     return (
       <MainButton 
-        onClick={handleSend} disabled={isSubmitting || !hasAnswer}
+        onClick={handleSend} 
+        disabled={isDisabled}
         title={submitBtnTitle}
         icon={submitBtnIcon}
-        className={`bg-brand-primary text-white px-6 py-2 rounded-xl flex items-center gap-2 hover:bg-brand-primaryDark transition-all ${(isSubmitting || !hasAnswer) ? "opacity-50 cursor-not-allowed" : ""}`}
+        className={`bg-brand-primary text-white px-6 py-2 rounded-xl flex items-center gap-2 hover:bg-brand-primaryDark transition-all ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
       />
     );
-  }, [isSubmitting, isLastQuestion, handleSend, hasAnswer]);
+  }, [isSubmitting, isLastQuestion, isQuestionReady, handleSend, hasAnswer]);
 
   return (
     <div className="bg-white dark:bg-dark-primary-4 rounded-3xl border border-ui-borderLight dark:border-ui-border shadow-sm overflow-hidden flex flex-col h-full">
