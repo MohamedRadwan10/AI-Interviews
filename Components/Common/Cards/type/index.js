@@ -11,4 +11,5 @@ export const ActiveSessionCard = lazy(() => import('./ActiveSessionCard'));
 export const ReportScoreCard = lazy(() => import('./ReportScoreCard'));
 export const ReportQuestionCard = lazy(() => import('./ReportQuestionCard'));
 export const StatCard = lazy(() => import('./StatCard'));
+export const DashboardUserCard = lazy(() => import('./DashboardUser'));
 

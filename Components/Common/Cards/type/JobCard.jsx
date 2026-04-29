@@ -8,6 +8,7 @@ import { useNavigation } from "@/hooks/common";
 import { Since } from "@/Utils/Filter/date";
 import MainImage from "@/Components/Common/Image";
 import { getImageUrl } from "@/Utils/Func/UrlHelper";
+import { formatDate } from "@/Utils/Func/Common";
 
 const JobCardContent = ({ job }) => {
   const { navigateTo } = useNavigation();
@@ -31,7 +32,7 @@ const JobCardContent = ({ job }) => {
   const startDateTime = get(job, "startDateTime") || get(job, "startedAt");
   const endDateTime = get(job, "endDateTime");
   const formattedStart = Since(startDateTime);
-  const formattedEnd = Since(endDateTime);
+  const formattedEnd = formatDate(endDateTime);
   const postedAt = formattedStart ? (formattedEnd ? `${formattedStart} - Ends: ${formattedEnd}` : formattedStart) : "Just now";
   const jobId = get(job, "id");
 
