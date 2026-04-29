@@ -1,4 +1,4 @@
-import { map, get } from "lodash-es"; // lodash map is fine
+import { map, get } from "lodash-es";
 import { getVal } from "@/Utils/Func/Common";
 import MainText from "@/Components/Common/MainText";
 import MainInput from "@/Components/Common/Inputs";

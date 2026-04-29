@@ -2,5 +2,5 @@ import moment from "moment-timezone";
 
 export const Since = (data) => {
   if (!data) return;
-  return moment(data).fromNow();
+  return moment.utc(data).fromNow();
 };

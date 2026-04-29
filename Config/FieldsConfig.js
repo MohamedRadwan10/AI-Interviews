@@ -163,7 +163,7 @@ export const registerConfig = {
       field_name: "name",
       type: "text",
       label: "Full Name",
-      placeholder: "Mohamed Mahmoud",
+      placeholder: "Enter your name",
       fieldClassName:
         "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
       containerClassName: "text-light-black dark:text-dark-white",
@@ -182,7 +182,7 @@ export const registerConfig = {
       field_name: "email",
       type: "email",
       label: "Email",
-      placeholder: "Mohamed@gmail.com",
+      placeholder: "Enter your email",
       fieldClassName:
         "dark:bg-dark-primary-1 bg-light-primary border-[0.5px] dark:border-dark-gray border-light-gray",
       containerClassName: "text-light-black dark:text-dark-white",
@@ -492,14 +492,6 @@ export const postJobConfig = {
           ],
           validation: { required: true },
         },
-        // {
-        //   field_name: "location",
-        //   type: "text",
-        //   label: "Location",
-        //   placeholder: "e.g. Cairo, Egypt or Remote",
-        //   validation: { required: true },
-        //   gridClassName: "col-span-2",
-        // },
       ],
     },
     {

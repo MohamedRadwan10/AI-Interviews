@@ -49,3 +49,30 @@
 .p-icon-field{
   width: 100% !important;
 }
+
+.generating-pdf .truncate {
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+
+.generating-pdf .line-clamp-3,
+.generating-pdf .line-clamp-2 {
+  display: block !important;
+  -webkit-line-clamp: none !important;
+  overflow: visible !important;
+}
+
+.generating-pdf .hide-in-pdf {
+  display: none !important;
+}
+
+.generating-pdf {
+  width: 1200px !important;
+  max-width: none !important;
+  background-color: transparent !important;
+}
+
+.generating-pdf .rounded-2xl {
+  page-break-inside: avoid;
+}

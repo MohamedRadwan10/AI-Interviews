@@ -1,8 +1,9 @@
 import React from "react";
 import { Info, Briefcase, Layers, FileText, ListChecks, ChevronRight, AlertCircle, CheckCircle2 } from "lucide-react";
-import { map, get } from "lodash-es"; // lodash map is fine, but get should be getVal
+import { map, get } from "lodash-es";
 import { getVal } from "@/Utils/Func/Common";
 import MainButton from "../MainButton";
+import MainText from "../MainText";
 
 const ICON_MAP = {
   basic: Info,
@@ -44,7 +45,7 @@ const FormSidebar = ({ sections, activeTab, setActiveTab, errors, touched, value
               <div className={`p-2 rounded-lg ${isActive ? "bg-white/20" : "bg-light-primary dark:bg-dark-primary-3"}`}>
                 <Icon className="w-5 h-5" />
               </div>
-              <span className="font-medium text-sm">{sectionTitle}</span>
+              <MainText title={sectionTitle} className="font-medium text-sm" />
             </div>
             <div className="flex items-center">
               {hasError ? (

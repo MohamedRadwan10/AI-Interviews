@@ -29,7 +29,7 @@ const DownloadReport = ({
   };
 
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
+    <div className={`flex items-center gap-3 hide-in-pdf ${className}`}>
       {downloadUrl && (
         <MainButton
           onClick={handleDownload}

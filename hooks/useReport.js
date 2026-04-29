@@ -47,7 +47,13 @@ export const useReport = (sessionId, userId) => {
       idealAnswer: get(q, "idealAnswer", ""),
       responseTime: get(q, "responseTime", ""),
       type: get(q, "type", ""),
+      difficulty: get(q, "difficulty", ""),
     }));
+
+    const fullName = get(report, "fullName", "");
+    const email = get(report, "email", "");
+    const phoneNumber = get(report, "phoneNumber", "");
+    const photo = get(report, "photo", "");
 
     const scoreLevel =
       accuracyPercent >= 80 ? "excellent" :
@@ -78,6 +84,10 @@ export const useReport = (sessionId, userId) => {
       redFlags,
       performanceLabel,
       hiringRecommendation,
+      fullName,
+      email,
+      phoneNumber,
+      photo,
       isLoading: loading,
       error,
       refetch,

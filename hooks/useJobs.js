@@ -3,6 +3,7 @@ import { map, get, take, drop } from "lodash-es";
 import { useApi } from "@/hooks/useApi";
 import { UserTokenContext } from "@/Context/UserTokenContext";
 import { useNavigation, useMainNotify } from "@/hooks/common";
+import { formatDate } from "@/Utils/Func/Common";
 
 export const useJobs = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -80,8 +81,8 @@ export const usePostJob = () => {
       const payload = { 
         ...values, 
         experienceYears: parseInt(values.experienceYears || 0, 10),
-        startedAt: values.startedAt instanceof Date ? values.startedAt.toISOString() : values.startedAt,
-        endedAt: values.endedAt instanceof Date ? values.endedAt.toISOString() : values.endedAt,
+        startedAt: formatDate(values.startedAt),
+        endedAt: formatDate(values.endedAt),
       };
       const data = await postJobApi.refetch({ data: payload });
       if (data) {
@@ -116,8 +117,8 @@ export const useEditJob = (jobId) => {
         ...values, 
         experienceYears: parseInt(values.experienceYears || 0, 10),
         skillsAndTools: values.skillsAndTools || values.requiredSkills,
-        startedAt: values.startedAt instanceof Date ? values.startedAt.toISOString() : values.startedAt,
-        endedAt: values.endedAt instanceof Date ? values.endedAt.toISOString() : values.endedAt,
+        startedAt: formatDate(values.startedAt),
+        endedAt: formatDate(values.endedAt),
       };
       const data = await editJobApi.refetch({ data: payload });
       if (data) {

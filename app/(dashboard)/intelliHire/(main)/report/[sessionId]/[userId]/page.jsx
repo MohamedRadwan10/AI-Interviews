@@ -6,6 +6,6 @@ export const metadata = {
 };
 
 export default async function Page({ params }) {
-  const { sessionId } = await params;
-  return <MainPages type="report" sessionId={sessionId} />;
+  const { sessionId, userId } = await params;
+  return <MainPages type="report" sessionId={sessionId} userId={userId} />;
 }

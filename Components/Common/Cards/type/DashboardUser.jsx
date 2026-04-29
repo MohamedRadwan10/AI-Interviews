@@ -3,14 +3,16 @@ import MainText from "@/Components/Common/MainText";
 import MainButton from "@/Components/Common/MainButton";
 import { Video, TrendingUp, Eye } from "lucide-react";
 import { useNavigation } from "@/hooks/common";
+import { useUserAccount } from "@/Context/UserAccountContext";
 
 export const DashboardCards = ({ totalInterviews, averageProgress, latestRecord }) => {
   const { navigateTo } = useNavigation();
+  const { userId } = useUserAccount();
 
   const latestJobTitle = latestRecord?.jobTitle || "No recent interviews";
   const latestCompany = latestRecord?.companyName || "-";
   const latestScore = latestRecord?.overallScore || "-";
-  const onViewReport = () => navigateTo(`/intelliHire/report/${latestRecord?.sessionId}`);
+  const onViewReport = () => navigateTo(`/intelliHire/report/${latestRecord?.sessionId}/${userId}`);
   const viewIcon = <Eye className="w-4 h-4" />;
 
   return (
