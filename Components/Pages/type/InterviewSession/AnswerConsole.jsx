@@ -9,7 +9,7 @@ import MainInput from "@/Components/Common/Inputs";
 import { useDarkMode } from "@/Context/DarkModeContext";
 import { languages } from "@/Config/DataConstant";
 
-const AnswerConsole = ({ onSubmit, isSubmitting = false, isLastQuestion = false, isQuestionReady = true }) => {
+const AnswerConsole = ({ onSubmit, isSubmitting = false, isLastQuestion = false, isQuestionReady = true, questionType }) => {
   const {
     activeTab, setActiveTab,
     textAnswer, setTextAnswer,
@@ -18,7 +18,7 @@ const AnswerConsole = ({ onSubmit, isSubmitting = false, isLastQuestion = false,
     status, startRecording, stopRecording, mediaBlobUrl,
     handleSend,
     hasAnswer
-  } = useAnswerConsole(onSubmit);
+  } = useAnswerConsole(onSubmit, questionType);
   const { isDarkMode } = useDarkMode();
   const tabs = [
     { id: "text", icon: MessageSquare, label: "Text" },

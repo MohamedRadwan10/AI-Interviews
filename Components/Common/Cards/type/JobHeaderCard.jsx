@@ -9,6 +9,7 @@ import { useNavigation } from "@/hooks/common";
 import MainImage from "@/Components/Common/Image";
 import { getImageUrl } from "@/Utils/Func/UrlHelper";
 import { useUserAccount } from "@/Context/UserAccountContext";
+import { formatDate } from "@/Utils/Func/Common";
 
 const JobHeaderCard = ({ item }) => {
   const { accountData } = useUserAccount();
@@ -36,7 +37,7 @@ const JobHeaderCard = ({ item }) => {
   const startDateTime = get(item, "startDateTime") || get(item, "startedAt");
   const endDateTime = get(item, "endDateTime");
   const formattedStart = Since(startDateTime);
-  const formattedEnd = Since(endDateTime);
+  const formattedEnd = formatDate(endDateTime);
   const postedAt = formattedStart ? (formattedEnd ? `${formattedStart} - Ends: ${formattedEnd}` : formattedStart) : "Just now";
 
   const onApply = () => navigateTo(`/intelliHire/interview-session/${id}`);

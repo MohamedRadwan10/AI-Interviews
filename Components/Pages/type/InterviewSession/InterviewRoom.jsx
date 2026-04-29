@@ -120,6 +120,7 @@ const InterviewRoom = ({ jobId }) => {
             isSubmitting={isSubmitting} 
             isLastQuestion={isLastQuestion}
             isQuestionReady={isQuestionReady}
+            questionType={type}
           />
         </div>
 

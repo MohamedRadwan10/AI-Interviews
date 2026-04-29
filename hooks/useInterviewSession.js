@@ -34,6 +34,9 @@ export const useInterviewSession = (jobId) => {
     finishing: false,
   });
   const [error, setError] = useState(null);
+  const [isWindowVisible, setIsWindowVisible] = useState(
+    typeof document !== "undefined" ? document.visibilityState === "visible" : true
+  );
 
   const { isConnected, on } = useSignalR(userToken, userId);
 
@@ -80,6 +83,12 @@ export const useInterviewSession = (jobId) => {
       success("Interview Finished", "Your responses have been submitted.");
       setCurrentQuestion(null);
       setTimeLeft(null);
+
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith(`timer_${sessionId}`)) {
+          localStorage.removeItem(key);
+        }
+      });
     } catch (err) {
       console.error("Finish error:", err);
     } finally {
@@ -111,6 +120,22 @@ export const useInterviewSession = (jobId) => {
   }, [jobId, restoreSession, callCheckActiveSession]);
 
   useEffect(() => {
+    const handleVisibilityChange = () => setIsWindowVisible(document.visibilityState === "visible");
+    const handleBlur = () => setIsWindowVisible(false);
+    const handleFocus = () => setIsWindowVisible(true);
+
+    window.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("blur", handleBlur);
+    window.addEventListener("focus", handleFocus);
+
+    return () => {
+      window.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("blur", handleBlur);
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, []);
+
+  useEffect(() => {
     on("nextQuestionReady", data => setCurrentQuestion(data));
     on("reportGenerationStarted", data => {
       setFinishMessage(get(data, "message") || "Generating your report...");
@@ -133,18 +158,39 @@ export const useInterviewSession = (jobId) => {
     }
 
     if (!isNaN(totalSeconds) && totalSeconds > 0) {
-      setTimeLeft(totalSeconds);
+      const storageKey = `timer_${sessionId}_${questionIndex}`;
+      const savedTime = localStorage.getItem(storageKey);
+      
+      if (savedTime !== null) {
+        const parsedSavedTime = parseInt(savedTime, 10);
+        if (!isNaN(parsedSavedTime) && parsedSavedTime >= 0) {
+          setTimeLeft(parsedSavedTime);
+        } else {
+          setTimeLeft(totalSeconds);
+        }
+      } else {
+        setTimeLeft(totalSeconds);
+      }
+      
       setInitialTime(totalSeconds);
     }
-  }, [currentQuestion]);
+  }, [currentQuestion, sessionId, questionIndex]);
 
   // 4. Global Ticker (Timer)
   useEffect(() => {
-    if (isSessionStarted && timeLeft > 0 && !interviewFinished && !loadingStates.submitting) {
-      const timer = setInterval(() => setTimeLeft(t => (t > 0 ? t - 1 : 0)), 1000);
+    if (isSessionStarted && timeLeft > 0 && !interviewFinished && !loadingStates.submitting && isWindowVisible) {
+      const timer = setInterval(() => {
+        setTimeLeft(t => {
+          const newTime = t > 0 ? t - 1 : 0;
+          if (sessionId && questionIndex !== null) {
+            localStorage.setItem(`timer_${sessionId}_${questionIndex}`, newTime);
+          }
+          return newTime;
+        });
+      }, 1000);
       return () => clearInterval(timer);
     }
-  }, [isSessionStarted, timeLeft, interviewFinished, loadingStates.submitting]);
+  }, [isSessionStarted, timeLeft, interviewFinished, loadingStates.submitting, isWindowVisible, sessionId, questionIndex]);
 
   const startInterview = useCallback(async () => {
     setError(null);
@@ -176,6 +222,11 @@ export const useInterviewSession = (jobId) => {
     setLoadingStates(prev => ({ ...prev, submitting: true }));
     setCurrentQuestion(null);
     setTimeLeft(null);
+    
+    // Clear the saved timer for this question
+    if (sessionId && questionIndex !== null) {
+      localStorage.removeItem(`timer_${sessionId}_${questionIndex}`);
+    }
 
     const formData = new FormData();
     formData.append("SessionId", sessionId);
@@ -244,8 +295,16 @@ export const useInterviewSession = (jobId) => {
   }), [isSessionStarted, sessionId, parsedCurrentQuestion, isConnected, loadingStates, startInterview, submitAnswer, finishInterview, error, questionIndex, effectiveTotalQuestions, interviewFinished, finishMessage, timeLeft]);
 };
 
-export const useAnswerConsole = (onSubmit) => {
+export const useAnswerConsole = (onSubmit, questionType) => {
   const [activeTab, setActiveTab] = useState("text");
+
+  useEffect(() => {
+    if (questionType?.toLowerCase() === "coding") {
+      setActiveTab("code");
+    } else {
+      setActiveTab("text");
+    }
+  }, [questionType]);
   const [textAnswer, setTextAnswer] = useState("");
   const [codeAnswer, setCodeAnswer] = useState("// Write your code here\n");
   const [language, setLanguage] = useState("javascript");
@@ -261,14 +320,20 @@ export const useAnswerConsole = (onSubmit) => {
       });
       return;
     }
-    onSubmit({ text: activeTab === "text" ? textAnswer : codeAnswer });
+    
+    let finalAnswer = activeTab === "text" ? textAnswer : codeAnswer;
+    if (activeTab === "code") {
+      finalAnswer = finalAnswer.replace("// Write your code here\n", "").replace("// Write your code here", "").trim();
+    }
+
+    onSubmit({ text: finalAnswer });
     setTextAnswer("");
     setCodeAnswer("// Write your code here\n");
   };
 
   const hasAnswer = 
     (activeTab === "text" && textAnswer.trim().length > 0) ||
-    (activeTab === "code" && codeAnswer.trim().length > 0 && codeAnswer !== "// Write your code here\n") ||
+    (activeTab === "code" && codeAnswer.replace("// Write your code here\n", "").replace("// Write your code here", "").trim().length > 0) ||
     (activeTab === "voice" && !!mediaBlobUrl);
 
   return {

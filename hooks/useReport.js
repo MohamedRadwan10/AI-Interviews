@@ -54,6 +54,7 @@ export const useReport = (sessionId, userId) => {
     const email = get(report, "email", "");
     const phoneNumber = get(report, "phoneNumber", "");
     const photo = get(report, "photo", "");
+    const role = get(report, "role", "");
 
     const scoreLevel =
       accuracyPercent >= 80 ? "excellent" :
@@ -88,6 +89,7 @@ export const useReport = (sessionId, userId) => {
       email,
       phoneNumber,
       photo,
+      role,
       isLoading: loading,
       error,
       refetch,

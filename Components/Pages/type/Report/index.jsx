@@ -18,7 +18,7 @@ const ReportPage = ({ sessionId, userId: propUserId }) => {
     feedback, strengthPoints, weaknessesPoints, improvementsTips, skillAnalysis,
     scoreBreakdown, recommendationReason, redFlags, performanceLabel, hiringRecommendation,
     duration, averageResponseTimeSeconds, sessionDate, overallRating,
-    fullName, email, phoneNumber, photo, jobTitle, company,
+    fullName, email, phoneNumber, photo, role, company,
     isLoading, error, refetch,
   } = useReport(sessionId, userId);
 
@@ -48,7 +48,7 @@ const ReportPage = ({ sessionId, userId: propUserId }) => {
           email={email}
           phoneNumber={phoneNumber}
           photo={photo}
-          roleApplied={jobTitle}
+          roleApplied={role}
           company={company}
         />
 
