@@ -10,9 +10,11 @@ import { useNavigation } from "@/hooks/common";
 import LoadingSkeleton from "@/Components/Common/LoadingSkeleton";
 import { DashboardCards } from "@/Components/Common/Cards/type/DashboardUser";
 import { DashboardAnalysis } from "@/Components/Sections/DashboardAnalysis";
+import { useUserAccount } from "@/Context/UserAccountContext";
 
 export const DashboardPage = () => {
   const { navigateTo } = useNavigation();
+  const { userId } = useUserAccount();
   const {
     totalInterviews, averageProgress, latestRecord,
     chartData, strengthPoints, improvements, interviewHistory,
@@ -46,7 +48,7 @@ export const DashboardPage = () => {
       field: "action", 
       header: "Report", 
       type: "button", 
-      onClick: (row) => navigateTo(`/intelliHire/report/${row.sessionId}`)
+      onClick: (row) => navigateTo(`/intelliHire/report/${row.sessionId}/${userId}`)
     }
   ];
 

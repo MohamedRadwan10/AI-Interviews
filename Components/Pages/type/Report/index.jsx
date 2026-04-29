@@ -10,13 +10,15 @@ import { ReportError } from "@/Components/Errors";
 import { useUserAccount } from "@/Context/UserAccountContext";
 import ReportRecommendation from "@/Components/Sections/ReportRecommendation";
 
-const ReportPage = ({ sessionId }) => {
-  const { userId } = useUserAccount();
+const ReportPage = ({ sessionId, userId: propUserId }) => {
+  const { userId: currentUserId } = useUserAccount();
+  const userId = propUserId || currentUserId;
   const {
     overallScore, scoreLevel, totalQuestions, questionsAnswered, accuracyPercent,
     feedback, strengthPoints, weaknessesPoints, improvementsTips, skillAnalysis,
     scoreBreakdown, recommendationReason, redFlags, performanceLabel, hiringRecommendation,
     duration, averageResponseTimeSeconds, sessionDate, overallRating,
+    fullName, email, phoneNumber, photo, jobTitle, company,
     isLoading, error, refetch,
   } = useReport(sessionId, userId);
 
@@ -42,6 +44,12 @@ const ReportPage = ({ sessionId }) => {
           averageResponseTimeSeconds={averageResponseTimeSeconds}
           sessionDate={sessionDate}
           overallRating={overallRating}
+          fullName={fullName}
+          email={email}
+          phoneNumber={phoneNumber}
+          photo={photo}
+          roleApplied={jobTitle}
+          company={company}
         />
 
         <div className="flex flex-col lg:flex-row gap-6 mt-6">

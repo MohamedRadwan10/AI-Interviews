@@ -17,14 +17,22 @@ export const useDownloadReport = () => {
       }
 
       const opt = {
-        margin:       0.2,
+        margin:       [0.2, 0.2],
         filename:     `${fileName}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, logging: false },
-        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        image:        { type: 'jpeg', quality: 1.0 },
+        html2canvas:  { 
+          scale: 3, 
+          useCORS: true, 
+          logging: false,
+          windowWidth: 1200,
+          width: 1200
+        },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
       };
 
+      element.classList.add("generating-pdf");
       await html2pdf().set(opt).from(element).save();
+      element.classList.remove("generating-pdf");
       
     } catch (err) {
       console.error("Download error:", err);

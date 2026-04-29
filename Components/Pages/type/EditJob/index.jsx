@@ -7,11 +7,25 @@ import MainText from "@/Components/Common/MainText";
 import { Edit3 } from "lucide-react";
 import { get } from "lodash-es";
 import LoadingSkeleton from "@/Components/Common/LoadingSkeleton";
+import { formatDate } from "@/Utils/Func/Common";
 
 const EditJobPage = (props) => {
   const jobId = get(props, "id");
   const { job, loading: isJobLoading } = useJobDetails(jobId);
   const { editJob, isLoading } = useEditJob(jobId);
+
+  const initialValues = React.useMemo(() => {
+    if (!job) return {};
+
+    return {
+      ...job,
+      subCategory: job.subCtegory || job.subCategory,
+      startedAt: formatDate(job.startDateTime || job.startedAt),
+      endedAt: formatDate(job.endDateTime || job.endedAt),
+      requiredSkills: job.skillsAndTools,
+      requirements: job.jobrequirements,
+    };
+  }, [job]);
 
   if (isJobLoading) return <LoadingSkeleton type="post-job" />;
 
@@ -30,7 +44,7 @@ const EditJobPage = (props) => {
       </div>
 
       <div className="w-full max-w-5xl mx-auto">
-        <SectionedForm config={postJobConfig} initialValues={job} onSubmit={editJob} isLoading={isLoading} />
+        <SectionedForm config={postJobConfig} initialValues={initialValues} onSubmit={editJob} isLoading={isLoading} />
       </div>
     </div>
   );

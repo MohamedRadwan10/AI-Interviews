@@ -7,9 +7,9 @@ import { useUserAccount } from "@/Context/UserAccountContext";
 
 export const InterviewComplete = ({ message, sessionId}) => {
   const { navigateTo, replaceUrl } = useNavigation();
-  const {id} = useUserAccount();
+  const { userId } = useUserAccount();
   const msgText = message || "Your responses have been successfully submitted and your session is now closed. Your report is being generated and will be available shortly.";
-  const onViewReport = () => navigateTo(`/intelliHire/report/${sessionId}`);
+  const onViewReport = () => navigateTo(`/intelliHire/report/${sessionId}/${userId}`);
   const onGoDashboard = () => navigateTo("/intelliHire");
   const reportIcon = <FileText className="w-5 h-5" />;
   const dashboardIcon = <LayoutDashboard className="w-5 h-5" />;
@@ -17,7 +17,7 @@ export const InterviewComplete = ({ message, sessionId}) => {
   useEffect(() => {
     if (sessionId) {
       const timer = setTimeout(() => {
-        replaceUrl(`/intelliHire/report/${sessionId}`);
+        replaceUrl(`/intelliHire/report/${sessionId}/${userId}`);
       }, 3000);
       return () => clearTimeout(timer);
     }

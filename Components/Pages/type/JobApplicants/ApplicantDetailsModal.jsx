@@ -8,6 +8,7 @@ import MainButton from "@/Components/Common/MainButton";
 import { IMAGE_BASE_URL } from "@/Config/apiRegistry";
 import { getVal as commonGetVal } from "@/Utils/Func/Common";
 import { useReport } from "@/hooks/useReport";
+import { useNavigation } from "@/hooks/common";
 
 const Section = ({ title, children, className = "" }) => (
   <div className={`flex flex-col gap-2 ${className}`}>
@@ -36,12 +37,12 @@ const PointList = ({ title, points, colorClass, iconColor }) => (
 
 const ApplicantDetailsModal = ({ visible, applicant, onHide, updateStatus, isUpdating }) => {
   const { report, isLoading, strengthPoints: rawS, weaknessesPoints: rawW, accuracyPercent: acc, performanceLabel: perf } = useReport(applicant?.sessionId, applicant?.userId);
-  
+  const { navigateTo } = useNavigation();
   const getVal = (path, fallback) => commonGetVal(report, applicant, path, fallback);
   
   const fullName = getVal("fullName"), exp = getVal("yearsOfExperience"), email = getVal("email"), phone = getVal("phoneNumber");
   const avgTimeRaw = getVal("averageResponseTimeSeconds");
-  const avgTime = `${avgTimeRaw} s`;
+  const avgTime = typeof avgTimeRaw === "string" && avgTimeRaw.includes("s") ? avgTimeRaw : `${avgTimeRaw || 0} s`;
   
   const accText = useMemo(() => {
     return (perf || acc !== null) ? `${perf || ""} ${acc !== null ? `(${acc}%)` : ""}`.trim() : "N/A";
@@ -53,7 +54,7 @@ const ApplicantDetailsModal = ({ visible, applicant, onHide, updateStatus, isUpd
   const photo = commonGetVal(applicant, null, "photo", "");
   const photoUrl = photo ? (photo.startsWith("http") ? photo : `${IMAGE_BASE_URL}${photo}`) : null;
   const sPoints = map(rawS?.split("|"), p => p.trim()).filter(Boolean), wPoints = map(rawW?.split("|"), p => p.trim()).filter(Boolean);
-  const actions = [{ t: "View Report", i: <Eye size={18} /> }, { t: "View CV", i: <FileText size={18} /> }];
+  const actions = [{ t: "View Report", i: <Eye size={18} />, onclick: () => navigateTo(`/intelliHire/report/${applicant?.sessionId}/${applicant?.userId}`) }, { t: "View CV", i: <FileText size={18} /> }];
 
   const loadingOverlay = useMemo(() => {
     if (!isLoading) return null;
@@ -117,12 +118,12 @@ const ApplicantDetailsModal = ({ visible, applicant, onHide, updateStatus, isUpd
         </Section>
         <div className="flex flex-col gap-3 mt-2">
           <div className="flex gap-4">
-            <MainButton title="Accept" loading={isUpdating} onClick={onAccept} className="flex-1 bg-status-success text-white py-3 rounded-xl font-bold border-none" />
-            <MainButton title="Reject" loading={isUpdating} onClick={onReject} className="flex-1 bg-status-error text-white py-3 rounded-xl font-bold border-none" />
+            <MainButton title="Accept" loading={isUpdating} onClick={onAccept} className="flex-1 flex items-center justify-center bg-status-success text-white py-3 rounded-xl font-bold border-none" />
+            <MainButton title="Reject" loading={isUpdating} onClick={onReject} className="flex-1 flex items-center justify-center bg-status-error text-white py-3 rounded-xl font-bold border-none" />
           </div>
           <div className="flex gap-4">
             {map(actions, (b) => (
-              <MainButton key={b.t} title={b.t} icon={b.i} className="flex-1 bg-brand-primary text-white py-3 rounded-xl font-bold flex justify-center items-center gap-2 border-none" />
+              <MainButton key={b.t} title={b.t} icon={b.i} onClick={b.onclick} className="flex-1 flex items-center justify-center bg-brand-primary text-white py-3 rounded-xl font-bold flex justify-center items-center gap-2 border-none" />
             ))}
           </div>
         </div>
