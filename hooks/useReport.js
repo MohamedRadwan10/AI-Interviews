@@ -1,8 +1,10 @@
 "use client";
 import { useMemo, useContext } from "react";
-import { useApi } from "./useApi";
+import { useApi } from "@/hooks/useApi";
 import { UserTokenContext } from "@/Context/UserTokenContext";
-import { get, map, size } from "lodash-es";
+import { formatDate } from "@/Utils/date/dateFormat";
+import { get, isArray, size, map } from "lodash-es";
+import { APP_CONFIG } from "@/Config/appConfig";
 
 export const useReport = (sessionId, userId) => {
   const { userToken } = useContext(UserTokenContext);
@@ -15,7 +17,7 @@ export const useReport = (sessionId, userId) => {
 
   return useMemo(() => {
     const report = get(data, "report", data) || {};
-    const questionsArray = Array.isArray(report.questions) ? report.questions : [];
+    const questionsArray = isArray(report.questions) ? report.questions : [];
 
     const overallScore = get(report, "overallScore", 0);
     const jobTitle = get(report, "roleApplied", "Interview Report");
@@ -96,4 +98,49 @@ export const useReport = (sessionId, userId) => {
       sessionId,
     };
   }, [data, loading, error, refetch, sessionId]);
+};
+
+export const useReportHeader = (props) => {
+  const { 
+    overallScore, scoreLevel, accuracyPercent, questionsAnswered, 
+    totalQuestions, sessionDate, photo, fullName, sessionId 
+  } = props;
+
+  const scoreLevelConfig = useMemo(() => ({
+    excellent: { label: "Excellent Performance", circleColor: "text-brand-primary" },
+    good: { label: "Good Performance", circleColor: "text-brand-primary" },
+    average: { label: "Average Performance", circleColor: "text-status-warning" },
+    needsImprovement: { label: "Needs Improvement", circleColor: "text-status-error" },
+  }), []);
+
+  const level = useMemo(() => 
+    get(scoreLevelConfig, scoreLevel, scoreLevelConfig.average)
+  , [scoreLevel, scoreLevelConfig]);
+
+  const scorePercentage = useMemo(() => Math.round(overallScore || 0), [overallScore]);
+  const accuracyRaw = useMemo(() => Math.round(accuracyPercent || 0), [accuracyPercent]);
+  const questionsLabel = useMemo(() => `${questionsAnswered}/${totalQuestions}`, [questionsAnswered, totalQuestions]);
+  const accuracyLabel = useMemo(() => `${accuracyRaw}%`, [accuracyRaw]);
+
+  const formattedDate = useMemo(() => 
+    sessionDate ? formatDate(sessionDate) : "N/A"
+  , [sessionDate]);
+
+  const IMAGE_BASE_URL = "https://intellhire.runasp.net"; 
+  const candidatePhoto = useMemo(() => 
+    photo ? (photo.startsWith("http") ? photo : `${IMAGE_BASE_URL}${photo}`) : null
+  , [photo]);
+
+  const downloadFileName = useMemo(() => `report-${fullName || sessionId}`, [fullName, sessionId]);
+
+  return useMemo(() => ({
+    level,
+    scorePercentage,
+    accuracyRaw,
+    questionsLabel,
+    accuracyLabel,
+    formattedDate,
+    candidatePhoto,
+    downloadFileName
+  }), [level, scorePercentage, accuracyRaw, questionsLabel, accuracyLabel, formattedDate, candidatePhoto, downloadFileName]);
 };

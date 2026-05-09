@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { get, map } from "lodash-es";
+import { map } from "lodash-es";
 import { User, Mail, Phone, Eye, FileText } from "lucide-react";
 import MainImage from "@/Components/Common/Image";
 import CommonModal from "@/Components/Common/CommonModal";

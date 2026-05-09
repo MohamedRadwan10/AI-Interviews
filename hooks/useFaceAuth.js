@@ -1,9 +1,11 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useApi } from "./useApi";
-import { useSignalR } from "./useSignalR";
+import { useCallback, useEffect, useRef, useState, useMemo } from "react";
+import { includes, get, toLower } from "lodash-es";
+import { useApi } from "@/hooks/useApi";
+import { useSignalR } from "@/hooks/useSignalR";
 import { useUserAccount } from "@/Context/UserAccountContext";
-import { useMainNotify } from "./common";
+import { useMainNotify } from "@/hooks/common";
+import { APP_CONFIG } from "@/Config/appConfig";
 
 export const useSelfie = () => {
   const { userId } = useUserAccount();
@@ -17,11 +19,12 @@ export const useSelfie = () => {
     }
 
     try {
-      const rawBase64 = imageBase64.includes(",") ? imageBase64.split(",")[1] : imageBase64;
+      const rawBase64 = includes(imageBase64, ",") ? imageBase64.split(",")[1] : imageBase64;
       const payload = { ImageBase64: rawBase64, UserId: userId };      
       const result = await callSelfieApi({ data: payload });
-      const message = result?.data?.message || result?.message || "";
-      const isVerified = message.toLowerCase().includes("successfully") || message.toLowerCase().includes("success");
+      
+      const message = get(result, "data.message") || get(result, "message", "");
+      const isVerified = includes(toLower(message), "successfully") || includes(toLower(message), "success");
       
       if (!isVerified) {
         notifyError("Verification Failed", message || "Face not recognized. Please try again.");
@@ -35,7 +38,10 @@ export const useSelfie = () => {
     }
   }, [userId, callSelfieApi, notifyError]);
 
-  return { verifySelfie, isLoading: loading };
+  return useMemo(() => ({ 
+    verifySelfie, 
+    isLoading: loading 
+  }), [verifySelfie, loading]);
 };
 
 export const useInterviewFaceAuth = (sessionId) => {
@@ -44,34 +50,12 @@ export const useInterviewFaceAuth = (sessionId) => {
   
   const streamingIntervalRef = useRef(null);
   const warningTimeoutRef = useRef(null);
+
   const [faceWarning, setFaceWarning] = useState(null);
-
-  useEffect(() => {
-    if (!isConnected) return;
-
-    on("ErrorMessage", (message) => {
-      setFaceWarning({ type: "error", message });
-    });
-    
-    on("OnWarning", (data) => {
-      const attempt = data.attempt || 0;
-      setFaceWarning({ attempt, message: data.message });
-
-      if (warningTimeoutRef.current) clearTimeout(warningTimeoutRef.current);
-      warningTimeoutRef.current = setTimeout(() => {
-        setFaceWarning(null);
-      }, 3000);
-    });
-
-    return () => {
-      if (warningTimeoutRef.current) clearTimeout(warningTimeoutRef.current);
-    };
-  }, [isConnected, on, notifyError]);
 
   const streamFrame = useCallback(async (userId, frameBase64) => {
     try {
-      const rawBase64 = frameBase64.includes(",") ? frameBase64.split(",")[1] : frameBase64;
-
+      const rawBase64 = includes(frameBase64, ",") ? frameBase64.split(",")[1] : frameBase64;
       await invoke("StreamCameraFrame", userId, rawBase64, sessionId);
     } catch (err) {
       if (err !== "SignalR not connected") {
@@ -79,6 +63,13 @@ export const useInterviewFaceAuth = (sessionId) => {
       }
     }
   }, [invoke, sessionId]);
+
+  const stopStreaming = useCallback(() => {
+    if (streamingIntervalRef.current) {
+      clearInterval(streamingIntervalRef.current);
+      streamingIntervalRef.current = null;
+    }
+  }, []);
 
   const startStreaming = useCallback((userId, videoElement) => {
     if (streamingIntervalRef.current) return;
@@ -93,28 +84,43 @@ export const useInterviewFaceAuth = (sessionId) => {
         canvas.height = videoElement.videoHeight;
         context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
         
-        const frameBase64 = canvas.toDataURL("image/jpeg", 0.6); 
+        const frameBase64 = canvas.toDataURL("image/jpeg", APP_CONFIG.faceAuth.frameQuality); 
         streamFrame(userId, frameBase64);
       }
-    }, 60000); 
+    }, APP_CONFIG.faceAuth.frameInterval); 
   }, [streamFrame]);
 
-  const stopStreaming = useCallback(() => {
-    if (streamingIntervalRef.current) {
-      clearInterval(streamingIntervalRef.current);
-      streamingIntervalRef.current = null;
-    }
-  }, []);
+  useEffect(() => {
+    if (!isConnected) return;
+
+    on("ErrorMessage", (message) => {
+      setFaceWarning({ type: "error", message });
+    });
+    
+    on("OnWarning", (data) => {
+      const attempt = get(data, "attempt", 0);
+      setFaceWarning({ attempt, message: get(data, "message") });
+
+      if (warningTimeoutRef.current) clearTimeout(warningTimeoutRef.current);
+      warningTimeoutRef.current = setTimeout(() => {
+        setFaceWarning(null);
+      }, APP_CONFIG.faceAuth.warningDisplayTime);
+    });
+
+    return () => {
+      if (warningTimeoutRef.current) clearTimeout(warningTimeoutRef.current);
+    };
+  }, [isConnected, on]);
 
   useEffect(() => {
     return () => stopStreaming();
   }, [stopStreaming]);
 
-  return {
+  return useMemo(() => ({
     startStreaming,
     stopStreaming,
     isConnected,
     isStreaming: !!streamingIntervalRef.current,
     faceWarning
-  };
+  }), [startStreaming, stopStreaming, isConnected, faceWarning]);
 };

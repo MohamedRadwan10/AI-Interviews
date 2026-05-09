@@ -1,6 +1,6 @@
 "use client";
 import React, { useMemo } from "react";
-import { map, get, take } from "lodash-es";
+import { get, take, map } from "lodash-es";
 import { DataConstant } from "@/Config/DataConstant";
 import MainText from "@/Components/Common/MainText";
 import MainButton from "@/Components/Common/MainButton";
@@ -36,7 +36,7 @@ const Home = () => {
     }
     return map(featuredJobs, (job) => {
       const jobId = get(job, "id");
-      return <MainCard key={jobId} type="jobItem" data={job} />;
+      return <MainCard key={jobId} type="job" job={job} />;
     });
   }, [loading, featuredJobs]);
 

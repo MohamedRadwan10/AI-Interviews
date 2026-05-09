@@ -1,12 +1,11 @@
 "use client";
 import { useState, useCallback, useEffect, useMemo, useContext } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import axios from "axios";
-import { set, get, keys, forEach } from "lodash-es";
+import { get, forEach, keys, includes, set } from "lodash-es";
 import { UserTokenContext } from "@/Context/UserTokenContext";
 import { useNavigation, useMainNotify } from "@/hooks/common";
 import { useApi } from "@/hooks/useApi";
-import { API_BASE_URL, AUTH_ENDPOINTS } from "@/Config/apiRegistry";
+import { APP_CONFIG } from "@/Config/appConfig";
 
 export const useAfterLogin = () => {
   const { navigateTo } = useNavigation();
@@ -14,16 +13,17 @@ export const useAfterLogin = () => {
   return useCallback((user) => {
     const isComplete = get(user, "isComplete") || get(user, "isCompleted");
     const userType = get(user, "userType");
+    const { onboarding, dashboard } = APP_CONFIG.navigation;
 
     if (isComplete === true) {
-      navigateTo("/intelliHire");
+      navigateTo(dashboard);
     } else {
       if (userType === "Individual") {
-        navigateTo("/candidate-onboarding");
+        navigateTo(onboarding.individual);
       } else if (userType === "Company") {
-        navigateTo("/company-onboarding");
+        navigateTo(onboarding.company);
       } else {
-        navigateTo("/intelliHire");
+        navigateTo(dashboard);
       }
     }
   }, [navigateTo]);
@@ -68,7 +68,11 @@ export const useLogin = () => {
     }
   }, [deviceName, loginApi, setUserToken, setRefreshToken, setUserData, afterLogin, success, notifyError]);
 
-  return { login, isLoading: loginApi.loading, error: loginApi.error };
+  return useMemo(() => ({ 
+    login, 
+    isLoading: loginApi.loading, 
+    error: loginApi.error 
+  }), [login, loginApi.loading, loginApi.error]);
 };
 
 export const useRegister = () => {
@@ -85,16 +89,14 @@ export const useRegister = () => {
       if (type === "company") {
         const transformed = { ...payload };
         forEach(keys(transformed), (key) => {
-          if (key.includes('.')) {
+          if (includes(key, '.')) {
             set(transformed, key, transformed[key]);
             delete transformed[key];
           }
         });
         payload = transformed;
       }
-      console.log(`[useRegister] Registering ${type}:`, payload);
       const data = await apiHook.refetch({ data: payload });
-      console.log(`[useRegister] Register Success:`, data);
       if (data) {
         success("Registration Successful", "Please check your email for verification.");
         navigateTo("/verify-email-request");
@@ -109,10 +111,15 @@ export const useRegister = () => {
   const registerCandidate = useCallback((values) => register("candidate", values), [register]);
   const registerCompany = useCallback((values) => register("company", values), [register]);
 
-  const isLoading = registerCandidateApi.loading || registerCompanyApi.loading;
-  const error = registerCandidateApi.error || registerCompanyApi.error;
+  const isLoading = useMemo(() => registerCandidateApi.loading || registerCompanyApi.loading, [registerCandidateApi.loading, registerCompanyApi.loading]);
+  const error = useMemo(() => registerCandidateApi.error || registerCompanyApi.error, [registerCandidateApi.error, registerCompanyApi.error]);
 
-  return { registerCandidate, registerCompany, isLoading, error };
+  return useMemo(() => ({ 
+    registerCandidate, 
+    registerCompany, 
+    isLoading, 
+    error 
+  }), [registerCandidate, registerCompany, isLoading, error]);
 };
 
 export const useLogout = () => {
@@ -137,12 +144,16 @@ export const useLogout = () => {
       console.error("Logout API failed (Backend error), proceeding with local logout.");
     } finally {
       success("Logged Out", "You have been successfully logged out.");
-      navigateTo("/login");
+      navigateTo(APP_CONFIG.navigation.login);
       logoutContext();
     }
   }, [logoutApi, navigateTo, logoutContext, deviceName, success]);
 
-  return { logout, isLoading: logoutApi.loading, error: logoutApi.error };
+  return useMemo(() => ({ 
+    logout, 
+    isLoading: logoutApi.loading, 
+    error: logoutApi.error 
+  }), [logout, logoutApi.loading, logoutApi.error]);
 };
 
 export const useCompleteProfile = () => {

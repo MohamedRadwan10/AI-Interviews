@@ -38,6 +38,7 @@ const AuthPageContent = ({ config, onSubmit, apiError, isLoading }) => {
             height={40}
             priority={true}
             imageClassName="object-contain"
+            imageStyle={{ width: "auto", height: "auto" }}
           />
           <div className="flex">
             <MainText

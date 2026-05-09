@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { get, startCase } from "lodash-es";
 import * as PageComponents from "@/Components/Pages/type/index";

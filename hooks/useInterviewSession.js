@@ -1,6 +1,6 @@
 "use client";
 import { useState, useCallback, useContext, useEffect, useRef, useMemo } from "react";
-import { get } from "lodash-es";
+import { isString, get, isObject, uniqBy } from "lodash-es";
 import { useReactMediaRecorder } from "react-media-recorder-2";
 import { UserTokenContext } from "@/Context/UserTokenContext";
 import { useUserAccount } from "@/Context/UserAccountContext";
@@ -14,7 +14,7 @@ const INVALID_SESSION_ID = "00000000-0000-0000-0000-000000000000";
 const parseQuestion = (q) => {
   if (!q) return null;
   try {
-    return typeof q === "string" ? JSON.parse(q) : q;
+    return isString(q) ? JSON.parse(q) : q;
   } catch (e) {
     return q;
   }
@@ -87,7 +87,7 @@ const useTimerLogic = (isSessionStarted, currentQuestion, isSubmitting, intervie
 export const useInterviewSession = (jobId) => {
   const { userToken } = useContext(UserTokenContext);
   const { userId } = useUserAccount();
-  const { success } = useMainNotify();
+  const { success, error: notifyError } = useMainNotify();
 
   const [sessionId, setSessionId] = useState(null);
   const [isSessionStarted, setIsSessionStarted] = useState(false);
@@ -123,7 +123,6 @@ export const useInterviewSession = (jobId) => {
     sessionId,
     questionIndex
   );
-
 
   const finishInterview = useCallback(async () => {
     if (!sessionId) return;
@@ -164,7 +163,7 @@ export const useInterviewSession = (jobId) => {
       const res = await callCheckActiveSession();
       const sId = get(res, "data.sessionid") || get(res, "data.sessionId") || get(res, "data");
       
-      if (!sId || sId === INVALID_SESSION_ID || typeof sId !== "string") {
+      if (!sId || sId === INVALID_SESSION_ID || !isString(sId)) {
         if (!silent) setLoadingStates(prev => ({ ...prev, session: false }));
         return;
       }
@@ -236,10 +235,37 @@ export const useInterviewSession = (jobId) => {
     }
   }, [sessionId, currentQuestion, questionIndex, totalQuestions, callNextQuestion, finishInterview, syncSession]);
 
+  const startInterview = useCallback(async () => {
+    setError(null);
+    setLoadingStates(prev => ({ ...prev, session: true }));
+    try {
+      const result = await callStartSession();
+      const sId = get(result, "data.sessionId") || get(result, "data.sessionid") || get(result, "data.id") || get(result, "data");
+      const finalId = isObject(sId) ? (sId.sessionId || sId.id) : sId;
+      
+      if (!finalId) throw new Error("Invalid Session ID");
+      setSessionId(finalId);
+      setIsSessionStarted(true);
+      return finalId;
+    } catch (err) {
+      setError("Failed to start session");
+    } finally {
+      setLoadingStates(prev => ({ ...prev, session: false }));
+    }
+  }, [callStartSession]);
+
   useEffect(() => {
     if (jobId) syncSession();
     else setLoadingStates(prev => ({ ...prev, session: false }));
   }, [jobId, syncSession]);
+
+  useEffect(() => {
+    const termError = sessionStorage.getItem("interviewTerminatedError");
+    if (termError) {
+      notifyError("Session Terminated", termError);
+      sessionStorage.removeItem("interviewTerminatedError");
+    }
+  }, [notifyError]);
 
   useEffect(() => {
     on("nextQuestionReady", data => {
@@ -254,9 +280,9 @@ export const useInterviewSession = (jobId) => {
       setInterviewFinished(true);
     });
     on("OnInterviewTerminated", data => {
-      const msg = get(data, "message") || (typeof data === "string" ? data : "Session terminated due to camera errors.");
-      setError(msg);
-      setIsSessionStarted(false);
+      const msg = get(data, "message") || (isString(data) ? data : "Session terminated due to camera errors. You failed to show your face 10 times.");
+      sessionStorage.setItem("interviewTerminatedError", msg);
+      window.location.reload();
     });
   }, [on, questionIndex]);
 
@@ -266,30 +292,10 @@ export const useInterviewSession = (jobId) => {
     }
   }, [timeLeft, isSessionStarted, currentQuestion, loadingStates.submitting, interviewFinished, submitAnswer]);
 
-
   const parsedCurrentQuestion = useMemo(() => parseQuestion(currentQuestion), [currentQuestion]);
   const effectiveTotalQuestions = useMemo(() => 
     get(parsedCurrentQuestion, "totalquestion") || totalQuestions || 15
   , [parsedCurrentQuestion, totalQuestions]);
-
-  const startInterview = useCallback(async () => {
-    setError(null);
-    setLoadingStates(prev => ({ ...prev, session: true }));
-    try {
-      const result = await callStartSession();
-      const sId = get(result, "data.sessionId") || get(result, "data.sessionid") || get(result, "data.id") || get(result, "data");
-      const finalId = typeof sId === "object" ? (sId.sessionId || sId.id) : sId;
-      
-      if (!finalId) throw new Error("Invalid Session ID");
-      setSessionId(finalId);
-      setIsSessionStarted(true);
-      return finalId;
-    } catch (err) {
-      setError("Failed to start session");
-    } finally {
-      setLoadingStates(prev => ({ ...prev, session: false }));
-    }
-  }, [callStartSession]);
 
   return useMemo(() => ({
     isSessionStarted,
@@ -315,6 +321,44 @@ export const useInterviewSession = (jobId) => {
     startInterview, submitAnswer, finishInterview, error, questionIndex, 
     effectiveTotalQuestions, interviewFinished, finishMessage, timeLeft
   ]);
+};
+
+export const useInterviewRoomState = (jobId) => {
+  const session = useInterviewSession(jobId);
+  const { currentQuestion, questionIndex, isConnected, isSessionStarted, error, isLoading, startInterview } = session;
+
+  useEffect(() => {
+    if (isConnected && !isSessionStarted && !error && !isLoading) {
+      startInterview();
+    }
+  }, [isConnected, isSessionStarted, error, isLoading, startInterview]);
+
+  const questionText = useMemo(() => 
+    get(currentQuestion, "questionText") || get(currentQuestion, "question") || `Preparing question ${questionIndex + 1}...`
+  , [currentQuestion, questionIndex]);
+
+  const type = useMemo(() => get(currentQuestion, "type"), [currentQuestion]);
+  const difficulty = useMemo(() => get(currentQuestion, "difficulty"), [currentQuestion]);
+  const time = useMemo(() => get(currentQuestion, "time"), [currentQuestion]);
+
+  const difficultyStyles = useMemo(() => ({
+    hard: "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-100 dark:border-red-800/30",
+    medium: "bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border-amber-100 dark:border-amber-800/30",
+    easy: "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800/30",
+  }), []);
+
+  const currentDiffStyle = useMemo(() => 
+    difficultyStyles[difficulty?.toLowerCase()] || difficultyStyles.easy
+  , [difficulty, difficultyStyles]);
+
+  return useMemo(() => ({
+    ...session,
+    questionText,
+    type,
+    difficulty,
+    time,
+    currentDiffStyle,
+  }), [session, questionText, type, difficulty, time, currentDiffStyle]);
 };
 
 export const useAnswerConsole = (onSubmit, questionType) => {
@@ -353,10 +397,10 @@ export const useAnswerConsole = (onSubmit, questionType) => {
     return raw.replace(/\/\/ Write your code here\n?/g, "").trim().length > 0;
   }, [activeTab, textAnswer, codeAnswer, mediaBlobUrl]);
 
-  return {
+  return useMemo(() => ({
     activeTab, setActiveTab, textAnswer, setTextAnswer, codeAnswer, setCodeAnswer,
     language, setLanguage, status, startRecording, stopRecording, mediaBlobUrl, handleSend, hasAnswer
-  };
+  }), [activeTab, setActiveTab, textAnswer, setTextAnswer, codeAnswer, setCodeAnswer, language, setLanguage, status, startRecording, stopRecording, mediaBlobUrl, handleSend, hasAnswer]);
 };
 
 export const useInterviewSidebar = (isSessionStarted, timeLeftFromSession) => {
@@ -373,10 +417,10 @@ export const useInterviewSidebar = (isSessionStarted, timeLeftFromSession) => {
     return () => clearInterval(checkStream);
   }, []);
 
-  return { 
+  return useMemo(() => ({ 
     timeLeft: Math.max(0, timeLeftFromSession || 0), 
     formatTime, webcamRef, stream 
-  };
+  }), [timeLeftFromSession, formatTime, webcamRef, stream]);
 };
 
 export const useAudioLevel = (stream) => {

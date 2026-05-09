@@ -1,35 +1,28 @@
-import { getVal } from "@/Utils/Func/Common";
+"use client";
+import React from "react";
 import MainText from "@/Components/Common/MainText";
 import DownloadReport from "@/Components/Common/DownloadReport";
 import { API_BASE_URL } from "@/Config/apiRegistry";
-import { IMAGE_BASE_URL } from "@/Config/apiRegistry";
-import CandidateInfo from "./type/Report/CandidateInfo";
-import PerformanceScore from "./type/Report/PerformanceScore";
-import DetailedMetrics from "./type/Report/DetailedMetrics";
+import CandidateInfo from "@/Components/Header/type/Report/CandidateInfo";
+import PerformanceScore from "@/Components/Header/type/Report/PerformanceScore";
+import DetailedMetrics from "@/Components/Header/type/Report/DetailedMetrics";
+import { useReportHeader } from "@/hooks/useReport";
 
-const ReportHeader = ({ 
-  overallScore, scoreLevel, sessionId, feedback, questionsAnswered, 
-  totalQuestions, accuracyPercent, duration, averageResponseTimeSeconds, sessionDate,
-  fullName, email, phoneNumber, photo, roleApplied, company
-}) => {
-  const scoreLevelConfig = {
-    excellent: { label: "Excellent Performance", circleColor: "text-brand-primary" },
-    good: { label: "Good Performance", circleColor: "text-brand-primary" },
-    average: { label: "Average Performance", circleColor: "text-status-warning" },
-    needsImprovement: { label: "Needs Improvement", circleColor: "text-status-error" },
-  };
+const ReportHeader = (props) => {
+  const { 
+    sessionId, feedback, duration, averageResponseTimeSeconds,
+    fullName, email, phoneNumber, roleApplied, company 
+  } = props;
 
-  const level = getVal(scoreLevelConfig, null, scoreLevel, scoreLevelConfig.average);
-  const scorePercentage = Math.round(overallScore || 0);
-  const accuracyRaw = Math.round(accuracyPercent || 0);
-  const questionsLabel = `${questionsAnswered}/${totalQuestions}`;
-  const accuracyLabel = `${accuracyRaw}%`;
-
-  const formattedDate = sessionDate ? new Date(sessionDate).toLocaleDateString('en-US', {
-    year: 'numeric', month: 'short', day: 'numeric'
-  }) : "N/A";
-
-  const candidatePhoto = photo ? (photo.startsWith("http") ? photo : `${IMAGE_BASE_URL}${photo}`) : null;
+  const {
+    level,
+    scorePercentage,
+    questionsLabel,
+    accuracyLabel,
+    formattedDate,
+    candidatePhoto,
+    downloadFileName
+  } = useReportHeader(props);
 
   return (
     <div className="w-full mb-8">
@@ -40,7 +33,7 @@ const ReportHeader = ({
         </div>
         <DownloadReport
           downloadUrl={`${API_BASE_URL}/Report/${sessionId}`}
-          fileName={`report-${fullName || sessionId}`}
+          fileName={downloadFileName}
           printElementId="report-content"
         />
       </div>
@@ -56,7 +49,7 @@ const ReportHeader = ({
         />
         <PerformanceScore 
           scorePercentage={scorePercentage} 
-          scoreLevel={scoreLevel} 
+          scoreLevel={props.scoreLevel} 
           levelLabel={level.label} 
         />
       </div>

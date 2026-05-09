@@ -1,12 +1,12 @@
 "use client";
 
 import React from "react";
-import { useDashboardComp } from "@/hooks/useDashboardComp";
+import { useDashboardComp } from "@/hooks/useDashboard";
 import CompanyDashboardHeader from "@/Components/Header/CompanyDashboardHeader";
 import CompanyDashboardStats from "@/Components/Sections/CompanyDashboardStats";
 import { useNavigation } from "@/hooks/common";
 import MainTable from "@/Components/Common/Table/MainTable";
-import { getCompanyDashboardColumns } from "@/Config/TableColumns/CompanyDashboardColumns";
+import { COMPANY_DASHBOARD_COLUMNS } from "@/Config/tableConfig";
 import MainText from "@/Components/Common/MainText";
 import MainSearch from "@/Components/Common/MainSearch";
 import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
@@ -20,7 +20,7 @@ const CompanyDashboard = () => {
   const onViewApplicants = (job) => navigateTo(`/intelliHire/job-applicants/${job.id}`);
   const onEditJob = (job) => navigateTo(`/intelliHire/edit-job/${job.id}`);
   const onSearchChange = (e) => setSearchTerm(e.target.value);
-  const columns = getCompanyDashboardColumns(onViewApplicants, onEditJob, handleDeleteJob);
+  const columns = COMPANY_DASHBOARD_COLUMNS(onViewApplicants, onEditJob, handleDeleteJob);
 
   return (
     <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 bg-light-primary dark:bg-dark-primary-1">

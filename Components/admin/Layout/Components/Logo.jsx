@@ -19,6 +19,7 @@ const Logo = () => {
           height={40}
           priority={true}
           imageClassName="object-contain"
+          imageStyle={{ width: "auto", height: "auto" }}
         />
       </div>
       <div className="flex flex-col">

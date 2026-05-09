@@ -36,6 +36,7 @@ const TextField = (props) => {
         onChange={onChange}
         onBlur={onBlur}
         placeholder={placeholder}
+        autoComplete={props.autoComplete || (field_name === "email" ? "username" : "on")}
         className={`w-full p-2 border rounded outline-none focus:border-brand-primary transition-all bg-light-blue50 dark:bg-dark-primary-3 ${
           error ? "border-status-error" : "border-ui-borderLight dark:border-dark-gray"
         } ${fieldClassName}`}
