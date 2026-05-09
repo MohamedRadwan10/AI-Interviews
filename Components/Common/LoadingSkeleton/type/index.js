@@ -1,4 +1,5 @@
 export * from '@/Components/Common/LoadingSkeleton/type/JobCard';
+export { JobCardLoading as JobLoading } from '@/Components/Common/LoadingSkeleton/type/JobCard';
 export * from '@/Components/Common/LoadingSkeleton/type/JobsLoading';
 export * from '@/Components/Common/LoadingSkeleton/type/JobDetailsLoading';
 export * from '@/Components/Common/LoadingSkeleton/type/HomeLoading';
@@ -7,9 +8,11 @@ export * from '@/Components/Common/LoadingSkeleton/type/AccountTypeLoading';
 export * from '@/Components/Common/LoadingSkeleton/type/InterviewRoomLoading';
 export * from '@/Components/Common/LoadingSkeleton/type/InterviewInstructionsLoading';
 export * from '@/Components/Common/LoadingSkeleton/type/ActiveSessionsLoading';
+export { ActiveSessionCardLoading as ActiveSessionLoading } from '@/Components/Common/LoadingSkeleton/type/ActiveSessionsLoading';
 export * from '@/Components/Common/LoadingSkeleton/type/ReportLoading';
 export * from '@/Components/Common/LoadingSkeleton/type/PostJobLoading';
 export { default as FormLoading } from '@/Components/Common/LoadingSkeleton/type/FormLoading';
 export * from '@/Components/Common/LoadingSkeleton/type/CandidateDashboardLoading';
 export * from '@/Components/Common/LoadingSkeleton/type/CompanyDashboardLoading';
 export * from '@/Components/Common/LoadingSkeleton/type/JobApplicantsLoading';
+export * from '@/Components/Common/LoadingSkeleton/type/auth';

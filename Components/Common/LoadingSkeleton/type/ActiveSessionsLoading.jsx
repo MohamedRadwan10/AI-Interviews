@@ -26,10 +26,11 @@ export const ActiveSessionCardLoading = () => {
   );
 };
 
-export const ActiveSessionsLoading = ({count}) => {
+export const ActiveSessionsLoading = ({ count = 3 }) => {
+  const displayCount = typeof count === 'number' && count > 0 ? count : 3;
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-      {map(count,(i) => (
+      {Array.from({ length: displayCount }).map((_, i) => (
         <ActiveSessionCardLoading key={i} />
       ))}
     </div>

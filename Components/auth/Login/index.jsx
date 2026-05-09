@@ -5,7 +5,7 @@ import { useLogin } from "@/hooks/useAuth";
 
 const LoginPage = () => {
   const { login, error: errors, isLoading } = useLogin();
-  return <AuthPage config={loginConfig} onSubmit={login} apiError={errors} isLoading={isLoading} />;
+  return <AuthPage type="login" config={loginConfig} onSubmit={login} apiError={errors} isLoading={isLoading} />;
 };
 
 export default LoginPage;

@@ -7,7 +7,7 @@ import MainTable from "@/Components/Common/Table/MainTable";
 import { useDashboard } from "@/hooks/useDashboard";
 import { Search, Clock } from "lucide-react";
 import { useNavigation } from "@/hooks/common";
-import LoadingSkeleton from "@/Components/Common/LoadingSkeleton";
+import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
 import { DashboardCards } from "@/Components/Common/Cards/type/DashboardUser";
 import { DashboardAnalysis } from "@/Components/Sections/DashboardAnalysis";
 import { useUserAccount } from "@/Context/UserAccountContext";
@@ -21,7 +21,7 @@ export const DashboardPage = () => {
     searchTerm, setSearchTerm, loading
   } = useDashboard();
 
-  if (loading) return <LoadingSkeleton type="CandidateDashboard" />;
+  if (loading) return <RouteLoading type="CandidateDashboard" />;
 
   const handleSearchChange = (e) => setSearchTerm(e.target.value);
 
@@ -55,7 +55,6 @@ export const DashboardPage = () => {
   return (
     <div className="min-h-screen bg-light-primary dark:bg-dark-primary-1 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-[1200px] mx-auto flex flex-col gap-8">
-        
         <DashboardCards
           totalInterviews={totalInterviews} 
           averageProgress={averageProgress} 

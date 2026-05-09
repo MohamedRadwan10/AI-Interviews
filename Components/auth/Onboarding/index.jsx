@@ -3,7 +3,7 @@
 import { get, startCase } from "lodash-es";
 import { Suspense } from "react";
 import * as OnboardingComponents from "@/Components/auth/Onboarding/comps";
-import Loading from "@/Components/Common/LoadingSkeleton";
+import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
 
 const OnboardingPage = (props) => {
   const type = props?.type ?? "candidate";
@@ -16,7 +16,7 @@ const OnboardingPage = (props) => {
   );
 
   return (
-    <Suspense fallback={<Loading type="form" />}>
+    <Suspense fallback={<RouteLoading type="onboarding" />}>
       <MainComp {...props} />
     </Suspense>
   );

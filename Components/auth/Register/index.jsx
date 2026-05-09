@@ -3,7 +3,7 @@
 import { get, startCase } from "lodash-es";
 import { Suspense } from "react";
 import * as FormComponents from "@/Components/auth/Register/type";
-import Loading from "@/Components/Common/LoadingSkeleton";
+import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
 
 const RegisterPage = (props) => {
   const type = props?.type ?? "";
@@ -16,7 +16,7 @@ const RegisterPage = (props) => {
   );
 
   return (
-    <Suspense fallback={<Loading type="form" />}>
+    <Suspense fallback={<RouteLoading type="register" />}>
       <MainComp {...props} />
     </Suspense>
   );
