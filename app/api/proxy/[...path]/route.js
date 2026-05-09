@@ -10,7 +10,11 @@ async function handler(request, { params }) {
 
     const { searchParams } = new URL(request.url);
     const queryString = searchParams.toString();
-    const targetUrl = `${BACKEND_BASE_URL}/${backendPath}${queryString ? `?${queryString}` : ""}`;
+    
+    // Special case for endpoints that are not under the /api prefix (like /selfie or /CheckJobMatch)
+    const targetUrl = (segments[0] === "selfie" || segments[0] === "CheckJobMatch")
+      ? `https://intellhire.runasp.net/${backendPath}${queryString ? `?${queryString}` : ""}`
+      : `${BACKEND_BASE_URL}/${backendPath}${queryString ? `?${queryString}` : ""}`;
 
     const forwardHeaders = new Headers();
     for (const [key, value] of request.headers.entries()) {

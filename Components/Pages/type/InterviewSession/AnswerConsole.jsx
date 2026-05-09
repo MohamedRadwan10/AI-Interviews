@@ -7,7 +7,7 @@ import { useAnswerConsole } from "@/hooks/useInterviewSession";
 import { map } from "lodash-es";
 import MainInput from "@/Components/Common/Inputs";
 import { useDarkMode } from "@/Context/DarkModeContext";
-import { languages } from "@/Config/DataConstant";
+import { languages } from "@/Config/InterviewConfig";
 
 const AnswerConsole = ({ onSubmit, isSubmitting = false, isLastQuestion = false, isQuestionReady = true, questionType }) => {
   const {

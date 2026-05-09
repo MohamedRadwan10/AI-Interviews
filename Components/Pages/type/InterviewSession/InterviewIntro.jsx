@@ -1,6 +1,6 @@
 "use client";
-import React, { useState, useEffect, useMemo } from "react";
-import { Camera, Mic, Play, ShieldCheck, Info } from "lucide-react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
+import { Camera, Mic, Play, ShieldCheck, Loader2 } from "lucide-react";
 import { map } from "lodash-es";
 import MainButton from "@/Components/Common/MainButton";
 import MainText from "@/Components/Common/MainText";
@@ -9,14 +9,12 @@ import Webcam from "react-webcam";
 import { useNavigation } from "@/hooks/common";
 import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
 import { GenericError } from "@/Components/Errors";
+import { useSelfie } from "@/hooks/useFaceAuth";
+import { useCheckJobMatch } from "@/hooks/useJobs";
+import JobRejectionModal from "@/Components/Common/JobRejectionModal";
+import { INTERVIEW_INSTRUCTIONS } from "@/Config/InterviewConfig";
 
-const INSTRUCTIONS = [
-  "Ensure you are in a quiet room with no background noise.",
-  "Position yourself in a well-lit area so the camera can see your face clearly.",
-  "The AI will ask you questions based on your CV and the job description.",
-  "You can answer via text, voice, or using the built-in code editor.",
-  "Each session lasts approximately 20-30 minutes."
-];
+
 
 const InstructionsList = () => (
   <div className="bg-white dark:bg-dark-primary-4 p-10 rounded-3xl border border-ui-borderLight dark:border-ui-border shadow-sm min-h-[550px] flex flex-col justify-center">
@@ -30,7 +28,7 @@ const InstructionsList = () => (
     </div>
     
     <ul className="space-y-4">
-      {map(INSTRUCTIONS, (text, i) => (
+      {map(INTERVIEW_INSTRUCTIONS, (text, i) => (
         <li key={i} className="flex gap-4 text-ui-textMuted dark:text-ui-muted text-lg">
           <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-brand-primary/10 text-brand-primary rounded-full text-sm font-bold">
             {i + 1}
@@ -46,6 +44,21 @@ const InterviewIntro = ({ jobId }) => {
   const { navigateTo } = useNavigation();
   const [stream, setStream] = useState(null);
   const [error, setError] = useState(null);
+  const webcamRef = useRef(null);
+  const { verifySelfie, isLoading: isVerifying } = useSelfie();
+  const { navigateBack } = useNavigation();
+  const { 
+    isLoading: isCheckingMatch, 
+    matchResult, 
+    showRejectionModal, 
+    setShowRejectionModal,
+    isRejected 
+  } = useCheckJobMatch(jobId);
+
+  const handleCloseRejection = () => {
+    setShowRejectionModal(false);
+    navigateBack();
+  };
 
   useEffect(() => {
     return () => {
@@ -65,19 +78,44 @@ const InterviewIntro = ({ jobId }) => {
     }
   };
 
-  const handleEnterRoom = () => navigateTo(`/intelliHire/interview-session/${jobId}/room`);
+  const handleEnterRoom = async () => {
+    if (isRejected) {
+      setShowRejectionModal(true);
+      return;
+    }
+    if (!webcamRef.current) return;
+    
+    const imageBase64 = webcamRef.current.getScreenshot({ width: 640, height: 480 });
+    if (!imageBase64) {
+      setError("Could not capture selfie. Please try again.");
+      return;
+    }
+
+    const isVerified = await verifySelfie(imageBase64);
+    if (isVerified) {
+      navigateTo(`/intelliHire/interview-session/${jobId}/room`);
+    }
+  };
 
   const previewContent = useMemo(() => {
     if (stream) {
-      return <Webcam audio={false} className="w-full h-full object-cover" mirrored />;
+      return (
+        <Webcam 
+          audio={false} 
+          ref={webcamRef}
+          screenshotFormat="image/jpeg"
+          className="w-full h-full object-cover" 
+          mirrored 
+        />
+      );
     }
     return (
       <div className="absolute inset-0 flex flex-col items-center justify-center text-ui-textMuted p-4 text-center">
         <Camera className="w-12 h-12 mb-2 opacity-20" />
-        <MainText className="text-sm">Camera preview will appear here</MainText>
+        <MainText className="text-sm">{isCheckingMatch ? "Checking eligibility..." : "Camera preview will appear here"}</MainText>
       </div>
     );
-  }, [stream]);
+  }, [stream, isCheckingMatch]);
 
   const actionButton = useMemo(() => {
     if (!stream) {
@@ -88,11 +126,20 @@ const InterviewIntro = ({ jobId }) => {
       );
     }
     return (
-      <MainButton onClick={handleEnterRoom} className="w-full py-4 bg-brand-primary text-white rounded-2xl flex items-center justify-center gap-2 hover:bg-brand-primaryDark shadow-lg shadow-brand-primary/20">
-        Enter Interview Room <Play className="w-4 h-4 fill-current" />
+      <MainButton 
+        onClick={handleEnterRoom} 
+        isLoading={isVerifying || isCheckingMatch}
+        disabled={isRejected}
+        className="w-full py-4 bg-brand-primary text-white rounded-2xl flex items-center justify-center gap-2 hover:bg-brand-primaryDark shadow-lg shadow-brand-primary/20 disabled:opacity-70"
+      >
+        {isVerifying ? (
+          <>Verifying Identity... <Loader2 className="w-4 h-4 animate-spin" /></>
+        ) : (
+          <>Verify Identity & Enter <Play className="w-4 h-4 fill-current" /></>
+        )}
       </MainButton>
     );
-  }, [stream, handleAllowAccess, handleEnterRoom]);
+  }, [stream, handleAllowAccess, handleEnterRoom, isVerifying, isCheckingMatch, isRejected]);
 
   return (
     <div className="flex flex-col lg:flex-row items-stretch gap-8 max-w-7xl mx-auto p-6 animate-in fade-in duration-700">
@@ -116,6 +163,11 @@ const InterviewIntro = ({ jobId }) => {
           </div>
         </div>
       </div>
+      <JobRejectionModal 
+        visible={showRejectionModal} 
+        onHide={handleCloseRejection} 
+        result={matchResult} 
+      />
     </div>
   );
 };

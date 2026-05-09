@@ -10,6 +10,8 @@ import MainImage from "@/Components/Common/Image";
 import { getImageUrl } from "@/Utils/Func/UrlHelper";
 import { useUserAccount } from "@/Context/UserAccountContext";
 import { formatDate } from "@/Utils/Func/Common";
+import { useCheckJobMatch } from "@/hooks/useJobs";
+import JobRejectionModal from "@/Components/Common/JobRejectionModal";
 
 const JobHeaderCard = ({ item }) => {
   const { accountData } = useUserAccount();
@@ -40,7 +42,8 @@ const JobHeaderCard = ({ item }) => {
   const formattedEnd = formatDate(endDateTime);
   const postedAt = formattedStart ? (formattedEnd ? `${formattedStart} - Ends: ${formattedEnd}` : formattedStart) : "Just now";
 
-  const onApply = () => navigateTo(`/intelliHire/interview-session/${id}`);
+  const { checkAndApply, isLoading, matchResult, showRejectionModal, setShowRejectionModal } = useCheckJobMatch();
+  const onApply = () => checkAndApply(id);
 
   const logoContent = useMemo(() => {
     if (logoUrl) {
@@ -67,7 +70,12 @@ const JobHeaderCard = ({ item }) => {
     if (!isMounted || userType !== "Individual") return null;
     return (
       <div className="shrink-0 w-full md:w-auto mt-4 md:mt-auto flex justify-end">
-        <MainButton onClick={onApply} className="w-full flex justify-center items-center md:w-48 px-6 py-3 rounded-xl bg-brand-primary hover:bg-brand-primaryDark text-white font-medium transition-colors border-0" title={"Apply Now"} />
+        <MainButton 
+          onClick={onApply} 
+          isLoading={isLoading}
+          className="w-full flex justify-center items-center md:w-48 px-6 py-3 rounded-xl bg-brand-primary hover:bg-brand-primaryDark text-white font-medium transition-colors border-0" 
+          title={"Apply Now"} 
+        />
       </div>
     );
   }, [isMounted, userType, onApply]);
@@ -102,6 +110,11 @@ const JobHeaderCard = ({ item }) => {
       </div>
 
       {applyButton}
+      <JobRejectionModal 
+        visible={showRejectionModal} 
+        onHide={() => setShowRejectionModal(false)} 
+        result={matchResult} 
+      />
     </div>
   );
 };

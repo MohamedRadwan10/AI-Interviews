@@ -36,59 +36,80 @@ export const useSignalR = (token, userId) => {
   useEffect(() => {
     if (!connection) return;
 
+    let isMounted = true;
+
     const startConnection = async () => {
       try {
         if (connection.state === signalR.HubConnectionState.Disconnected) {
           await connection.start();
-          setIsConnected(true);
-          console.log("✅ Connected to SignalR Hub Successfully!");
+          if (isMounted) {
+            setIsConnected(true);
+            console.log("✅ Connected to SignalR Hub Successfully!");
+          }
         }
       } catch (err) {
-        console.error("❌ SignalR Connection Error: ", err);
+        if (isMounted && err.name !== "AbortError") {
+          console.error("❌ SignalR Connection Error: ", err);
+        }
       }
     };
 
     startConnection();
 
     connection.on("updateStatus", (message) => {
-      console.log("🔔 SignalR updateStatus:", message);
-      if (callbacksRef.current["updateStatus"]) {
-        callbacksRef.current["updateStatus"](message);
-      }
+      callbacksRef.current["updateStatus"]?.(message);
     });
 
     connection.on("nextQuestionReady", (question) => {
-      console.log("✅ SignalR nextQuestionReady:", question);
-      if (callbacksRef.current["nextQuestionReady"]) {
-        callbacksRef.current["nextQuestionReady"](question);
-      }
+      callbacksRef.current["nextQuestionReady"]?.(question);
     });
 
     connection.on("reportGenerationStarted", (data) => {
-      console.log("✅ SignalR reportGenerationStarted:", data);
-      if (callbacksRef.current["reportGenerationStarted"]) {
-        callbacksRef.current["reportGenerationStarted"](data);
-      }
+      callbacksRef.current["reportGenerationStarted"]?.(data);
     });
 
     connection.on("reportReady", (message) => {
-      console.log("✅ SignalR reportReady:", message);
-      if (callbacksRef.current["reportReady"]) {
-        callbacksRef.current["reportReady"](message);
-      }
+      callbacksRef.current["reportReady"]?.(message);
+    });
+
+    connection.on("ErrorMessage", (message) => {
+      callbacksRef.current["ErrorMessage"]?.(message);
+    });
+
+    connection.on("OnWarning", (data) => {
+      callbacksRef.current["OnWarning"]?.(data);
+    });
+
+    connection.on("OnInterviewTerminated", (data) => {
+      callbacksRef.current["OnInterviewTerminated"]?.(data);
     });
 
     return () => {
+      isMounted = false;
       connection.off("updateStatus");
       connection.off("nextQuestionReady");
       connection.off("reportGenerationStarted");
       connection.off("reportReady");
+      connection.off("ErrorMessage");
+      connection.off("OnWarning");
+      connection.off("OnInterviewTerminated");
     };
   }, [connection]);
+
+  const invoke = useCallback(
+    async (methodName, ...args) => {
+      if (connection && (connection.state === signalR.HubConnectionState.Connected || isConnected)) {
+        return await connection.invoke(methodName, ...args);
+      }
+      return Promise.reject("SignalR not connected");
+    },
+    [connection, isConnected]
+  );
 
   return {
     isConnected,
     on,
+    invoke,
     connection,
   };
 };

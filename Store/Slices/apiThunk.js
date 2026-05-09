@@ -18,7 +18,10 @@ export const fetchApiData = createAsyncThunk(
         data: response.data,
       };
     } catch (error) {
-      console.error(`API Error for key [${key}]:`, error);
+      const isSilent = arguments[0]?.silent;
+      if (!isSilent) {
+        console.error(`API Error for key [${key}]:`, error);
+      }
       const errorMessage = error.response?.data || error.message;
       return rejectWithValue({ key, error: errorMessage });
     }

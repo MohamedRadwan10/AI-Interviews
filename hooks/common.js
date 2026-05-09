@@ -1,8 +1,10 @@
-"use client";
 import { useRouter, usePathname } from "next/navigation";
 import { useMemo, useState, useEffect, useRef, useContext, useCallback } from "react";
 import { filter, get, includes, toLower, isString } from "lodash-es";
 import { ToastContext } from "@/Context/ToastContext";
+import { useConfirmation } from "@/Context/ConfirmationContext";
+
+export { useConfirmation };
 
 export const useNavigation = () => {
   const router = useRouter();
@@ -146,5 +148,12 @@ export const useMainNotify = () => {
     [main]
   );
 
-  return useMemo(() => ({ success, error, info }), [success, error, info]);
+  const warn = useCallback(
+    (title, msg) => {
+      main(title, msg, 'warn');
+    },
+    [main]
+  );
+
+  return useMemo(() => ({ success, error, info, warn }), [success, error, info, warn]);
 };

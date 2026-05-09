@@ -1,13 +1,25 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect, useRef } from "react";
 import { Clock, User, CheckCircle2, AlertCircle } from "lucide-react";
 import MainText from "@/Components/Common/MainText";
 import AudioLevelMeter from "@/Components/Common/AudioLevelMeter";
 import Webcam from "react-webcam";
 import MainImage from "@/Components/Common/Image";
 import { useInterviewSidebar } from "@/hooks/useInterviewSession";
+import { useInterviewFaceAuth } from "@/hooks/useFaceAuth";
+import { useUserAccount } from "@/Context/UserAccountContext";
 
-export const InterviewSidebar = ({ isConnected, isSessionStarted, questionTime }) => {
+export const InterviewSidebar = ({ isConnected, isSessionStarted, questionTime, sessionId }) => {
   const { timeLeft, formatTime, webcamRef, stream } = useInterviewSidebar(isSessionStarted, questionTime);
+  const { userId } = useUserAccount();
+  const { startStreaming, stopStreaming, faceWarning } = useInterviewFaceAuth(sessionId);
+
+  useEffect(() => {
+    if (isSessionStarted && userId && sessionId && webcamRef.current?.video) {
+      startStreaming(userId, webcamRef.current.video);
+    }
+    
+    return () => stopStreaming();
+  }, [isSessionStarted, userId, sessionId, startStreaming, stopStreaming]);
 
   const connectionIcon = useMemo(() => {
     return isConnected ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4 animate-bounce" />;
@@ -43,7 +55,7 @@ export const InterviewSidebar = ({ isConnected, isSessionStarted, questionTime }
       </div>
 
       <div className="space-y-4">
-        <div className="aspect-video bg-black rounded-3xl overflow-hidden border-2 border-ui-borderLight dark:border-ui-border relative shadow-lg group">
+        <div className="aspect-video bg-black rounded-3xl overflow-hidden border-2 relative shadow-lg group transition-all duration-300 border-ui-borderLight dark:border-ui-border">
           <Webcam 
             ref={webcamRef}
             audio={true}
@@ -56,8 +68,6 @@ export const InterviewSidebar = ({ isConnected, isSessionStarted, questionTime }
             LIVE
           </div>
         </div>
-
-        {/* {stream && <AudioLevelMeter stream={stream} />} */}
       </div>
 
       <div className={`p-4 rounded-2xl border flex items-center gap-3 transition-colors ${isConnected ? "bg-status-success/5 border-status-success/20 text-status-success" : "bg-status-warning/5 border-status-warning/20 text-status-warning"}`}>

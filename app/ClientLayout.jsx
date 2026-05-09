@@ -6,6 +6,7 @@ import { UserAccountProvider } from "@/Context/UserAccountContext";
 import { ReduxProvider } from "@/Store/ReduxProvider";
 import ChatbaseIdentity from "@/app/ChatbaseIdentity";
 import { ToastProvider } from "@/Context/ToastContext";
+import { ConfirmationProvider } from "@/Context/ConfirmationContext";
 
 export default function ClientLayout({ children }) {
   return (
@@ -14,8 +15,10 @@ export default function ClientLayout({ children }) {
         <UserAccountProvider>
           <DarkModeProvider>
             <ToastProvider>
-              <ChatbaseIdentity />
-              {children}
+              <ConfirmationProvider>
+                <ChatbaseIdentity />
+                {children}
+              </ConfirmationProvider>
             </ToastProvider>
           </DarkModeProvider>
         </UserAccountProvider>

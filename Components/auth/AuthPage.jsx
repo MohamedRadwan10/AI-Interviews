@@ -163,8 +163,9 @@ const AuthPageContent = ({ config, onSubmit, apiError, isLoading }) => {
 };
 
 const AuthPage = (props) => {
+  const type = get(props, "type", "form");
   return (
-    <Suspense fallback={<RouteLoading type="form" />}>
+    <Suspense fallback={<RouteLoading type={type} />}>
       <AuthPageContent {...props} />
     </Suspense>
   );

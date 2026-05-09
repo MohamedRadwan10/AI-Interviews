@@ -6,13 +6,15 @@ import SectionedForm from "@/Components/Common/SectionedForm";
 import MainText from "@/Components/Common/MainText";
 import { Edit3 } from "lucide-react";
 import { get } from "lodash-es";
-import LoadingSkeleton from "@/Components/Common/LoadingSkeleton";
+import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
 import { formatDate } from "@/Utils/Func/Common";
 
 const EditJobPage = (props) => {
   const jobId = get(props, "id");
   const { job, loading: isJobLoading } = useJobDetails(jobId);
   const { editJob, isLoading } = useEditJob(jobId);
+
+  if (isJobLoading) return <RouteLoading type="postJob" />;
 
   const initialValues = React.useMemo(() => {
     if (!job) return {};
@@ -27,10 +29,6 @@ const EditJobPage = (props) => {
     };
   }, [job]);
 
-  if (isJobLoading) return <LoadingSkeleton type="post-job" />;
-
-  const updatingText = `Updating: ${get(job, "title", "Job")}`;
-
   return (
     <div className="w-full py-10 px-4">
       <div className="flex items-center gap-3 mb-8">
@@ -39,7 +37,7 @@ const EditJobPage = (props) => {
         </div>
         <div className="flex flex-col gap-1">
           <MainText title={"Edit Job Post"} className="text-3xl font-bold text-ui-textMain dark:text-dark-white" />
-          <MainText title={updatingText} className="text-ui-textMuted dark:text-dark-gray text-sm mt-1" />
+          <MainText title={`Updating: ${get(job, "title", "Job")}`} className="text-ui-textMuted dark:text-dark-gray text-sm mt-1" />
         </div>
       </div>
 

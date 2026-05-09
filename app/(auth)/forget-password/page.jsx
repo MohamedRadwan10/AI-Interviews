@@ -1,5 +1,6 @@
 import ForgetPasswordPage from "@/Components/Pages/type/ForgetPassword";
-import React from "react";
+import React, { Suspense } from "react";
+import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
 
 export const metadata = {
   title: "Forget Password | IntelliHire",
@@ -7,7 +8,11 @@ export const metadata = {
 };
 
 const Page = () => {
-  return <ForgetPasswordPage />;
+  return (
+    <Suspense fallback={<RouteLoading type="forget-password" />}>
+      <ForgetPasswordPage />
+    </Suspense>
+  );
 };
 
 export default Page;

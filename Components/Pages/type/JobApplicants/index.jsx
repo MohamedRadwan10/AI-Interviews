@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useJobApplicants } from "@/hooks/useJobApplicants";
 import JobApplicantsHeader from "../../../Header/JobApplicantsHeader";
 import JobApplicantsStats from "../../../Sections/JobApplicantsStats";
-import Loading from "@/Components/Common/LoadingSkeleton";
+import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
 import MainSearch from "@/Components/Common/MainSearch";
 import MainText from "@/Components/Common/MainText";
 import { getJobApplicantsColumns } from "@/Config/TableColumns/JobApplicantsColumns";
@@ -16,6 +16,8 @@ const JobApplicants = ({ id }) => {
   const { jobTitle, applicants, stats, searchTerm, setSearchTerm, loading, updateCandidateStatus, isUpdatingStatus } = useJobApplicants(jobId);
   const [selectedApplicant, setSelectedApplicant] = useState(null);
   
+  if (loading) return <RouteLoading type="JobApplicants" />;
+
   const onView = (applicant) => setSelectedApplicant(applicant);
   const onClose = () => setSelectedApplicant(null);
   const onSearchChange = (e) => setSearchTerm(e.target.value);
@@ -23,12 +25,11 @@ const JobApplicants = ({ id }) => {
   const columns = getJobApplicantsColumns(onView);
   const hasSelected = !!selectedApplicant;
 
-  if (loading) return <Loading type="JobApplicants" />;
-  
   return (
     <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 bg-light-primary dark:bg-dark-primary-1">
       <div className="max-w-[1200px] mx-auto">
         <JobApplicantsHeader jobTitle={jobTitle} />
+        
         <JobApplicantsStats stats={stats} />
         
         <div className="bg-white dark:bg-[#1a1d24] p-6 rounded-3xl border border-ui-borderLight dark:border-ui-border/50">

@@ -9,7 +9,7 @@ export const metadata = {
 
 const Page = () => {
   return (
-    <Suspense fallback={<RouteLoading />}>
+    <Suspense fallback={<RouteLoading type="form" />}>
        <VerifyEmailRequestClient />
     </Suspense>
   );

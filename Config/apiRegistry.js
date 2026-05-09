@@ -8,11 +8,11 @@ export const AUTH_ENDPOINTS = {
     method: "POST",
   },
   registerCandidate: {
-    url: "/Auth/register/candidate", // name, email, password, confirmPassword, deviceName
+    url: "/Auth/register/candidate",
     method: "POST",
   },
   registerCompany: {
-    url: "/Auth/register/company", // email, password, confirmPassword, deviceName
+    url: "/Auth/register/company",
     method: "POST",
   },
   refreshToken: {
@@ -24,31 +24,31 @@ export const AUTH_ENDPOINTS = {
     method: "POST",
   },
   forgetPassword: {
-    url: "/Auth/forget-password-request",  //   in body {userEmail} ---> {  "email": "user@example.com" }
+    url: "/Auth/forget-password-request",
     method: "POST",
   },
   sendOTP: {
-    url: "/Auth/send-otp",  //   in body {email and code} ---> {  "email": "user@example.com" , "code": "string" }
+    url: "/Auth/send-otp",
     method: "POST",
   },
   resetPassword: {
-    url: "/Auth/reset-password",  //   in body {email and token and newPassword and confirmPassword } ---> {"email": "user@example.com","token": "string","newPassword": "string","confirmPassword": "string"}
+    url: "/Auth/reset-password",
     method: "POST",
   },
   verifyEmail: {
-    url: "/Auth/confirm-email", // in parametar query userId  , token 
+    url: "/Auth/confirm-email",
     method: "GET",
   },
   CompleteUserData: {
-    url: "/Profile/UserComplete",  // Photo string($binary) CV string($binary) PhoneNumber *string in Body (formdata)
+    url: "/Profile/UserComplete",
     method: "POST",
   },
   CompleteCompanyData: {
-    url: "/Profile/CompanyComplete", // Name *string  WebsiteUrl string  Industry *string  About string PhoneNumber *string CompanyLogo string($binary) Locations.City  Locations.Country Locations.Government  string in Body (formdata)
+    url: "/Profile/CompanyComplete",
     method: "POST",
   },
   userData: {
-    url: "/User/profile",  // token only
+    url: "/User/profile",
     method: "GET",
   },
   jobs: {
@@ -60,55 +60,63 @@ export const AUTH_ENDPOINTS = {
     method: "GET",
   },
   startSession: {
-    url: "/Session/StartSession", // ${jobId} فى اخر ال endpoint
+    url: "/Session/StartSession",
     method: "POST",
   },
   nextQuestion: {
-    url: "/Session/next", // SessionId string($uuid) QuestionId string($uuid) UserAnswer string currentQuestionIndex integer($int32) voiceFile string($binary)   in body in formdata
+    url: "/Session/next",
     method: "POST",
   },
   endSession: {
-    url: "/Session/EndSession", // /{SessionId}/{jobId} فى اخر ال endpoint
+    url: "/Session/EndSession",
     method: "POST",
   },
   checkActiveSession: {
-    url: "/Session/CheckActiveSesssion", // /{JobId} فى اخر ال endpoint
+    url: "/Session/CheckActiveSesssion",
     method: "GET",
   },
   getSessionDetails: {
-    url: "/Session/GetSessionDetails", // /{SessionId} فى اخر ال endpoint
+    url: "/Session/GetSessionDetails",
     method: "GET",
   },
   ActiveSessions: {
-    url: "/Session/ActiveSessions", // token only
+    url: "/Session/ActiveSessions",
     method: "GET",
   },
   report: {
-    url: "/Report", // /{SessionId} , /${userId} فى اخر ال endpoint
+    url: "/Report",
     method: "GET",
   },
   postJob: {
-    url: "/Employer/post-job", //  in body : { title *string careerLevel *string experienceYears *integer type *string location *string requiredSkills *string description *string requirements *string}
+    url: "/Employer/post-job",
     method: "POST",
   },
   editJob: {
-    url: "/Jobs",  //  /${jobId} in parameters and in body : { title *string careerLevel *string experienceYears *integer type *string location *string skillsAndTools *string description *string requirements *string  startedAt *date endedAt *date}
+    url: "/Jobs",
     method: "PUT",
   },
   deleteJob: {
-    url: "/Jobs",  //  /${jobId} in parameters
+    url: "/Jobs",
     method: "DELETE",
   },
   candidateDashboard: {
-    url: "/User/dashboard",  // token only
+    url: "/User/dashboard",
     method: "GET",
   },
   employerDashboard: {
-    url: "/Employer/dashboard",  // token only
+    url: "/Employer/dashboard",
     method: "GET",
   },
   candidateJobStatus: {
-    url: "/Employer/sessions",  // in parameters: sessionId  /{sessionId}/status in end of url and in body : { status *integer (0:Accepted, 1:Rejected, 2:Pending )} 
+    url: "/Employer/sessions",
     method: "PATCH",
+  },
+  selfie: {
+    url: "/selfie",
+    method: "POST",
+  },
+  jobMatch: {
+    url: "/CheckJobMatch",
+    method: "GET",
   },
 };

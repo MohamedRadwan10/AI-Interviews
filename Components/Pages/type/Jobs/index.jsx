@@ -14,7 +14,6 @@ import { JobsError } from "@/Components/Errors";
 const JobsPage = () => {
   const { jobs, loading, error, searchTerm, setSearchTerm, page, setPage, totalCount } = useJobs();
  
-  if (loading) return <RouteLoading type="jobs" />;
   if (error) return <JobsError error={error} />;
 
   const handleSearchChange = (e) => setSearchTerm(e.target.value);
@@ -44,21 +43,31 @@ const JobsPage = () => {
         <div className="mb-8">
           <MainText tag="h2" title="Latest Opportunities" className="text-xl font-semibold text-ui-textMain dark:text-ui-muted mb-6"/>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {map(jobs, (job) => (
-                <div key={job?.jobid || job?.id}>
-                  <MainCard type="job" job={job} />
-                </div>
-              ))}
+              {loading ? (
+                Array.from({ length: 6 }).map((_, i) => (
+                  <MainCard key={i} type="job" loading={true} />
+                ))
+              ) : (
+                map(jobs, (job) => (
+                  <div key={job?.jobid || job?.id}>
+                    <MainCard type="job" job={job} />
+                  </div>
+                ))
+              )}
             </div>
         </div>
 
-        <Pagination 
-          page={page} 
-          limit={9} 
-          totalRecords={totalCount} 
-          onPageChange={setPage} 
-        />
-        <MainText title={`Showing ${jobs.length} out of ${totalCount} available opportunities`} className="flex justify-center text-sm text-ui-textMuted dark:text-ui-muted mt-2"/>
+        {!loading && (
+          <>
+            <Pagination 
+              page={page} 
+              limit={9} 
+              totalRecords={totalCount} 
+              onPageChange={setPage} 
+            />
+            <MainText title={`Showing ${jobs.length} out of ${totalCount} available opportunities`} className="flex justify-center text-sm text-ui-textMuted dark:text-ui-muted mt-2"/>
+          </>
+        )}
       </div>
     </div>
   );
