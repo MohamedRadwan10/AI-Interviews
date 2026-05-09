@@ -2,7 +2,7 @@
 import React from "react";
 import { Download, Printer } from "lucide-react";
 import MainButton from "@/Components/Common/MainButton";
-import { useDownloadReport } from "@/hooks/useDownloadReport";
+import { useDownloadReport } from "@/hooks/common";
 
 const DownloadReport = ({
   downloadUrl,

@@ -32,6 +32,7 @@ const MainImage = ({
       priority={priority}
       loading={priority ? undefined : "lazy"}
       onError={() => setImgSrc(defaultImage)}
+      style={imageStyle}
       {...props}
     />
   );

@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Skeleton } from "primereact/skeleton";
-import { map } from "lodash-es";
+
 
 export const ActiveSessionCardLoading = () => {
   return (

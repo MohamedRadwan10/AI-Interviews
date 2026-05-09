@@ -118,3 +118,9 @@
 .dark .p-button.p-button-secondary:hover {
   background: rgba(255, 255, 255, 0.05) !important;
 }
+
+#chatbase-bubble-button,
+#chatbase-bubble-window,
+iframe[src*="chatbase"] {
+  font-family: inherit !important;
+}

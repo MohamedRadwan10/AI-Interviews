@@ -20,7 +20,7 @@ const MainSearch = ({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        fieldClassName="!pl-10 !py-3 !rounded-2xl !bg-light-primary dark:!bg-dark-primary-4 !border-none !ring-1 !ring-ui-borderLight dark:!ring-ui-border focus:!ring-brand-primary transition-all"
+        fieldClassName="!pl-10 !py-3 !rounded-2xl !bg-light-primary dark:!bg-dark-primary-4 !border-none !ring-1 !ring-ui-borderLight dark:!ring-ui-border focus:!ring-brand-primary transition-all !text-ui-textMain dark:!text-dark-white placeholder:!text-ui-muted"
         containerClassName="!mb-0"
       />
     </div>

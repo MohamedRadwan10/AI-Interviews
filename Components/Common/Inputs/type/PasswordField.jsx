@@ -55,6 +55,7 @@ const PasswordField = (props) => {
         placeholder={placeholder}
         toggleMask
         feedback={true}
+        autoComplete={props.autoComplete || "current-password"}
         inputClassName={`!w-full p-2 border rounded outline-none focus:border-brand-primary transition-all bg-light-blue50 dark:bg-dark-primary-3 ${
           error ? "border-status-error" : "border-ui-borderLight dark:border-dark-gray"
         } ${fieldClassName}`}

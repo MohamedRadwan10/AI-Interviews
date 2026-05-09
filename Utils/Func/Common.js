@@ -1,4 +1,5 @@
 import { get } from "lodash-es";
+import { APP_CONFIG } from "@/Config/appConfig";
 
 export const formatTime = (seconds) => {
   const mins = Math.floor(seconds / 60);
@@ -25,4 +26,18 @@ export const formatDate = (date) => {
   const month = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
+};
+
+export const getScoreColor = (score) => {
+  const statusColors = get(APP_CONFIG, "ui.statusColors", {});
+  if (score > 70) return statusColors.success;
+  if (score > 40) return statusColors.warning;
+  return statusColors.error;
+};
+
+export const getMatchColor = (label) => {
+  const l = String(label).toLowerCase();
+  if (l.includes("excellent") || l.includes("good")) return "text-status-success";
+  if (l.includes("average") || l.includes("fair")) return "text-status-warning";
+  return "text-status-error";
 };

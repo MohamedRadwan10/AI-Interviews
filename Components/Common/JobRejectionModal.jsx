@@ -5,7 +5,15 @@ import MainText from "@/Components/Common/MainText";
 import CircularProgress from "@/Components/Common/Progress/CircularProgress";
 import { ProgressBar } from "primereact/progressbar";
 import { AlertCircle, CheckCircle2, XCircle } from "lucide-react";
-import { map, get } from "lodash-es";
+import { get, map } from "lodash-es";
+import { getScoreColor, getMatchColor } from "@/Utils/Func/Common";
+
+const getStatusIcon = (label) => {
+  const l = label.toLowerCase();
+  if (l.includes("excellent") || l.includes("good")) return <CheckCircle2 className="w-6 h-6 text-status-success" />;
+  if (l.includes("average") || l.includes("fair")) return <AlertCircle className="w-6 h-6 text-status-warning" />;
+  return <XCircle className="w-6 h-6 text-status-error" />;
+};
 
 const JobRejectionModal = ({ visible, onHide, result }) => {
   if (!result) return null;
@@ -14,21 +22,6 @@ const JobRejectionModal = ({ visible, onHide, result }) => {
   const matchLabel = get(result, "matchLabel", "Poor Match");
   const matchSummary = get(result, "matchSummary", "");
   const dimensionScores = get(result, "dimensionScores", {});
-
-  const getMatchColor = (label) => {
-    const l = label.toLowerCase();
-    if (l.includes("excellent") || l.includes("good")) return "text-status-success";
-    if (l.includes("average") || l.includes("fair")) return "text-status-warning";
-    return "text-status-error";
-  };
-
-  const getStatusIcon = (label) => {
-    const l = label.toLowerCase();
-    if (l.includes("excellent") || l.includes("good")) return <CheckCircle2 className="w-6 h-6 text-status-success" />;
-    if (l.includes("average") || l.includes("fair")) return <AlertCircle className="w-6 h-6 text-status-warning" />;
-    return <XCircle className="w-6 h-6 text-status-error" />;
-  };
-
   const matchColorClass = getMatchColor(matchLabel);
 
   return (
@@ -40,7 +33,7 @@ const JobRejectionModal = ({ visible, onHide, result }) => {
       className="rejection-modal"
     >
       <div className="flex flex-col gap-6 py-2">
-        <div className="flex flex-col items-center text-center gap-3 p-6 bg-light-secondary dark:bg-dark-primary-3 rounded-2xl border border-ui-borderLight dark:border-ui-border/50">
+        <div className="flex flex-col items-center text-center gap-3 p-6 bg-light-primary dark:bg-dark-primary-3 rounded-2xl border border-ui-borderLight dark:border-ui-border/50">
           <CircularProgress percentage={Math.round(overallScore)} colorClass={matchColorClass} />
           <div className="flex items-center gap-2 mt-2">
             {getStatusIcon(matchLabel)}
@@ -70,7 +63,7 @@ const JobRejectionModal = ({ visible, onHide, result }) => {
                     value={score} 
                     showValue={false} 
                     style={{ height: '6px' }} 
-                    color={score > 70 ? "#10B981" : score > 40 ? "#F59E0B" : "#EF4444"}
+                    color={getScoreColor(score)}
                   />
                 </div>
               );

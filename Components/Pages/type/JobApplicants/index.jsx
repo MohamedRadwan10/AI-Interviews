@@ -7,7 +7,7 @@ import JobApplicantsStats from "../../../Sections/JobApplicantsStats";
 import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
 import MainSearch from "@/Components/Common/MainSearch";
 import MainText from "@/Components/Common/MainText";
-import { getJobApplicantsColumns } from "@/Config/TableColumns/JobApplicantsColumns";
+import { JOB_APPLICANTS_COLUMNS } from "@/Config/tableConfig";
 import MainTable from "@/Components/Common/Table/MainTable";
 import ApplicantDetailsModal from "./ApplicantDetailsModal";
 
@@ -22,7 +22,7 @@ const JobApplicants = ({ id }) => {
   const onClose = () => setSelectedApplicant(null);
   const onSearchChange = (e) => setSearchTerm(e.target.value);
 
-  const columns = getJobApplicantsColumns(onView);
+  const columns = JOB_APPLICANTS_COLUMNS(onView);
   const hasSelected = !!selectedApplicant;
 
   return (

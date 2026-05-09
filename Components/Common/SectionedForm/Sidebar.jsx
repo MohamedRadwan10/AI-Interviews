@@ -1,6 +1,6 @@
 import React from "react";
 import { Info, Briefcase, Layers, FileText, ListChecks, ChevronRight, AlertCircle, CheckCircle2 } from "lucide-react";
-import { map, get } from "lodash-es";
+import { map } from "lodash-es";
 import { getVal } from "@/Utils/Func/Common";
 import MainButton from "../MainButton";
 import MainText from "../MainText";

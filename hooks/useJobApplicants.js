@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
-import { get, find, maxBy } from "lodash-es";
-import { useDashboardComp } from "./useDashboardComp";
+import { find, get, maxBy } from "lodash-es";
+import { useDashboardComp } from "./useDashboard";
 import { useSearch } from "./common";
 import { useApi } from "./useApi";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { get, startCase } from "lodash-es";
+import { startCase, get } from "lodash-es";
 import { Suspense } from "react";
 import * as FormComponents from "@/Components/auth/Register/type";
 import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";

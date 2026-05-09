@@ -1,5 +1,5 @@
 import React from "react";
-import { get, startCase } from "lodash-es";
+import { startCase, get } from "lodash-es";
 import * as LoadingComponents from "@/Components/Common/LoadingSkeleton/type/index";
 
 const DefaultLoading = () => (

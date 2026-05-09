@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { map, get } from "lodash-es";
+import { get, map } from "lodash-es";
 import MainButton from "@/Components/Common/MainButton";
 import MainText from "@/Components/Common/MainText";
 import MainCard from "@/Components/Common/Cards";
