@@ -154,3 +154,72 @@ export const useDeleteJob = () => {
 
   return { deleteJob, isLoading: deleteJobApi.loading, error: deleteJobApi.error };
 };
+
+export const useCheckJobMatch = (autoJobId = null) => {
+  const [matchResult, setMatchResult] = useState(null);
+  const [showRejectionModal, setShowRejectionModal] = useState(false);
+  const checkMatchApi = useApi({ 
+    type: "jobMatch", 
+    autoFetch: !!autoJobId, 
+    urlSuffix: autoJobId ? `/${autoJobId}` : "" 
+  });
+  const { error: notifyError } = useMainNotify();
+  const { navigateTo, navigateBack } = useNavigation();
+
+  const [hasHandledAutoResult, setHasHandledAutoResult] = useState(false);
+
+  const handleResult = useCallback((data, jobId) => {
+    if (data && data.rejected) {
+      setMatchResult(data);
+      setShowRejectionModal(true);
+      return false;
+    } else if (data && !data.rejected && jobId) {
+      navigateTo(`/intelliHire/interview-session/${jobId}`);
+      return true;
+    }
+    return true;
+  }, [navigateTo]);
+
+  useEffect(() => {
+    if (autoJobId && checkMatchApi.data && !hasHandledAutoResult) {
+      handleResult(checkMatchApi.data);
+      setHasHandledAutoResult(true);
+    }
+  }, [autoJobId, checkMatchApi.data, hasHandledAutoResult, handleResult]);
+
+  useEffect(() => {
+    if (autoJobId && checkMatchApi.error && !hasHandledAutoResult) {
+      const errorData = get(checkMatchApi.error, "response.data");
+      if (errorData && errorData.rejected) {
+        setMatchResult(errorData);
+        setShowRejectionModal(true);
+        setHasHandledAutoResult(true);
+      }
+    }
+  }, [autoJobId, checkMatchApi.error, hasHandledAutoResult]);
+
+  const checkAndApply = useCallback(async (jobId) => {
+    try {
+      const data = await checkMatchApi.refetch({ urlSuffix: `/${jobId}` });
+      return handleResult(data, jobId);
+    } catch (err) {
+      const errorData = get(err, "response.data");
+      if (errorData && errorData.rejected) {
+        setMatchResult(errorData);
+        setShowRejectionModal(true);
+        return false;
+      }
+      notifyError("Match Check Failed", get(err, "response.data.message") || "An error occurred while checking job match.");
+      throw err;
+    }
+  }, [checkMatchApi, handleResult, notifyError]);
+
+  return { 
+    checkAndApply, 
+    isLoading: checkMatchApi.loading, 
+    matchResult, 
+    showRejectionModal, 
+    setShowRejectionModal,
+    isRejected: !!(matchResult && matchResult.rejected)
+  };
+};

@@ -84,7 +84,7 @@ const InterviewRoom = ({ jobId }) => {
 
   return (
     <div className="max-w-[1600px] mx-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[calc(100vh-100px)]">
-      <InterviewSidebar isConnected={isConnected} isSessionStarted={isSessionStarted} questionTime={timeLeft} />
+      <InterviewSidebar isConnected={isConnected} isSessionStarted={isSessionStarted} questionTime={timeLeft} sessionId={sessionId} />
 
       <div className="lg:col-span-9 flex flex-col gap-6 h-full">
         <div className="bg-white dark:bg-dark-primary-4 p-8 rounded-3xl border border-ui-borderLight dark:border-ui-border shadow-sm">

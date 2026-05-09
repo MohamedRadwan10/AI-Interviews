@@ -1,15 +1,88 @@
 "use client";
 import { useState, useCallback, useContext, useEffect, useRef, useMemo } from "react";
+import { get } from "lodash-es";
+import { useReactMediaRecorder } from "react-media-recorder-2";
 import { UserTokenContext } from "@/Context/UserTokenContext";
 import { useUserAccount } from "@/Context/UserAccountContext";
 import { useSignalR } from "@/hooks/useSignalR";
 import { useApi } from "@/hooks/useApi";
-import { get, uniqBy } from "lodash-es";
-import { useReactMediaRecorder } from "react-media-recorder-2";
 import { formatTime, delay } from "@/Utils/Func/Common";
-import { useNavigation, useMainNotify } from "@/hooks/common";
+import { useMainNotify } from "@/hooks/common";
 
 const INVALID_SESSION_ID = "00000000-0000-0000-0000-000000000000";
+
+const parseQuestion = (q) => {
+  if (!q) return null;
+  try {
+    return typeof q === "string" ? JSON.parse(q) : q;
+  } catch (e) {
+    return q;
+  }
+};
+
+const useTimerLogic = (isSessionStarted, currentQuestion, isSubmitting, interviewFinished, sessionId, questionIndex) => {
+  const [timeLeft, setTimeLeft] = useState(null);
+  const [initialTime, setInitialTime] = useState(0);
+  const timeLeftRef = useRef(null);
+  const initialTimeRef = useRef(0);
+
+  useEffect(() => {
+    const parsed = parseQuestion(currentQuestion);
+    if (!parsed || !sessionId) {
+      setTimeLeft(null);
+      return;
+    }
+
+    const storageKey = `timer_${sessionId}_${questionIndex}`;
+    const savedEndTime = localStorage.getItem(storageKey);
+    const now = Date.now();
+
+    if (savedEndTime) {
+      const remaining = Math.round((parseInt(savedEndTime, 10) - now) / 1000);
+      if (remaining > 0) {
+        setTimeLeft(remaining);
+        timeLeftRef.current = remaining;
+        let totalSec = parseInt(get(parsed, "remainingSeconds"), 10);
+        if (isNaN(totalSec)) totalSec = (parseInt(get(parsed, "time"), 10) || 0) * 60;
+        setInitialTime(totalSec);
+        initialTimeRef.current = totalSec;
+        return;
+      }
+    }
+
+    let seconds = parseInt(get(parsed, "remainingSeconds"), 10);
+    if (isNaN(seconds)) {
+      const minutes = parseInt(get(parsed, "time"), 10);
+      seconds = !isNaN(minutes) ? minutes * 60 : 0;
+    }
+
+    if (seconds > 0) {
+      const endTime = now + seconds * 1000;
+      localStorage.setItem(storageKey, String(endTime));
+    }
+
+    setTimeLeft(seconds);
+    setInitialTime(seconds);
+    timeLeftRef.current = seconds;
+    initialTimeRef.current = seconds;
+  }, [currentQuestion, sessionId, questionIndex]);
+
+  useEffect(() => {
+    if (!isSessionStarted || timeLeft === null || timeLeft <= 0 || interviewFinished || isSubmitting) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft(t => {
+        const next = t > 0 ? t - 1 : 0;
+        timeLeftRef.current = next;
+        return next;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [isSessionStarted, timeLeft, interviewFinished, isSubmitting]);
+
+  return { timeLeft, initialTime, timeLeftRef, initialTimeRef };
+};
+
 
 export const useInterviewSession = (jobId) => {
   const { userToken } = useContext(UserTokenContext);
@@ -20,59 +93,37 @@ export const useInterviewSession = (jobId) => {
   const [isSessionStarted, setIsSessionStarted] = useState(false);
   const [interviewFinished, setInterviewFinished] = useState(false);
   const [finishMessage, setFinishMessage] = useState("");
+  const [error, setError] = useState(null);
 
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [totalQuestions, setTotalQuestions] = useState(0);
-
-  const [timeLeft, setTimeLeft] = useState(null);
-  const [initialTime, setInitialTime] = useState(0);
 
   const [loadingStates, setLoadingStates] = useState({
     session: true,
     submitting: false,
     finishing: false,
   });
-  const [error, setError] = useState(null);
-  const [isWindowVisible, setIsWindowVisible] = useState(
-    typeof document !== "undefined" ? document.visibilityState === "visible" : true
-  );
+
+  const submittingRef = useRef(false);
 
   const { isConnected, on } = useSignalR(userToken, userId);
-
+  
   const { refetch: callStartSession } = useApi({ type: "startSession", autoFetch: false, urlSuffix: `/${jobId}` });
   const { refetch: callNextQuestion } = useApi({ type: "nextQuestion", autoFetch: false });
   const { refetch: callEndSession } = useApi({ type: "endSession", autoFetch: false });
   const { refetch: callCheckActiveSession } = useApi({ type: "checkActiveSession", autoFetch: false, urlSuffix: `/${jobId}` });
   const { refetch: callGetSessionDetails } = useApi({ type: "getSessionDetails", autoFetch: false });
 
-  const parseQuestion = (q) => {
-    if (!q) return null;
-    try {
-      return typeof q === "string" ? JSON.parse(q) : q;
-    } catch (e) {
-      return q;
-    }
-  };
+  const { timeLeft, initialTimeRef, timeLeftRef } = useTimerLogic(
+    isSessionStarted, 
+    currentQuestion, 
+    loadingStates.submitting, 
+    interviewFinished,
+    sessionId,
+    questionIndex
+  );
 
-  const restoreSession = useCallback(async (sId) => {
-    setLoadingStates(prev => ({ ...prev, session: true }));
-    try {
-      const result = await callGetSessionDetails({ urlSuffix: `/${sId}` });
-      const data = get(result, "data");
-      if (data) {
-        setSessionId(sId);
-        setIsSessionStarted(true);
-        setCurrentQuestion(get(data, "question") || (get(data, "questionText") ? data : null));
-        setQuestionIndex(get(data, "index") ?? 0);
-        setTotalQuestions(get(data, "totalquestion") ?? 15);
-      }
-    } catch (err) {
-      setIsSessionStarted(false);
-    } finally {
-      setLoadingStates(prev => ({ ...prev, session: false }));
-    }
-  }, [callGetSessionDetails]);
 
   const finishInterview = useCallback(async () => {
     if (!sessionId) return;
@@ -82,12 +133,9 @@ export const useInterviewSession = (jobId) => {
       setInterviewFinished(true);
       success("Interview Finished", "Your responses have been submitted.");
       setCurrentQuestion(null);
-      setTimeLeft(null);
 
       Object.keys(localStorage).forEach(key => {
-        if (key.startsWith(`timer_${sessionId}`)) {
-          localStorage.removeItem(key);
-        }
+        if (key.startsWith(`timer_${sessionId}`)) localStorage.removeItem(key);
       });
     } catch (err) {
       console.error("Finish error:", err);
@@ -95,147 +143,74 @@ export const useInterviewSession = (jobId) => {
       setLoadingStates(prev => ({ ...prev, finishing: false }));
     }
   }, [sessionId, jobId, callEndSession, success]);
-  
-  // 1. Initial Check
-  useEffect(() => {
-    if (!jobId) {
-       setLoadingStates(prev => ({ ...prev, session: false }));
-       return;
-    }
-    const init = async () => {
-      setLoadingStates(prev => ({ ...prev, session: true }));
-      try {
-        const res = await callCheckActiveSession();
-        const activeSId = get(res, "data.sessionid") || get(res, "data.sessionId") || get(res, "data");
-        if (activeSId && activeSId !== INVALID_SESSION_ID && typeof activeSId === "string") {
-          await restoreSession(activeSId);
-        } else {
-          setLoadingStates(prev => ({ ...prev, session: false }));
-        }
-      } catch (err) {
-        setLoadingStates(prev => ({ ...prev, session: false }));
-      }
-    };
-    init();
-  }, [jobId, restoreSession, callCheckActiveSession]);
 
-  useEffect(() => {
-    const handleVisibilityChange = () => setIsWindowVisible(document.visibilityState === "visible");
-    const handleBlur = () => setIsWindowVisible(false);
-    const handleFocus = () => setIsWindowVisible(true);
-
-    window.addEventListener("visibilitychange", handleVisibilityChange);
-    window.addEventListener("blur", handleBlur);
-    window.addEventListener("focus", handleFocus);
-
-    return () => {
-      window.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("blur", handleBlur);
-      window.removeEventListener("focus", handleFocus);
-    };
-  }, []);
-
-  useEffect(() => {
-    on("nextQuestionReady", data => setCurrentQuestion(data));
-    on("reportGenerationStarted", data => {
-      setFinishMessage(get(data, "message") || "Generating your report...");
-      setInterviewFinished(true);
-    });
-  }, [on]);
-
-  // 3. Question Timer Initializer
-  useEffect(() => {
-    const parsed = parseQuestion(currentQuestion);
-    if (!parsed) return;
-
-    let totalSeconds = parseInt(get(parsed, "remainingSeconds"), 10);
-
-    if (isNaN(totalSeconds) || totalSeconds <= 0) {
-      const minutes = parseInt(get(parsed, "time"), 10);
-      if (!isNaN(minutes) && minutes > 0) {
-        totalSeconds = minutes * 60;
-      }
-    }
-
-    if (!isNaN(totalSeconds) && totalSeconds > 0) {
-      const storageKey = `timer_${sessionId}_${questionIndex}`;
-      const savedTime = localStorage.getItem(storageKey);
-      
-      if (savedTime !== null) {
-        const parsedSavedTime = parseInt(savedTime, 10);
-        if (!isNaN(parsedSavedTime) && parsedSavedTime >= 0) {
-          setTimeLeft(parsedSavedTime);
-        } else {
-          setTimeLeft(totalSeconds);
-        }
-      } else {
-        setTimeLeft(totalSeconds);
-      }
-      
-      setInitialTime(totalSeconds);
-    }
-  }, [currentQuestion, sessionId, questionIndex]);
-
-  // 4. Global Ticker (Timer)
-  useEffect(() => {
-    if (isSessionStarted && timeLeft > 0 && !interviewFinished && !loadingStates.submitting && isWindowVisible) {
-      const timer = setInterval(() => {
-        setTimeLeft(t => {
-          const newTime = t > 0 ? t - 1 : 0;
-          if (sessionId && questionIndex !== null) {
-            localStorage.setItem(`timer_${sessionId}_${questionIndex}`, newTime);
-          }
-          return newTime;
-        });
-      }, 1000);
-      return () => clearInterval(timer);
-    }
-  }, [isSessionStarted, timeLeft, interviewFinished, loadingStates.submitting, isWindowVisible, sessionId, questionIndex]);
-
-  const startInterview = useCallback(async () => {
-    setError(null);
-    setLoadingStates(prev => ({ ...prev, session: true }));
+  const autoSkipExpired = useCallback(async (sId, q, index) => {
+    if (!sId || !q) return;
+    const formData = new FormData();
+    formData.append("SessionId", sId);
+    formData.append("QuestionId", q.id || q.questionId);
+    formData.append("currentQuestionIndex", index);
+    formData.append("time", "0");
+    formData.append("UserAnswer", "Time limit exceeded (Auto-recovered)");
+    
     try {
-      const result = await callStartSession();
-      let sId = get(result, "data.sessionId") || get(result, "data.sessionid") || get(result, "data.id") || get(result, "data");
-      if (typeof sId === "object" && sId !== null) {
-        sId = sId.sessionId || sId.id || sId.sessionid;
+      await callNextQuestion({ data: formData, silent: true });
+    } catch (e) {  }
+  }, [callNextQuestion]);
+
+  const syncSession = useCallback(async (silent = false) => {
+    if (!silent) setLoadingStates(prev => ({ ...prev, session: true }));
+    try {
+      const res = await callCheckActiveSession();
+      const sId = get(res, "data.sessionid") || get(res, "data.sessionId") || get(res, "data");
+      
+      if (!sId || sId === INVALID_SESSION_ID || typeof sId !== "string") {
+        if (!silent) setLoadingStates(prev => ({ ...prev, session: false }));
+        return;
       }
-      if (!sId || typeof sId !== "string") throw new Error("Session ID missing or invalid");
+
+      const detailsRes = await callGetSessionDetails({ urlSuffix: `/${sId}` });
+      const data = get(detailsRes, "data");
+      if (!data) return;
+
+      const q = get(data, "question") || (get(data, "questionText") ? data : null);
+      const remSec = parseInt(get(q, "remainingSeconds"), 10);
+      
+      if (!isNaN(remSec) && remSec <= 0) {
+        await autoSkipExpired(sId, q, get(data, "index") ?? 0);
+        return syncSession(silent);
+      }
+
       setSessionId(sId);
       setIsSessionStarted(true);
-      return sId;
+      setCurrentQuestion(q);
+      setQuestionIndex(get(data, "index") ?? 0);
+      setTotalQuestions(get(data, "totalquestion") ?? 15);
     } catch (err) {
-      setError("Failed to start session");
     } finally {
-      setLoadingStates(prev => ({ ...prev, session: false }));
+      if (!silent) setLoadingStates(prev => ({ ...prev, session: false }));
     }
-  }, [callStartSession]);
+  }, [callCheckActiveSession, callGetSessionDetails, autoSkipExpired]);
 
   const submitAnswer = useCallback(async (answerData) => {
-    if (!sessionId || !currentQuestion) return;
+    if (submittingRef.current || !sessionId || !currentQuestion) return;
     
-    const timeTaken = initialTime - (timeLeft || 0);
-    const parsed = parseQuestion(currentQuestion);
-    const qId = get(parsed, "id") || get(parsed, "questionId");
-    
+    submittingRef.current = true;
     setLoadingStates(prev => ({ ...prev, submitting: true }));
-    setCurrentQuestion(null);
-    setTimeLeft(null);
-    
-    // Clear the saved timer for this question
-    if (sessionId && questionIndex !== null) {
-      localStorage.removeItem(`timer_${sessionId}_${questionIndex}`);
-    }
 
+    const timeTaken = initialTimeRef.current - (timeLeftRef.current || 0);
+    const parsed = parseQuestion(currentQuestion);
+    
     const formData = new FormData();
     formData.append("SessionId", sessionId);
-    formData.append("QuestionId", qId);
+    formData.append("QuestionId", get(parsed, "id") || get(parsed, "questionId"));
     formData.append("currentQuestionIndex", questionIndex);
     formData.append("time", String(timeTaken));
     
     if (answerData?.voiceFile) formData.append("voiceFile", answerData.voiceFile, "voice.wav");
     else formData.append("UserAnswer", answerData?.text || "");
+
+    setCurrentQuestion(null);
 
     try {
       const result = await callNextQuestion({ data: formData });
@@ -245,8 +220,7 @@ export const useInterviewSession = (jobId) => {
       if (nextQ?.id) setCurrentQuestion(nextQ);
 
       const isCompleted = get(response, "isCompleted") || get(response, "completed");
-      const effectiveTotal = get(parsed, "totalquestion") || totalQuestions;
-      const isLast = (questionIndex + 1) >= effectiveTotal;
+      const isLast = (questionIndex + 1) >= (get(parsed, "totalquestion") || totalQuestions);
 
       if (isCompleted || isLast) {
         await delay(1000);
@@ -255,23 +229,67 @@ export const useInterviewSession = (jobId) => {
         setQuestionIndex(prev => prev + 1);
       }
     } catch (err) {
-      console.error("Submit error:", err);
+      await syncSession(true);
     } finally {
       setLoadingStates(prev => ({ ...prev, submitting: false }));
+      submittingRef.current = false;
     }
-  }, [sessionId, currentQuestion, questionIndex, totalQuestions, initialTime, timeLeft, callNextQuestion, finishInterview]);
+  }, [sessionId, currentQuestion, questionIndex, totalQuestions, callNextQuestion, finishInterview, syncSession]);
 
-  // Auto-submit when time is up
   useEffect(() => {
-    if (isSessionStarted && timeLeft === 0 && currentQuestion && !loadingStates.submitting && !interviewFinished) {
+    if (jobId) syncSession();
+    else setLoadingStates(prev => ({ ...prev, session: false }));
+  }, [jobId, syncSession]);
+
+  useEffect(() => {
+    on("nextQuestionReady", data => {
+      const incomingIndex = get(data, "index");
+      if (incomingIndex !== undefined && incomingIndex >= questionIndex) {
+        setCurrentQuestion(data);
+        if (incomingIndex > questionIndex) setQuestionIndex(incomingIndex);
+      }
+    });
+    on("reportGenerationStarted", data => {
+      setFinishMessage(get(data, "message") || "Generating your report...");
+      setInterviewFinished(true);
+    });
+    on("OnInterviewTerminated", data => {
+      const msg = get(data, "message") || (typeof data === "string" ? data : "Session terminated due to camera errors.");
+      setError(msg);
+      setIsSessionStarted(false);
+    });
+  }, [on, questionIndex]);
+
+  useEffect(() => {
+    if (isSessionStarted && timeLeft === 0 && timeLeft !== null && currentQuestion && !loadingStates.submitting && !interviewFinished) {
       submitAnswer({ text: "Time limit exceeded" });
     }
   }, [timeLeft, isSessionStarted, currentQuestion, loadingStates.submitting, interviewFinished, submitAnswer]);
 
+
   const parsedCurrentQuestion = useMemo(() => parseQuestion(currentQuestion), [currentQuestion]);
-  const effectiveTotalQuestions = useMemo(() => {
-    return get(parsedCurrentQuestion, "totalquestion") || totalQuestions || 15;
-  }, [parsedCurrentQuestion, totalQuestions]);
+  const effectiveTotalQuestions = useMemo(() => 
+    get(parsedCurrentQuestion, "totalquestion") || totalQuestions || 15
+  , [parsedCurrentQuestion, totalQuestions]);
+
+  const startInterview = useCallback(async () => {
+    setError(null);
+    setLoadingStates(prev => ({ ...prev, session: true }));
+    try {
+      const result = await callStartSession();
+      const sId = get(result, "data.sessionId") || get(result, "data.sessionid") || get(result, "data.id") || get(result, "data");
+      const finalId = typeof sId === "object" ? (sId.sessionId || sId.id) : sId;
+      
+      if (!finalId) throw new Error("Invalid Session ID");
+      setSessionId(finalId);
+      setIsSessionStarted(true);
+      return finalId;
+    } catch (err) {
+      setError("Failed to start session");
+    } finally {
+      setLoadingStates(prev => ({ ...prev, session: false }));
+    }
+  }, [callStartSession]);
 
   return useMemo(() => ({
     isSessionStarted,
@@ -285,36 +303,36 @@ export const useInterviewSession = (jobId) => {
     submitAnswer,
     finishInterview,
     error,
-    questionIndex:questionIndex,
+    questionIndex,
     totalQuestions: effectiveTotalQuestions,
     interviewFinished,
     finishMessage,
     isQuestionReady: !!parsedCurrentQuestion,
     timeLeft,
     isLastQuestion: (questionIndex + 1) >= effectiveTotalQuestions
-  }), [isSessionStarted, sessionId, parsedCurrentQuestion, isConnected, loadingStates, startInterview, submitAnswer, finishInterview, error, questionIndex, effectiveTotalQuestions, interviewFinished, finishMessage, timeLeft]);
+  }), [
+    isSessionStarted, sessionId, parsedCurrentQuestion, isConnected, loadingStates, 
+    startInterview, submitAnswer, finishInterview, error, questionIndex, 
+    effectiveTotalQuestions, interviewFinished, finishMessage, timeLeft
+  ]);
 };
 
 export const useAnswerConsole = (onSubmit, questionType) => {
   const [activeTab, setActiveTab] = useState("text");
-
-  useEffect(() => {
-    if (questionType?.toLowerCase() === "coding") {
-      setActiveTab("code");
-    } else {
-      setActiveTab("text");
-    }
-  }, [questionType]);
   const [textAnswer, setTextAnswer] = useState("");
   const [codeAnswer, setCodeAnswer] = useState("// Write your code here\n");
   const [language, setLanguage] = useState("javascript");
+
+  useEffect(() => {
+    setActiveTab(questionType?.toLowerCase() === "coding" ? "code" : "text");
+  }, [questionType]);
 
   const { status, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } =
     useReactMediaRecorder({ audio: true, blobPropertyBag: { type: "audio/wav" } });
 
   const handleSend = () => {
     if (activeTab === "voice" && mediaBlobUrl) {
-      fetch(mediaBlobUrl).then((res) => res.blob()).then((blob) => {
+      fetch(mediaBlobUrl).then(res => res.blob()).then(blob => {
         onSubmit({ voiceFile: blob });
         clearBlobUrl();
       });
@@ -322,19 +340,18 @@ export const useAnswerConsole = (onSubmit, questionType) => {
     }
     
     let finalAnswer = activeTab === "text" ? textAnswer : codeAnswer;
-    if (activeTab === "code") {
-      finalAnswer = finalAnswer.replace("// Write your code here\n", "").replace("// Write your code here", "").trim();
-    }
+    finalAnswer = finalAnswer.replace(/\/\/ Write your code here\n?/g, "").trim();
 
     onSubmit({ text: finalAnswer });
     setTextAnswer("");
     setCodeAnswer("// Write your code here\n");
   };
 
-  const hasAnswer = 
-    (activeTab === "text" && textAnswer.trim().length > 0) ||
-    (activeTab === "code" && codeAnswer.replace("// Write your code here\n", "").replace("// Write your code here", "").trim().length > 0) ||
-    (activeTab === "voice" && !!mediaBlobUrl);
+  const hasAnswer = useMemo(() => {
+    if (activeTab === "voice") return !!mediaBlobUrl;
+    const raw = activeTab === "text" ? textAnswer : codeAnswer;
+    return raw.replace(/\/\/ Write your code here\n?/g, "").trim().length > 0;
+  }, [activeTab, textAnswer, codeAnswer, mediaBlobUrl]);
 
   return {
     activeTab, setActiveTab, textAnswer, setTextAnswer, codeAnswer, setCodeAnswer,
@@ -356,7 +373,10 @@ export const useInterviewSidebar = (isSessionStarted, timeLeftFromSession) => {
     return () => clearInterval(checkStream);
   }, []);
 
-  return { timeLeft: timeLeftFromSession === -1 ? 0 : (timeLeftFromSession || 0), formatTime, webcamRef, stream };
+  return { 
+    timeLeft: Math.max(0, timeLeftFromSession || 0), 
+    formatTime, webcamRef, stream 
+  };
 };
 
 export const useAudioLevel = (stream) => {
@@ -380,18 +400,18 @@ export const useAudioLevel = (stream) => {
       const dataArray = new Uint8Array(analyser.frequencyBinCount);
       const updateLevel = () => {
         analyser.getByteFrequencyData(dataArray);
-        const sum = dataArray.reduce((acc, val) => acc + val, 0);
-        setLevel(Math.min(100, Math.round((sum / dataArray.length / 128) * 100)));
+        const avg = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
+        setLevel(Math.min(100, Math.round((avg / 128) * 100)));
         animationFrameRef.current = requestAnimationFrame(updateLevel);
       };
       updateLevel();
     } catch (err) {
-      console.error("Audio level monitor error:", err);
+      console.error("Audio monitor error:", err);
     }
 
     return () => {
-      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
-      if (audioContextRef.current) audioContextRef.current.close();
+      cancelAnimationFrame(animationFrameRef.current);
+      audioContextRef.current?.close();
     };
   }, [stream]);
 

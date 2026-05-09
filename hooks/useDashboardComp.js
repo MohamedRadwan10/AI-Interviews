@@ -3,7 +3,7 @@
 import { useContext, useMemo, useState } from "react";
 import { get } from "lodash-es";
 import { useApi } from "./useApi";
-import { useSearch } from "./common";
+import { useSearch, useMainNotify, useConfirmation } from "./common";
 import { UserTokenContext } from "@/Context/UserTokenContext";
 
 
@@ -25,13 +25,26 @@ export const useDashboardComp = () => {
     autoFetch: false,
   });
 
+  const { success, error: notifyError } = useMainNotify();
+  const { confirm } = useConfirmation();
+
   const handleDeleteJob = async (jobId) => {
-    try {
-      await deleteJobApi({ urlSuffix: `/${jobId}` });
-      refetch();
-    } catch (err) {
-      console.error("Failed to delete job:", err);
-    }
+    confirm({
+      message: "Are you sure you want to delete this job? This action cannot be undone.",
+      header: "Confirm Deletion",
+      icon: "pi pi-exclamation-triangle",
+      acceptClassName: "p-button-danger",
+      accept: async () => {
+        try {
+          await deleteJobApi({ urlSuffix: `/${jobId}` });
+          success("Job Deleted", "The job has been successfully removed.");
+          refetch();
+        } catch (err) {
+          notifyError("Delete Failed", get(err, "response.data.message") || "Could not delete the job. Please try again.");
+          console.error("Failed to delete job:", err);
+        }
+      },
+    });
   };
 
   const rawData = get(data, "data", data) || {};

@@ -50,11 +50,14 @@ export const useApi = ({ type, params = {}, data = null, customHeaders = {}, aut
             params: { ...params, ...(override.params || {}) },
             data: finalData,
             headers,
+            silent: override.silent,
           })
         ).unwrap();
         return result;
       } catch (error) {
-        console.error(`[useApi] Request Failed [${type}]:`, error);
+        if (!override.silent) {
+          console.error(`[useApi] Request Failed [${type}]:`, error);
+        }
         throw error;
       }
     },

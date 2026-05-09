@@ -1,6 +1,6 @@
 import { getAllCountries, getStatesOfCountry, getCitiesOfState } from "@/Utils/Func/LocationData";
 import { get } from "lodash-es";
-import { jobCategories, jobSubCategories } from "./JobCategoriesConfig";
+import { jobCategories, jobSubCategories } from "./InterviewConfig";
 
 export const loginConfig = {
   pageTitle: "Welcome back to IntelliHire",

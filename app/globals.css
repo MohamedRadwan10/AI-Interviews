@@ -76,3 +76,45 @@
 .generating-pdf .rounded-2xl {
   page-break-inside: avoid;
 }
+
+/* PrimeReact Dark Mode Overrides */
+.dark .p-dialog, 
+.dark .p-confirm-dialog {
+  background: #1e293b !important; /* dark.primary.2 */
+  color: #f8fafc !important;
+  border: 1px solid #334155 !important; /* ui-border */
+}
+
+.dark .p-dialog-header,
+.dark .p-dialog-content,
+.dark .p-dialog-footer {
+  background: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+.dark .p-dialog-header .p-dialog-title {
+  color: #f8fafc !important;
+}
+
+.dark .p-dialog-header .p-dialog-header-icon {
+  color: #94a3b8 !important;
+}
+
+.dark .p-dialog-header .p-dialog-header-icon:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.dark .p-confirm-dialog .p-confirm-dialog-icon {
+  color: #3b82f6 !important; /* brand.primary */
+}
+
+.dark .p-button.p-button-secondary,
+.dark .p-button.p-button-outlined {
+  background: transparent !important;
+  border-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+
+.dark .p-button.p-button-secondary:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+}

@@ -12,7 +12,20 @@ export const useAfterLogin = () => {
   const { navigateTo } = useNavigation();
   
   return useCallback((user) => {
-    navigateTo("/intelliHire");
+    const isComplete = get(user, "isComplete") || get(user, "isCompleted");
+    const userType = get(user, "userType");
+
+    if (isComplete === true) {
+      navigateTo("/intelliHire");
+    } else {
+      if (userType === "Individual") {
+        navigateTo("/candidate-onboarding");
+      } else if (userType === "Company") {
+        navigateTo("/company-onboarding");
+      } else {
+        navigateTo("/intelliHire");
+      }
+    }
   }, [navigateTo]);
 };
 
