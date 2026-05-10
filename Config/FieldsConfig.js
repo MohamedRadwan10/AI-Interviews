@@ -6,6 +6,8 @@ export const loginConfig = {
   pageTitle: "Welcome back to IntelliHire",
   pageSubtitle: "Step into the future of hiring",
   submitButtonText: "Sign In",
+  externalType: 0,
+
 
   footerText: "Don't have account?",
   footerLinks: [
@@ -72,6 +74,8 @@ export const companyRegisterConfig = {
   pageTitle: "Welcome to IntelliHire",
   pageSubtitle: "Step into the future of hiring",
   submitButtonText: "Create Account",
+  externalType: 1,
+
 
   footerText: "Already have account?",
   footerLinks: [
@@ -148,7 +152,7 @@ export const registerConfig = {
   pageTitle: "Welcome to IntelliHire",
   pageSubtitle: "Step into the future of hiring",
   submitButtonText: "Create Account",
-
+  externalType: 0,
   footerText: "Already have account?",
   footerLinks: [
     {

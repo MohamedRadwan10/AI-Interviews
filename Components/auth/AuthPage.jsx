@@ -12,9 +12,16 @@ import { CheckCircle2 } from "lucide-react";
 import { Suspense } from "react";
 import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
 import { GenericError } from "@/Components/Errors";
+import { User, Building2 } from "lucide-react";
+import { useExternalLoginCallback } from "@/hooks/useAuth";
 
-const AuthPageContent = ({ config, onSubmit, apiError, isLoading }) => {
-  const logo = get(logoImage, "src");
+
+const AuthPageContent = (props) => {
+  const { config, onSubmit, apiError, isLoading, type } = props;
+  const [socialRole, setSocialRole] = React.useState(0);
+  useExternalLoginCallback();
+
+  const logo = get(logoImage, "src") || logoImage;
   const pageTitle = get(config, "pageTitle");
   const pageSubtitle = get(config, "pageSubtitle");
   const footerLinks = get(config, "footerLinks", []);
@@ -25,6 +32,13 @@ const AuthPageContent = ({ config, onSubmit, apiError, isLoading }) => {
 
   const handleSubmit = async (values) => {
     return onSubmit(values);
+  };
+
+  const handleSocialLogin = (provider) => {
+    let userType = type === "login" ? socialRole : (config?.externalType ?? 0);
+    
+    const baseUrl = "https://intellhire.runasp.net/api/Auth/external-login";
+    window.location.href = `${baseUrl}?provider=${provider}&type=${userType}&clientId=web`;
   };
 
   return (
@@ -99,9 +113,40 @@ const AuthPageContent = ({ config, onSubmit, apiError, isLoading }) => {
               <div className="w-1/3 h-[1px] dark:bg-dark-gray bg-light-gray"></div>
             </div>
 
+            {type === "login" && (
+              <div className="flex p-1 bg-light-primary dark:bg-dark-primary-1 rounded-xl mb-4 border border-light-gray/20 dark:border-dark-gray/20">
+                <MainButton
+                  type="button"
+                  onClick={() => setSocialRole(0)}
+                  className={`flex items-center justify-center gap-2 flex-1 py-2 px-4 rounded-lg transition-all ${
+                    socialRole === 0
+                      ? "bg-light-white dark:bg-dark-primary-3 text-light-secondary dark:text-dark-secondary shadow-sm"
+                      : "text-ui-muted hover:text-light-black dark:hover:text-dark-white"
+                  }`}
+                >
+                  <User className="w-4 h-4" />
+                  <MainText title="Candidate" className="text-sm font-medium" />
+                </MainButton>
+                <MainButton
+                  type="button"
+                  onClick={() => setSocialRole(1)}
+                  className={`flex items-center justify-center gap-2 flex-1 py-2 px-4 rounded-lg transition-all ${
+                    socialRole === 1
+                      ? "bg-light-white dark:bg-dark-primary-3 text-light-secondary dark:text-dark-secondary shadow-sm"
+                      : "text-ui-muted hover:text-light-black dark:hover:text-dark-white"
+                  }`}
+                >
+                  <Building2 className="w-4 h-4" />
+                  <MainText title="Employer" className="text-sm font-medium" />
+                </MainButton>
+              </div>
+            )}
+
+
             <div className="flex gap-4">
               <MainButton
                 type="button"
+                onClick={() => handleSocialLogin("google")}
                 className="flex items-center justify-center gap-2 flex-1 dark:bg-dark-primary-1 bg-light-primary py-2 rounded-md text-light-black dark:text-dark-white"
               >
                 <MainImage
@@ -117,6 +162,7 @@ const AuthPageContent = ({ config, onSubmit, apiError, isLoading }) => {
 
               <MainButton
                 type="button"
+                onClick={() => handleSocialLogin("microsoft")}
                 className="flex items-center justify-center gap-2 flex-1 dark:bg-dark-primary-1 bg-light-primary py-2 rounded-md text-light-black dark:text-dark-white"
               >
                 <MainImage
@@ -130,6 +176,7 @@ const AuthPageContent = ({ config, onSubmit, apiError, isLoading }) => {
                 Microsoft
               </MainButton>
             </div>
+
           </>
         )}
 
@@ -167,8 +214,9 @@ const AuthPage = (props) => {
   const type = get(props, "type", "form");
   return (
     <Suspense fallback={<RouteLoading type={type} />}>
-      <AuthPageContent {...props} />
+      <AuthPageContent {...props} type={type} />
     </Suspense>
+
   );
 };
 
