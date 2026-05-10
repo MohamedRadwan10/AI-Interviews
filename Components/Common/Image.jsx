@@ -16,26 +16,29 @@ const MainImage = ({
   imageStyle,
   ...props
 }) => {
-  const [imgSrc, setImgSrc] = useState(src || defaultImage);
+  const [imgSrc, setImgSrc] = useState(src || defaultImage || DEFAULT_IMAGE);
 
   useEffect(() => {
-    if (src) setImgSrc(src);
-  }, [src]);
+    setImgSrc(src || defaultImage || DEFAULT_IMAGE);
+  }, [src, defaultImage]);
+
+  const validSrc = imgSrc || DEFAULT_IMAGE;
 
   return (
     <NextImage
-      src={imgSrc}
+      src={validSrc}
       alt={alt}
       width={width}
       height={height}
       className={`max-w-full h-auto ${imageClassName}`}
       priority={priority}
       loading={priority ? undefined : "lazy"}
-      onError={() => setImgSrc(defaultImage)}
+      onError={() => setImgSrc(defaultImage || DEFAULT_IMAGE)}
       style={imageStyle}
       {...props}
     />
   );
+
 };
 
 export default MainImage;

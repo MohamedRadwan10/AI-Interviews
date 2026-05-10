@@ -268,6 +268,50 @@ export const useVerifyEmail = () => {
   return { status, error, userId, token };
 };
 
+export const useExternalLoginCallback = () => {
+  const searchParams = useSearchParams();
+  const { setUserToken, setRefreshToken, setUserData } = useContext(UserTokenContext);
+  const { success } = useMainNotify();
+  const afterLogin = useAfterLogin();
+
+  useEffect(() => {
+    const token = searchParams.get("token");
+    const refreshToken = searchParams.get("refreshToken");
+    const userType = searchParams.get("type");
+    // Handle both string "true"/"false" and potential numeric or missing values
+    const isProfileComplete = searchParams.get("isProfileComplete") === "true";
+
+    if (token) {
+      // 1. Save Token
+      localStorage.setItem("userToken", token);
+      setUserToken(token);
+      
+      if (refreshToken) {
+        localStorage.setItem("refreshToken", refreshToken);
+        setRefreshToken(refreshToken);
+      }
+      
+      // 2. Prepare User Data
+      const userData = {
+        userType, // Individual or Company
+        isComplete: isProfileComplete,
+      };
+      localStorage.setItem("userData", JSON.stringify(userData));
+      setUserData(userData);
+      
+      // 3. Notify and Redirect
+      success("Login Successful", `Welcome back!`);
+      
+      // delay slightly to allow context update if needed
+      setTimeout(() => {
+        afterLogin(userData);
+      }, 500);
+    }
+  }, [searchParams, setUserToken, setRefreshToken, setUserData, success, afterLogin]);
+
+};
+
+
 export const useForgetPassword = () => {
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
