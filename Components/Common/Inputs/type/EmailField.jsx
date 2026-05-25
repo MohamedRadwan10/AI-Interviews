@@ -37,7 +37,7 @@ const EmailField = (props) => {
         onChange={onChange}
         onBlur={onBlur}
         placeholder={placeholder}
-        className={`w-full p-2 border rounded outline-none focus:border-brand-primary transition-all bg-light-blue50 dark:bg-dark-primary-3 ${
+        className={`w-full p-2 border rounded outline-none focus:border-brand-primary transition-all bg-light-blue50 dark:bg-dark-primary-3 text-light-black dark:text-dark-white ${
           error ? "border-status-error" : "border-ui-borderLight dark:border-dark-gray"
         } ${fieldClassName}`}
       />

@@ -7,7 +7,7 @@ import { map } from "lodash-es";
 import MainText from "@/Components/Common/MainText";
 import MainButton from "@/Components/Common/MainButton";
 
-const MainTable = ({ data, columns, emptyMessage = "No records found" }) => {
+const MainTable = ({ data, columns, emptyMessage = "No records found", scrollable = true, scrollHeight = "500px" }) => {
   const renderCell = (rowData, col) => {
     const value = getVal(rowData, null, col.field);
     const type = getVal(col, null, "type", "text");
@@ -61,6 +61,8 @@ const MainTable = ({ data, columns, emptyMessage = "No records found" }) => {
         value={data}
         emptyMessage={emptyMessage}
         className="w-full"
+        scrollable={scrollable}
+        scrollHeight={scrollHeight}
         pt={{
           root: { className: "w-full overflow-hidden rounded-3xl" },
           table: { className: "w-full border-collapse" },
@@ -75,17 +77,17 @@ const MainTable = ({ data, columns, emptyMessage = "No records found" }) => {
           const align = col.align || "center";
           const alignClass = align === "left" ? "justify-start" : align === "right" ? "justify-end" : "justify-center";
           const textAlign = align === "left" ? "text-left" : align === "right" ? "text-right" : "text-center";
+          const isSortable = !!col.sortable && !!col.field;
 
           return (
             <Column
               key={index}
               field={col.field}
+              sortable={isSortable}
               header={
-                <div className={`flex ${alignClass} items-center w-full py-4 px-6`}>
-                  <MainText className={`text-xs font-bold text-ui-textMuted dark:text-ui-muted uppercase tracking-wider ${textAlign}`}>
-                    {col.header}
-                  </MainText>
-                </div>
+                <MainText className={`text-xs font-bold text-ui-textMuted dark:text-ui-muted uppercase tracking-wider ${textAlign}`}>
+                  {col.header}
+                </MainText>
               }
               body={(rowData) => (
                 <div className={`py-4 px-6 flex ${alignClass} items-center w-full`}>
@@ -94,8 +96,9 @@ const MainTable = ({ data, columns, emptyMessage = "No records found" }) => {
               )}
               style={col.style}
               pt={{
-                headerCell: { className: `!bg-light-blue50 dark:!bg-dark-primary-3 p-0 border-none ${textAlign}` },
-                headerContent: { className: alignClass },
+                headerCell: { className: `!bg-light-blue50 dark:!bg-dark-primary-3 py-4 px-6 border-none ${textAlign} select-none ${isSortable ? "cursor-pointer" : ""}` },
+                headerContent: { className: `flex items-center gap-2 ${alignClass}` },
+                sortIcon: { className: "text-ui-textMuted dark:text-ui-muted w-3 h-3 transition-colors" },
                 bodyCell: { className: `p-0 border-none !bg-transparent ${textAlign}` }
               }}
             />

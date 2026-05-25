@@ -8,8 +8,6 @@ const ReportRecommendation = ({
   performanceLabel, 
   hiringRecommendation 
 }) => {
-  if (!hiringRecommendation && !performanceLabel) return null;
-
   const isPositive = hiringRecommendation?.toLowerCase().includes("not") === false;
 
   const thumbIcon = useMemo(() => {
@@ -72,7 +70,9 @@ const ReportRecommendation = ({
       </div>
     );
   }, [redFlags]);
-  
+
+  if (!hiringRecommendation && !performanceLabel) return null;
+
   return (
     <div className="bg-white dark:bg-dark-primary-4 rounded-3xl border border-ui-borderLight dark:border-ui-border shadow-sm overflow-hidden flex flex-col">
       <div className={`p-6 ${isPositive ? 'bg-status-success/10' : 'bg-status-error/10'} border-b border-ui-borderLight dark:border-ui-border`}>

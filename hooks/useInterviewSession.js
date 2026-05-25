@@ -218,14 +218,22 @@ export const useInterviewSession = (jobId) => {
       
       if (nextQ?.id) setCurrentQuestion(nextQ);
 
+      const incomingIdx = get(response, "index");
+      // Update question index based on server response; fallback to increment
+      if (incomingIdx !== undefined) {
+        setQuestionIndex(incomingIdx);
+      } else {
+        setQuestionIndex(prev => prev + 1);
+      }
+
+      // Determine effective index for last-question check (0‑based)
+      const effectiveIdx = incomingIdx !== undefined ? incomingIdx : questionIndex + 1;
       const isCompleted = get(response, "isCompleted") || get(response, "completed");
-      const isLast = (questionIndex + 1) >= (get(parsed, "totalquestion") || totalQuestions);
+      const isLast = (effectiveIdx + 1) >= (get(parsed, "totalquestion") || totalQuestions);
 
       if (isCompleted || isLast) {
         await delay(1000);
         await finishInterview();
-      } else {
-        setQuestionIndex(prev => prev + 1);
       }
     } catch (err) {
       await syncSession(true);

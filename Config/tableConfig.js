@@ -8,17 +8,19 @@ import moment from "moment-timezone";
 import { IMAGE_BASE_URL } from "@/Config/apiRegistry";
 
 export const CANDIDATE_DASHBOARD_COLUMNS = (navigateTo, userId) => [
-  { field: "roleApplied", header: "Role Applied" },
-  { field: "company", header: "Company" },
+  { field: "roleApplied", header: "Role Applied", sortable: true },
+  { field: "company", header: "Company", sortable: true },
   { 
     field: "date", 
     header: "Date", 
+    sortable: true,
     body: (r) => r.date ? formatDate(r.date) : "-", 
     type: "custom" 
   },
   { 
     field: "overallScore", 
     header: "Overall Score", 
+    sortable: true,
     body: (r) => `${r.overallScore}`, 
     type: "custom" 
   },
@@ -49,6 +51,7 @@ export const COMPANY_DASHBOARD_COLUMNS = (onViewApplicants, onEdit, onDelete) =>
     header: "Job Title",
     field: "title",
     align: "left",
+    sortable: true,
     type: "custom",
     body: (rowData) => {
       const { title, type } = rowData;
@@ -68,6 +71,7 @@ export const COMPANY_DASHBOARD_COLUMNS = (onViewApplicants, onEdit, onDelete) =>
     header: "Posted Date",
     field: "postedAt",
     align: "center",
+    sortable: true,
     type: "custom",
     body: (rowData) => {
       const date = moment(rowData.postedAt).format("YYYY-MM-DD");
@@ -78,6 +82,7 @@ export const COMPANY_DASHBOARD_COLUMNS = (onViewApplicants, onEdit, onDelete) =>
     header: "Applicants",
     field: "applicants",
     align: "center",
+    sortable: true,
     type: "custom",
     body: (rowData) => {
       const count = rowData.applicants;
@@ -140,6 +145,7 @@ export const JOB_APPLICANTS_COLUMNS = (onViewApplicant) => [
     header: "Overall Score",
     field: "overallScore",
     align: "center",
+    sortable: true,
     type: "custom",
     body: (rowData) => {
       const score = rowData.overallScore;
