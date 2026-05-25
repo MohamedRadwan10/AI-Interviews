@@ -528,7 +528,7 @@ export const postJobConfig = {
           type: "date",
           label: "Posting Date",
           placeholder: "When to start?",
-          validation: { required: true },
+          validation: {},
         },
         {
           field_name: "endedAt",

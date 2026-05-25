@@ -14,8 +14,6 @@ const EditJobPage = (props) => {
   const { job, loading: isJobLoading } = useJobDetails(jobId);
   const { editJob, isLoading } = useEditJob(jobId);
 
-  if (isJobLoading) return <RouteLoading type="postJob" />;
-
   const initialValues = React.useMemo(() => {
     if (!job) return {};
 
@@ -28,6 +26,8 @@ const EditJobPage = (props) => {
       requirements: job.jobrequirements,
     };
   }, [job]);
+
+  if (isJobLoading) return <RouteLoading type="postJob" />;
 
   return (
     <div className="w-full py-10 px-4">

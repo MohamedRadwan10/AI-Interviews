@@ -3,7 +3,7 @@ import api from "@/Services/api";
 
 export const fetchApiData = createAsyncThunk(
   "api/fetchData",
-  async ({ url, method = "GET", params = {}, data = null, headers = {}, key }, { rejectWithValue }) => {
+  async ({ url, method = "GET", params = {}, data = null, headers = {}, key, silent = false }, { rejectWithValue }) => {
     try {
       const response = await api({
         url,
@@ -18,7 +18,7 @@ export const fetchApiData = createAsyncThunk(
         data: response.data,
       };
     } catch (error) {
-      const isSilent = arguments[0]?.silent;
+      const isSilent = silent;
       if (!isSilent) {
         console.error(`API Error for key [${key}]:`, error);
       }

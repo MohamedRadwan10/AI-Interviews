@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useContext, useCallback } from "react";
-import { get, take, drop } from "lodash-es";
+import { get, take, drop, filter } from "lodash-es";
 import { useApi } from "@/hooks/useApi";
 import { UserTokenContext } from "@/Context/UserTokenContext";
 import { useNavigation, useMainNotify } from "@/hooks/common";
@@ -32,9 +32,16 @@ export const useJobs = () => {
   const rawJobs = get(data, "jobs", Array.isArray(data) ? data : get(data, "items", get(data, "data", [])));
   const totalCount = get(data, "totalCount", get(data, "total", rawJobs?.length || 0));
   const isServerPaginated = !!get(data, "totalCount");
+  const now = new Date();
+  const filteredJobs = filter(rawJobs,job => {
+    const endedAt = get(job, "endedAt") || get(job, "endedAtDate");
+    if (!endedAt) return true;
+    const endDate = new Date(endedAt);
+    return endDate >= now;
+  });
   const displayJobs = useMemo(() => {
-    return isServerPaginated ? rawJobs : take(drop(rawJobs, (page - 1) * 9), 9);
-  }, [isServerPaginated, rawJobs, page]);
+    return isServerPaginated ? filteredJobs : take(drop(filteredJobs, (page - 1) * 9), 9);
+  }, [isServerPaginated, filteredJobs, page]);
 
   return useMemo(() => ({
     jobs: displayJobs,
@@ -78,12 +85,32 @@ export const usePostJob = () => {
     }
 
     try {
-      const payload = { 
-        ...values, 
-        experienceYears: parseInt(values.experienceYears || 0, 10),
-        startedAt: formatDate(values.startedAt),
-        endedAt: formatDate(values.endedAt),
-      };
+        const {
+          title,
+          category,
+          subCategory,
+          type,
+          description,
+          careerLevel,
+          experienceYears,
+          requirements,
+          requiredSkills,
+          startedAt,
+          endedAt,
+        } = values;
+        const payload = {
+          title,
+          category,
+          subCategory,
+          type,
+          description,
+          careerLevel,
+          experienceYears: parseInt(experienceYears || 0, 10),
+          requirements,
+          requiredSkills,
+          ...(startedAt ? { startedAt: formatDate(startedAt) } : {}),
+          ...(endedAt ? { endedAt: formatDate(endedAt) } : {}),
+        };
       const data = await postJobApi.refetch({ data: payload });
       if (data) {
         success("Job Posted", "New job opportunity created successfully.");
@@ -114,9 +141,14 @@ export const useEditJob = (jobId) => {
 
     try {
       const payload = { 
-        ...values, 
+        title: values.title,
+        description: values.description,
+        careerLevel: values.careerLevel,
         experienceYears: parseInt(values.experienceYears || 0, 10),
-        skillsAndTools: values.skillsAndTools || values.requiredSkills,
+        requirements: values.requirements || values.jobrequirements,
+        type: values.type,
+        category: values.category,
+        requiredSkills: values.requiredSkills || values.skillsAndTools,
         startedAt: formatDate(values.startedAt),
         endedAt: formatDate(values.endedAt),
       };
