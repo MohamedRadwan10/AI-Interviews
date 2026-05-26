@@ -23,7 +23,8 @@ const Home = () => {
   const redefining = get(homeData, "redefining", {});
   const pathIcons = get(hero, "pathIcons", []);
   const bullets = get(redefining, "bullets", []);
-  const featuredJobs = take(jobs, 3);
+  const apiJobs = jobs && jobs.length > 0 ? jobs : get(latestJobs, "items", []);
+  const featuredJobs = take(apiJobs, 3);
 
   const onBrowseJobs = () => navigateTo("/intelliHire/jobs");
   const heroCta = get(hero, "cta");
@@ -48,7 +49,7 @@ const Home = () => {
           <MainText tag="h1" title={get(hero, "title")} className="text-4xl md:text-6xl font-extrabold text-light-black dark:text-dark-white mb-2 tracking-tight" />
           <MainText tag="h2" title={get(hero, "subtitle")} className="text-2xl md:text-3xl font-bold text-light-secondary dark:text-brand-accent mb-6" />
           <MainText tag="p" title={get(hero, "desc")} className="text-base md:text-lg text-ui-textMuted dark:text-ui-muted max-w-2xl mx-auto mb-10 whitespace-pre-line leading-relaxed" />
-          <MainButton onClick={onBrowseJobs} className="p-button-rounded bg-light-secondary dark:bg-brand-primary dark:hover:bg-brand-primaryDark text-white border-none px-8 py-3.5 text-lg font-bold shadow-xl flex items-center gap-2 mx-auto transform hover:scale-105 transition-all" title={heroCta} icon={arrowIcon} />
+          <MainButton onClick={onBrowseJobs} className="p-button-rounded !bg-brand-primary hover:!bg-brand-primaryDark !text-white !border-none px-8 py-3.5 text-lg font-bold shadow-xl flex items-center gap-2 mx-auto transform hover:scale-105 transition-all" title={heroCta} icon={arrowIcon} />
         </div>
       </section>
 
@@ -80,7 +81,7 @@ const Home = () => {
                   </div>
                 ))}
               </div>
-              <MainButton onClick={onBrowseJobs} className="p-button-rounded bg-light-secondary dark:bg-brand-primary dark:hover:bg-brand-primaryDark text-white border-none px-10 py-4 text-lg font-bold shadow-xl flex items-center gap-2 transform hover:scale-105 transition-all" title={redefiningCta} icon={arrowIcon} />
+              <MainButton onClick={onBrowseJobs} className="p-button-rounded !bg-brand-primary hover:!bg-brand-primaryDark !text-white !border-none px-10 py-4 text-lg font-bold shadow-xl flex items-center gap-2 transform hover:scale-105 transition-all" title={redefiningCta} icon={arrowIcon} />
             </div>
             <div className="relative group">
               <div className="absolute inset-0 bg-light-secondary/10 dark:bg-brand-accent/10 blur-[60px] rounded-full scale-75 group-hover:scale-100 transition-transform duration-700"></div>

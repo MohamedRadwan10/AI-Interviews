@@ -44,7 +44,7 @@ const NavMenu = () => {
 
           return (
             <li key={path}>
-              <Link href={path}>
+              <Link href={path} aria-current={isActive ? "page" : undefined}>
                 <div className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 ${
                   isActive 
                     ? "bg-white dark:bg-dark-primary-1 text-brand-primary dark:text-brand-accent shadow-sm" 
