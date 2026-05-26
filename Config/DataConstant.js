@@ -131,13 +131,13 @@ export const DataConstant = {
           iconClassName: "bg-light-white dark:bg-transparent border border-ui-borderLight",
           icon: <Why3 className="w-5 h-5 text-light-secondary dark:text-dark-white" />,
           title: "Detailed Feedback",
-          desc: "For Companies: Quickly create and publish job offers. Our streamlined process ensures results for every candidate.",
+          desc: "For Candidates: Receive comprehensive reports on your interview performance, highlighting strengths, technical skill gaps, and practical steps to improve.",
         },
         {
           iconClassName: "bg-light-white dark:bg-transparent border border-ui-borderLight",
           icon: <Why4 className="w-5 h-5 text-light-secondary dark:text-dark-white" />,
           title: "Ad Moderation & Insights",
-          desc: "For Companies: Use our full control to separate your job ads. Our streamlined process ensures top-tier ads.",
+          desc: "For Companies: Full moderation capabilities and in-depth performance analytics. Track application metrics, screen candidates, and optimize your listings in real time.",
         },
         {
           iconClassName: "bg-light-white dark:bg-transparent border border-ui-borderLight",
@@ -176,17 +176,17 @@ export const DataConstant = {
       {
         title: "Legal",
         links: [
-          { text: "Privacy Policy", href: "/privacy" },
-          { text: "Terms of Service", href: "/terms" },
-          { text: "Cookie Policy", href: "/cookies" },
+          { text: "Privacy Policy", href: "/intelliHire/privacy" },
+          { text: "Terms of Service", href: "/intelliHire/terms" },
+          { text: "Cookie Policy", href: "/intelliHire/cookies" },
         ],
       },
       {
         title: "Contact Us",
         items: [
-          { type: "email", icon: "pi pi-envelope", text: "Support@IntelliHire", href: "mailto:Support@IntelliHire" },
+          { type: "email", icon: "pi pi-envelope", text: "support@intellihire.com", href: "mailto:support@intellihire.com" },
           { type: "phone", icon: "pi pi-phone", text: "01183291091", href: "tel:01183291091" },
-          { type: "location", icon: "pi pi-map-marker", text: "Cairo" },
+          { type: "location", icon: "pi pi-map-marker", text: "Cairo", href: "https://maps.google.com/?q=Cairo,Egypt" },
         ],
       },
     ],

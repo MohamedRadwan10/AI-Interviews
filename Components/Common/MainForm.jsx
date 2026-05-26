@@ -89,7 +89,7 @@ const MainForm = (props) => {
       <MainButton
         type="submit"
         className="w-full flex justify-center items-center py-2 mt-4 bg-light-secondary dark:bg-dark-secondary text-white rounded-md hover:opacity-90 transition-opacity"
-        disabled={!isValid || isSubmitting || isLoading}
+        disabled={isSubmitting || isLoading}
         isLoading={isLoading || isSubmitting}
       >
         {submitButtonText}

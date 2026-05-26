@@ -15,6 +15,45 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/intelliHire/login",
+        destination: "/login",
+        permanent: true,
+      },
+      {
+        source: "/intelliHire/register",
+        destination: "/account-type",
+        permanent: true,
+      },
+      {
+        source: "/intelliHire/signup",
+        destination: "/account-type",
+        permanent: true,
+      },
+      {
+        source: "/signup",
+        destination: "/account-type",
+        permanent: true,
+      },
+      {
+        source: "/register",
+        destination: "/account-type",
+        permanent: true,
+      },
+      {
+        source: "/forgot-password",
+        destination: "/forget-password",
+        permanent: true,
+      },
+      {
+        source: "/intelliHire/forgot-password",
+        destination: "/forget-password",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

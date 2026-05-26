@@ -13,7 +13,8 @@ const RoleGuard = ({ children, allowedRoles = [] }) => {
     return null;
   }
 
-  if (userType && allowedRoles.length > 0 && !allowedRoles.includes(userType)) {
+  const isAllowed = userType && allowedRoles.includes(userType);
+  if (allowedRoles.length > 0 && !isAllowed) {
     return <AccessDenied />;
   }
 

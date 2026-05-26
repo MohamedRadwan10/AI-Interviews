@@ -35,7 +35,7 @@ const FormActions = ({
         {!isLast ? (
           <MainButton type="button" onClick={onNext} className="flex-1 sm:flex-none px-8 py-3 bg-brand-primary text-white rounded-2xl hover:shadow-lg hover:shadow-brand-primary/30 transition-all font-bold flex items-center gap-2" title="Next Step" icon={nextIcon} />
         ) : (
-          <MainButton type="submit" className="flex-1 sm:flex-none px-10 py-3 bg-gradient-to-r from-brand-primary to-brand-primaryDark text-white rounded-2xl shadow-xl shadow-brand-primary/20 hover:scale-105 transition-all font-bold disabled:opacity-50" disabled={!isValid || isSubmitting || isLoading} isLoading={isLoading || isSubmitting} title={submitButtonText} />
+          <MainButton type="submit" className="flex-1 sm:flex-none px-10 py-3 bg-gradient-to-r from-brand-primary to-brand-primaryDark text-white rounded-2xl shadow-xl shadow-brand-primary/20 hover:scale-105 transition-all font-bold disabled:opacity-50" disabled={isSubmitting || isLoading} isLoading={isLoading || isSubmitting} title={submitButtonText} />
         )}
       </div>
     </div>
