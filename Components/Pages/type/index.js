@@ -75,6 +75,11 @@ export const DashboardPage = dynamic(() => import('./Dashboard'), {
     ssr: false
 });
 
+export const CvPage = dynamic(() => import('./Cv'), { 
+    loading: () => <RouteLoading type="cv" />,
+    ssr: false
+});
+
 export const JobApplicantsPage = dynamic(() => import('./JobApplicants'), { 
     loading: () => <RouteLoading type="jobApplicants" />,
     ssr: false

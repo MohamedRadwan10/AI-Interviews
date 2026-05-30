@@ -15,6 +15,7 @@ const UserAvatar = () => {
   const { accountData } = useUserAccount();
   const { navigateTo } = useNavigation();
   
+  const userId = getVal(accountData, null, "id", null);
   const photo = getVal(accountData, null, "photo", null);
 
   const photoUrl = useMemo(() => {
@@ -32,15 +33,30 @@ const UserAvatar = () => {
 
   const handleMenuToggle = (e) => menuRef.current?.toggle(e);
 
-  const items = useMemo(() => [
-    {
+  const items = useMemo(() => {
+    const userType = getVal(accountData, null, "userType");
+    const menuItems = [];
+
+    if (userType === "Individual") {
+      menuItems.push({
+        label: "My CV",
+        icon: "pi pi-file",
+        command: () => {
+          navigateTo(`/intelliHire/cv/${userId}`);
+        },
+      });
+    }
+
+    menuItems.push({
       label: "Logout",
       icon: "pi pi-sign-out",
       command: () => {
         logout();
       },
-    },
-  ], [logout]);
+    });
+
+    return menuItems;
+  }, [logout, accountData, navigateTo]);
 
   return (
     <>

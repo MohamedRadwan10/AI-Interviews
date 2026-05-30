@@ -15,4 +15,5 @@ export { default as FormLoading } from '@/Components/Common/LoadingSkeleton/type
 export * from '@/Components/Common/LoadingSkeleton/type/CandidateDashboardLoading';
 export * from '@/Components/Common/LoadingSkeleton/type/CompanyDashboardLoading';
 export * from '@/Components/Common/LoadingSkeleton/type/JobApplicantsLoading';
+export * from '@/Components/Common/LoadingSkeleton/type/CvLoading';
 export * from '@/Components/Common/LoadingSkeleton/type/auth';

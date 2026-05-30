@@ -51,6 +51,10 @@ export const AUTH_ENDPOINTS = {
     url: "/User/profile",
     method: "GET",
   },
+  userCv: {
+    url: "/User/professional-profile",
+    method: "GET",
+  },
   jobs: {
     url: "/jobs/browse",
     method: "GET",

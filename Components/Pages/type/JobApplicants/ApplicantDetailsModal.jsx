@@ -54,7 +54,10 @@ const ApplicantDetailsModal = ({ visible, applicant, onHide, updateStatus, isUpd
   const photo = commonGetVal(applicant, null, "photo", "");
   const photoUrl = photo ? (photo.startsWith("http") ? photo : `${IMAGE_BASE_URL}${photo}`) : null;
   const sPoints = map(rawS?.split("|"), p => p.trim()).filter(Boolean), wPoints = map(rawW?.split("|"), p => p.trim()).filter(Boolean);
-  const actions = [{ t: "View Report", i: <Eye size={18} />, onclick: () => navigateTo(`/intelliHire/report/${applicant?.sessionId}/${applicant?.userId}`) }, { t: "View CV", i: <FileText size={18} /> }];
+  const actions = [
+    { t: "View Report", i: <Eye size={18} />, onclick: () => navigateTo(`/intelliHire/report/${applicant?.sessionId}/${applicant?.userId}`) }, 
+    { t: "View CV", i: <FileText size={18} />, onclick: () => navigateTo(`/intelliHire/cv/${applicant?.userId}`) }
+  ];
 
   const loadingOverlay = useMemo(() => {
     if (!isLoading) return null;
