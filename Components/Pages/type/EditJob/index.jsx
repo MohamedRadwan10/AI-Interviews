@@ -24,6 +24,8 @@ const EditJobPage = (props) => {
       endedAt: formatDate(job.endDateTime || job.endedAt),
       requiredSkills: job.skillsAndTools,
       requirements: job.jobrequirements,
+      originalStartedAt: job.startDateTime || job.startedAt,
+      originalEndedAt: job.endDateTime || job.endedAt,
     };
   }, [job]);
 

@@ -79,3 +79,18 @@ export const languages = [
   { label: "XML", value: "xml" },
   { label: "YAML", value: "yaml" }
 ];
+
+export const jobTypes = [
+  { label: "Full Time", value: "Full Time" },
+  { label: "Part Time", value: "Part Time" },
+  { label: "Remote", value: "Remote" },
+  { label: "Contract", value: "Contract" }
+];
+
+export const careerLevels = [
+  { label: "Intern", value: "Intern" },
+  { label: "Junior", value: "Junior" },
+  { label: "Mid-Level", value: "Mid-Level" },
+  { label: "Senior", value: "Senior" },
+  { label: "Manager", value: "Manager" }
+];

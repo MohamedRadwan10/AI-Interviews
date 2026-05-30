@@ -1,6 +1,6 @@
 import { getAllCountries, getStatesOfCountry, getCitiesOfState } from "@/Utils/Func/LocationData";
 import { get } from "lodash-es";
-import { jobCategories, jobSubCategories } from "./InterviewConfig";
+import { jobCategories, jobSubCategories, jobTypes, careerLevels } from "./InterviewConfig";
 
 export const loginConfig = {
   pageTitle: "Welcome back to IntelliHire",
@@ -488,12 +488,7 @@ export const postJobConfig = {
           type: "select",
           label: "Job Type",
           placeholder: "Select Type",
-          options: [
-            { label: "Full Time", value: "FullTime" },
-            { label: "Part Time", value: "PartTime" },
-            { label: "Remote", value: "Remote" },
-            { label: "Contract", value: "Contract" },
-          ],
+          options: jobTypes,
           validation: { required: true },
         },
       ],
@@ -507,13 +502,7 @@ export const postJobConfig = {
           type: "select",
           label: "Career Level",
           placeholder: "Select Level",
-          options: [
-            { label: "Intern", value: "Intern" },
-            { label: "Junior", value: "Junior" },
-            { label: "Mid-Level", value: "Mid" },
-            { label: "Senior", value: "Senior" },
-            { label: "Manager", value: "Manager" },
-          ],
+          options: careerLevels,
           validation: { required: true },
         },
         {
@@ -580,6 +569,61 @@ export const postJobConfig = {
           gridClassName: "col-span-2",
         },
       ],
+    },
+  ],
+};
+
+export const jobFilterConfig = {
+  fields: [
+    {
+      field_name: "category",
+      type: "select",
+      label: "Category",
+      placeholder: "All Categories",
+      options: jobCategories,
+      containerClassName: "!mb-0",
+    },
+    {
+      field_name: "subCategory",
+      type: "select",
+      label: "Subcategory",
+      placeholder: "All Subcategories",
+      options: (filters) => jobSubCategories[filters.category] || [],
+      disabled: (filters) => !filters.category,
+      containerClassName: "!mb-0",
+    },
+    {
+      field_name: "type",
+      type: "select",
+      label: "Job Type",
+      placeholder: "All Types",
+      options: jobTypes,
+      containerClassName: "!mb-0",
+    },
+    {
+      field_name: "careerLevel",
+      type: "select",
+      label: "Career Level",
+      placeholder: "All Levels",
+      options: careerLevels,
+      containerClassName: "!mb-0",
+    },
+    {
+      field_name: "country",
+      type: "select",
+      label: "Country",
+      placeholder: "All Countries",
+      options: getAllCountries(),
+      containerClassName: "!mb-0",
+    },
+    {
+      field_name: "city",
+      type: "select",
+      label: "City / Governorate",
+      placeholder: "All Cities",
+      options: (filters) => (filters.country ? getStatesOfCountry(filters.country) : []),
+      disabled: (filters) => !filters.country,
+      containerClassName: "!mb-0",
     },
   ],
 };

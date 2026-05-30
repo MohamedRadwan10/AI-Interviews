@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { map } from "lodash-es";
 import Pagination from "@/Components/Common/Pagination";
 import MainText from "@/Components/Common/MainText";
@@ -8,11 +8,25 @@ import MainInput from "@/Components/Common/Inputs";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { useJobs } from "@/hooks/useJobs";
 import MainCard from "@/Components/Common/Cards";
-import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
 import { JobsError } from "@/Components/Errors";
+import JobFilter from "./JobFilter";
 
 const JobsPage = () => {
-  const { jobs, loading, error, searchTerm, setSearchTerm, page, setPage, totalCount } = useJobs();
+  const { 
+    jobs, 
+    loading, 
+    error, 
+    searchTerm, 
+    setSearchTerm, 
+    page, 
+    setPage, 
+    totalCount,
+    filters,
+    updateFilter,
+    resetFilters
+  } = useJobs();
+  const [showFilters, setShowFilters] = useState(false);
+  const hasActiveFilters = Object.values(filters).some(Boolean);
  
   if (error) return <JobsError error={error} />;
 
@@ -34,10 +48,24 @@ const JobsPage = () => {
                 fieldClassName="w-full pl-11 pr-4 py-3 rounded-xl border border-ui-borderLight dark:border-ui-border bg-white dark:bg-dark-primary-3 focus:outline-none focus:ring-0 text-ui-textMain dark:text-ui-muted"
               />
             </div>
-            <MainButton className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white dark:bg-dark-primary-3 border border-ui-borderLight dark:border-ui-border text-ui-textMuted dark:text-ui-muted hover:bg-light-main dark:hover:bg-dark-primary-4 transition-colors font-medium">
+            <MainButton 
+              onClick={() => setShowFilters(!showFilters)}
+              className={`flex items-center gap-2 px-6 py-3 rounded-xl border transition-colors font-medium ${
+                showFilters || hasActiveFilters
+                  ? "bg-brand-primary/10 dark:bg-brand-primary/20 border-brand-primary text-brand-primary"
+                  : "bg-white dark:bg-dark-primary-3 border-ui-borderLight dark:border-ui-border text-ui-textMuted dark:text-ui-muted hover:bg-light-main dark:hover:bg-dark-primary-4"
+              }`}
+            >
               <SlidersHorizontal className="w-5 h-5" /> Filter
             </MainButton>
           </div>
+          {showFilters && (
+            <JobFilter 
+              filters={filters} 
+              updateFilter={updateFilter} 
+              resetFilters={resetFilters}
+            />
+          )}
         </div>
 
         <div className="mb-8">
