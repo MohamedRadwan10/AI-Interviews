@@ -4,11 +4,20 @@ import { useApi } from "@/hooks/useApi";
 import { UserTokenContext } from "@/Context/UserTokenContext";
 import { useNavigation, useMainNotify } from "@/hooks/common";
 import { formatDate } from "@/Utils/Func/Common";
+import { getCountryName, getStateName } from "@/Utils/Func/LocationData";
 
 export const useJobs = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [filters, setFilters] = useState({
+    category: "",
+    subCategory: "",
+    type: "",
+    careerLevel: "",
+    country: "",
+    city: "",
+  });
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -20,28 +29,155 @@ export const useJobs = () => {
     return () => clearTimeout(handler);
   }, [searchTerm, debouncedSearch]);
 
+  const updateFilter = useCallback((name, value) => {
+    setFilters((prev) => {
+      const next = { ...prev, [name]: value };
+      if (name === "category") next.subCategory = "";
+      if (name === "country") next.city = "";
+      return next;
+    });
+    setPage(1);
+  }, []);
+
+  const resetFilters = useCallback(() => {
+    setFilters({
+      category: "",
+      subCategory: "",
+      type: "",
+      careerLevel: "",
+      country: "",
+      city: "",
+    });
+    setPage(1);
+  }, []);
+
   const { data, loading, error, refetch } = useApi({
     type: "jobs",
     params: {
       page,
       pageSize: 9,
       ...(debouncedSearch ? { search: debouncedSearch } : {}),
+      ...(filters.category ? { category: filters.category } : {}),
+      ...(filters.subCategory ? { subCategory: filters.subCategory, subCtegory: filters.subCategory } : {}),
+      ...(filters.type ? { jobType: filters.type } : {}),
+      ...(filters.careerLevel ? { careerLevel: filters.careerLevel } : {}),
+      ...(filters.country ? { country: getCountryName(filters.country) } : {}),
+      ...(filters.city ? { city: getStateName(filters.country, filters.city) } : {}),
     },
   });
 
   const rawJobs = get(data, "jobs", Array.isArray(data) ? data : get(data, "items", get(data, "data", [])));
-  const totalCount = get(data, "totalCount", get(data, "total", rawJobs?.length || 0));
   const isServerPaginated = !!get(data, "totalCount");
   const now = new Date();
-  const filteredJobs = filter(rawJobs,job => {
+
+  const normalize = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+
+  const filteredJobs = filter(rawJobs, job => {
     const endedAt = get(job, "endedAt") || get(job, "endedAtDate");
-    if (!endedAt) return true;
-    const endDate = new Date(endedAt);
-    return endDate >= now;
+    if (endedAt) {
+      const endDate = new Date(endedAt);
+      if (endDate < now) return false;
+    }
+
+    if (debouncedSearch) {
+      const searchNormalized = normalize(debouncedSearch);
+      const title = normalize(get(job, "title"));
+      const company = normalize(get(job, "companyName"));
+      // const desc = normalize(get(job, "description"));
+      // const cat = normalize(get(job, "category"));
+      // const subCat = normalize(get(job, "subCategory") || get(job, "subCtegory"));
+      // const skills = normalize(get(job, "skillsAndTools") || get(job, "requiredSkills"));
+
+      const matchesSearch = 
+        title.includes(searchNormalized) || 
+        company.includes(searchNormalized) /* || 
+        desc.includes(searchNormalized) || 
+        cat.includes(searchNormalized) || 
+        subCat.includes(searchNormalized) || 
+        skills.includes(searchNormalized) */;
+
+      if (!matchesSearch) return false;
+    }
+
+    if (filters.category) {
+      const catNormalized = normalize(filters.category);
+      const jobCat = normalize(get(job, "category"));
+      if (jobCat !== catNormalized) return false;
+    }
+
+    if (filters.subCategory) {
+      const subCatNormalized = normalize(filters.subCategory);
+      const jobSubCat = normalize(get(job, "subCategory") || get(job, "subCtegory"));
+      if (jobSubCat !== subCatNormalized && !jobSubCat.includes(subCatNormalized) && !subCatNormalized.includes(jobSubCat)) return false;
+    }
+
+    if (filters.type) {
+      const typeNormalized = normalize(filters.type);
+      const jobType = normalize(get(job, "type"));
+      if (jobType !== typeNormalized && !jobType.includes(typeNormalized) && !typeNormalized.includes(jobType)) return false;
+    }
+
+    if (filters.careerLevel) {
+      const levelNormalized = normalize(filters.careerLevel);
+      const jobLevel = normalize(get(job, "careerLevel"));
+      if (jobLevel !== levelNormalized && !jobLevel.includes(levelNormalized) && !levelNormalized.includes(jobLevel)) return false;
+    }
+
+    if (filters.country) {
+      const countryNormalized = normalize(filters.country);
+      const countryNameNormalized = normalize(getCountryName(filters.country));
+      const jobCountry = normalize(get(job, "country"));
+      const jobLocations = normalize(get(job, "locations"));
+      if (jobCountry !== countryNormalized && 
+          jobCountry !== countryNameNormalized && 
+          !jobLocations.includes(countryNormalized) && 
+          !jobLocations.includes(countryNameNormalized)) return false;
+    }
+
+    if (filters.city) {
+      const cityNormalized = normalize(filters.city);
+      const cityNameNormalized = normalize(getStateName(filters.country, filters.city));
+      const jobCity = normalize(get(job, "city"));
+      const jobLocations = normalize(get(job, "locations"));
+      if (jobCity !== cityNormalized && 
+          jobCity !== cityNameNormalized && 
+          !jobLocations.includes(cityNormalized) && 
+          !jobLocations.includes(cityNameNormalized)) return false;
+    }
+
+    return true;
   });
+
+  const totalJobsCount = isServerPaginated
+    ? get(data, "totalCount", get(data, "total", filteredJobs.length))
+    : filteredJobs.length;
+
   const displayJobs = useMemo(() => {
     return isServerPaginated ? filteredJobs : take(drop(filteredJobs, (page - 1) * 9), 9);
   }, [isServerPaginated, filteredJobs, page]);
+
+  const availableCountries = useMemo(() => {
+    const set = new Set();
+    (rawJobs || []).forEach(job => {
+      const c = get(job, "country");
+      if (c && c !== "N/A") set.add(c);
+    });
+    return [...set].sort();
+  }, [rawJobs]);
+
+  const availableCities = useMemo(() => {
+    const set = new Set();
+    (rawJobs || []).forEach(job => {
+      if (filters.country) {
+        const jobCountry = get(job, "country");
+        if (normalize(jobCountry) !== normalize(filters.country)) return;
+      }
+      const c = get(job, "city");
+      if (c && c !== "N/A") set.add(c);
+    });
+    return [...set].sort();
+  }, [rawJobs, filters.country]);
+
 
   return useMemo(() => ({
     jobs: displayJobs,
@@ -52,8 +188,13 @@ export const useJobs = () => {
     page,
     setPage,
     refetch,
-    totalCount,
-  }), [displayJobs, loading, error, searchTerm, page, refetch, totalCount]);
+    totalCount: totalJobsCount,
+    filters,
+    updateFilter,
+    resetFilters,
+    availableCountries,
+    availableCities,
+  }), [displayJobs, loading, error, searchTerm, page, refetch, totalJobsCount, filters, updateFilter, resetFilters, availableCountries, availableCities]);
 };
 
 export const useJobDetails = (jobId) => {
@@ -140,6 +281,9 @@ export const useEditJob = (jobId) => {
     }
 
     try {
+      const originalStart = values.originalStartedAt;
+      const originalEnd = values.originalEndedAt;
+
       const payload = { 
         title: values.title,
         description: values.description,
@@ -149,8 +293,12 @@ export const useEditJob = (jobId) => {
         type: values.type,
         category: values.category,
         requiredSkills: values.requiredSkills || values.skillsAndTools,
-        startedAt: formatDate(values.startedAt),
-        endedAt: formatDate(values.endedAt),
+        startedAt: (originalStart && formatDate(originalStart) === formatDate(values.startedAt))
+          ? originalStart
+          : formatDate(values.startedAt),
+        endedAt: (originalEnd && formatDate(originalEnd) === formatDate(values.endedAt))
+          ? originalEnd
+          : formatDate(values.endedAt),
       };
       const data = await editJobApi.refetch({ data: payload });
       if (data) {

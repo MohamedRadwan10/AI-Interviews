@@ -6,6 +6,8 @@ import { UserTokenContext } from "@/Context/UserTokenContext";
 import { useNavigation, useMainNotify } from "@/hooks/common";
 import { useApi } from "@/hooks/useApi";
 import { APP_CONFIG } from "@/Config/appConfig";
+import axios from "axios";
+import { API_BASE_URL, AUTH_ENDPOINTS } from "@/Config/apiRegistry";
 
 export const useAfterLogin = () => {
   const { navigateTo } = useNavigation();

@@ -33,17 +33,63 @@ export const OTPStep = ({ config, otp, onOtpChange, onSubmit, isLoading }) => {
 
   return (
     <div className="w-full space-y-10">
+      <style>{`
+        .otp-container .p-inputtext {
+          width: 2.75rem !important;
+          height: 3.75rem !important;
+          font-size: 1.5rem !important;
+          font-weight: 700 !important;
+          text-align: center !important;
+          border-radius: 1rem !important;
+          transition: all 0.2s ease-in-out !important;
+          margin: 0 0.25rem !important;
+          outline: none !important;
+        }
+
+        @media (min-width: 640px) {
+          .otp-container .p-inputtext {
+            width: 3.5rem !important;
+            height: 4.75rem !important;
+            font-size: 1.875rem !important;
+            margin: 0 0.375rem !important;
+          }
+        }
+        
+        /* Light Mode Styles */
+        html:not(.dark) .otp-container .p-inputtext {
+          background-color: #f1f5f9 !important; /* Slate 100 - clear grey bg */
+          border: 2px solid #cbd5e1 !important; /* Slate 300 - clear visible border */
+          color: #0f172a !important; /* Slate 900 - dark text */
+          box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05) !important;
+        }
+        
+        html:not(.dark) .otp-container .p-inputtext:focus {
+          border-color: #2563ea !important; /* brand.primary */
+          background-color: #ffffff !important;
+          box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15) !important;
+        }
+
+        /* Dark Mode Styles */
+        html.dark .otp-container .p-inputtext {
+          background-color: #0f172a !important; /* dark.primary.1 */
+          border: 2px solid rgba(255, 255, 255, 0.15) !important; /* Light border */
+          color: #ffffff !important;
+          box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.2) !important;
+        }
+
+        html.dark .otp-container .p-inputtext:focus {
+          border-color: #3b82f6 !important; /* brand.accent */
+          background-color: #1e293b !important; /* dark.primary.3 */
+          box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2) !important;
+        }
+      `}</style>
+
       <div className="flex justify-center otp-container">
         <InputOtp
           value={otp}
           onChange={handleOtpChange}
           length={6}
           disabled={isLoading}
-          pt={{
-            input: {
-              className: "w-12 h-16 sm:w-14 sm:h-20 text-center text-3xl font-bold bg-light-primary dark:bg-dark-primary-1 border-2 border-ui-borderLight dark:border-ui-border/50 rounded-2xl focus:border-brand-accent focus:ring-4 focus:ring-brand-accent/10 text-ui-textMain dark:text-white transition-all shadow-2xl mx-1 sm:mx-2 focus:outline-none"
-            }
-          }}
         />
       </div>
 
@@ -55,9 +101,9 @@ export const OTPStep = ({ config, otp, onOtpChange, onSubmit, isLoading }) => {
         {submitText}
       </MainButton>
 
-      <div className="text-center">
-        <MainText title={footerText} className="text-ui-textMuted dark:text-ui-muted text-sm mr-1" />
-        <button className="text-brand-accent text-sm font-semibold hover:underline">
+      <div className="text-center flex items-center justify-center gap-1.5 flex-wrap">
+        <MainText title={footerText} className="text-ui-textMuted dark:text-dark-gray text-sm" />
+        <button className="text-brand-primary dark:text-brand-accent text-sm font-semibold hover:underline bg-transparent border-none p-0 cursor-pointer">
           {footerLinkText}
         </button>
       </div>

@@ -16,13 +16,20 @@ const MainImage = ({
   imageStyle,
   ...props
 }) => {
-  const [imgSrc, setImgSrc] = useState(src || defaultImage || DEFAULT_IMAGE);
+  const getValidSrc = (value) => {
+    if (!value || value === "N/A" || typeof value !== "string" || value.trim() === "" || value.toLowerCase() === "n/a") {
+      return defaultImage || DEFAULT_IMAGE;
+    }
+    return value;
+  };
+
+  const [imgSrc, setImgSrc] = useState(() => getValidSrc(src));
 
   useEffect(() => {
-    setImgSrc(src || defaultImage || DEFAULT_IMAGE);
+    setImgSrc(getValidSrc(src));
   }, [src, defaultImage]);
 
-  const validSrc = imgSrc || DEFAULT_IMAGE;
+  const validSrc = imgSrc;
 
   return (
     <NextImage
