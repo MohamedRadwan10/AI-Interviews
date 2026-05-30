@@ -93,6 +93,8 @@ const UploadField = (props) => {
           <FileUpload ref={fileUploadRef} accept={accept} maxFileSize={5000000} onSelect={onSelect} />
         </div>
         <div 
+          id={props.field_name}
+          name={props.field_name}
           onClick={handleInteraction}
           onBlur={onBlur}
           tabIndex={0}
