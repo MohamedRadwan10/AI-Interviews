@@ -1,6 +1,5 @@
-"use client";
 import { useState, useCallback, useContext, useEffect, useRef, useMemo } from "react";
-import { isString, get, isObject, uniqBy } from "lodash-es";
+import { isString, get, isObject } from "lodash-es";
 import { useReactMediaRecorder } from "react-media-recorder-2";
 import { UserTokenContext } from "@/Context/UserTokenContext";
 import { useUserAccount } from "@/Context/UserAccountContext";
@@ -8,19 +7,12 @@ import { useSignalR } from "@/hooks/useSignalR";
 import { useApi } from "@/hooks/useApi";
 import { formatTime, delay } from "@/Utils/Func/Common";
 import { useMainNotify } from "@/hooks/common";
+import { APP_CONFIG } from "@/Config/appConfig";
+import { getTimerStorageKey, parseQuestion, isValidSessionId, buildAnswerFormData, clearSessionTimers } from "@/Utils/Func/InterviewSession";
 
-const INVALID_SESSION_ID = "00000000-0000-0000-0000-000000000000";
+const DEFAULT_TOTAL_QUESTIONS = APP_CONFIG.interview.defaultTotalQuestions;
 
-const parseQuestion = (q) => {
-  if (!q) return null;
-  try {
-    return isString(q) ? JSON.parse(q) : q;
-  } catch (e) {
-    return q;
-  }
-};
-
-const useTimerLogic = (isSessionStarted, currentQuestion, isSubmitting, interviewFinished, sessionId, questionIndex) => {
+const useTimerLogic = ({ isSessionStarted, currentQuestion, isSubmitting, interviewFinished, sessionId, questionIndex }) => {
   const [timeLeft, setTimeLeft] = useState(null);
   const [initialTime, setInitialTime] = useState(0);
   const timeLeftRef = useRef(null);
@@ -28,26 +20,28 @@ const useTimerLogic = (isSessionStarted, currentQuestion, isSubmitting, intervie
 
   useEffect(() => {
     const parsed = parseQuestion(currentQuestion);
-    if (!parsed || !sessionId) {
-      setTimeLeft(null);
-      return;
-    }
+    if (!parsed || !sessionId) { setTimeLeft(null); return; }
 
-    const storageKey = `timer_${sessionId}_${questionIndex}`;
+    const storageKey = getTimerStorageKey(sessionId, questionIndex);
     const savedEndTime = localStorage.getItem(storageKey);
     const now = Date.now();
 
+    const applyTimer = (seconds, total) => {
+      setTimeLeft(seconds);
+      setInitialTime(total);
+      timeLeftRef.current = seconds;
+      initialTimeRef.current = total;
+    };
+
+    const parseTotal = () => {
+      let total = parseInt(get(parsed, "remainingSeconds"), 10);
+      if (isNaN(total)) total = (parseInt(get(parsed, "time"), 10) || 0) * 60;
+      return total;
+    };
+
     if (savedEndTime) {
       const remaining = Math.round((parseInt(savedEndTime, 10) - now) / 1000);
-      if (remaining > 0) {
-        setTimeLeft(remaining);
-        timeLeftRef.current = remaining;
-        let totalSec = parseInt(get(parsed, "remainingSeconds"), 10);
-        if (isNaN(totalSec)) totalSec = (parseInt(get(parsed, "time"), 10) || 0) * 60;
-        setInitialTime(totalSec);
-        initialTimeRef.current = totalSec;
-        return;
-      }
+      if (remaining > 0) { applyTimer(remaining, parseTotal()); return; }
     }
 
     let seconds = parseInt(get(parsed, "remainingSeconds"), 10);
@@ -56,22 +50,14 @@ const useTimerLogic = (isSessionStarted, currentQuestion, isSubmitting, intervie
       seconds = !isNaN(minutes) ? minutes * 60 : 0;
     }
 
-    if (seconds > 0) {
-      const endTime = now + seconds * 1000;
-      localStorage.setItem(storageKey, String(endTime));
-    }
-
-    setTimeLeft(seconds);
-    setInitialTime(seconds);
-    timeLeftRef.current = seconds;
-    initialTimeRef.current = seconds;
+    if (seconds > 0) localStorage.setItem(storageKey, String(now + seconds * 1000));
+    applyTimer(seconds, seconds);
   }, [currentQuestion, sessionId, questionIndex]);
 
   useEffect(() => {
     if (!isSessionStarted || timeLeft === null || timeLeft <= 0 || interviewFinished || isSubmitting) return;
-
     const timer = setInterval(() => {
-      setTimeLeft(t => {
+      setTimeLeft((t) => {
         const next = t > 0 ? t - 1 : 0;
         timeLeftRef.current = next;
         return next;
@@ -80,101 +66,146 @@ const useTimerLogic = (isSessionStarted, currentQuestion, isSubmitting, intervie
     return () => clearInterval(timer);
   }, [isSessionStarted, timeLeft, interviewFinished, isSubmitting]);
 
-  return { timeLeft, initialTime, timeLeftRef, initialTimeRef };
+  return useMemo(() => ({
+    timeLeft,
+    initialTime,
+    timeLeftRef,
+    initialTimeRef,
+  }), [timeLeft, initialTime]);
 };
 
-
-export const useInterviewSession = (jobId) => {
-  const { userToken } = useContext(UserTokenContext);
-  const { userId } = useUserAccount();
-  const { success, error: notifyError } = useMainNotify();
-
+const useSessionState = () => {
   const [sessionId, setSessionId] = useState(null);
   const [isSessionStarted, setIsSessionStarted] = useState(false);
   const [interviewFinished, setInterviewFinished] = useState(false);
   const [finishMessage, setFinishMessage] = useState("");
   const [error, setError] = useState(null);
-
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [questionIndex, setQuestionIndex] = useState(0);
-  const [totalQuestions, setTotalQuestions] = useState(0);
+  const [totalQuestions, setTotalQuestions] = useState(DEFAULT_TOTAL_QUESTIONS);
+  const [loadingStates, setLoadingStates] = useState({ session: true, submitting: false, finishing: false });
 
-  const [loadingStates, setLoadingStates] = useState({
-    session: true,
-    submitting: false,
-    finishing: false,
-  });
+  const setLoading = useCallback((key, value) => {
+    setLoadingStates((prev) => ({ ...prev, [key]: value }));
+  }, []);
 
+  return useMemo(() => ({
+    sessionId, setSessionId,
+    isSessionStarted, setIsSessionStarted,
+    interviewFinished, setInterviewFinished,
+    finishMessage, setFinishMessage,
+    error, setError,
+    currentQuestion, setCurrentQuestion,
+    questionIndex, setQuestionIndex,
+    totalQuestions, setTotalQuestions,
+    loadingStates, setLoading,
+  }), [
+    sessionId, isSessionStarted, interviewFinished, finishMessage,
+    error, currentQuestion, questionIndex, totalQuestions, loadingStates, setLoading,
+  ]);
+};
+
+export const useInterviewSession = (jobId) => {
+  const { userToken } = useContext(UserTokenContext);
+  const { userId } = useUserAccount();
+  const { success, error: notifyError } = useMainNotify();
   const submittingRef = useRef(false);
+  const awaitingSignalRRef = useRef(false);
+  const syncCheckedRef = useRef(false);
+
+  const state = useSessionState();
+  const {
+    sessionId, setSessionId,
+    isSessionStarted, setIsSessionStarted,
+    interviewFinished, setInterviewFinished,
+    finishMessage, setFinishMessage,
+    error, setError,
+    currentQuestion, setCurrentQuestion,
+    questionIndex, setQuestionIndex,
+    totalQuestions, setTotalQuestions,
+    loadingStates, setLoading,
+  } = state;
+
+  const { refetch: callStartSession }       = useApi({ type: "startSession",       autoFetch: false, urlSuffix: `/${jobId}` });
+  const { refetch: callNextQuestion }       = useApi({ type: "nextQuestion",       autoFetch: false });
+  const { refetch: callEndSession }         = useApi({ type: "endSession",         autoFetch: false });
+  const { refetch: callCheckActiveSession } = useApi({ type: "checkActiveSession", autoFetch: false, urlSuffix: `/${jobId}` });
+  const { refetch: callGetSessionDetails }  = useApi({ type: "getSessionDetails",  autoFetch: false });
 
   const { isConnected, on } = useSignalR(userToken, userId);
-  
-  const { refetch: callStartSession } = useApi({ type: "startSession", autoFetch: false, urlSuffix: `/${jobId}` });
-  const { refetch: callNextQuestion } = useApi({ type: "nextQuestion", autoFetch: false });
-  const { refetch: callEndSession } = useApi({ type: "endSession", autoFetch: false });
-  const { refetch: callCheckActiveSession } = useApi({ type: "checkActiveSession", autoFetch: false, urlSuffix: `/${jobId}` });
-  const { refetch: callGetSessionDetails } = useApi({ type: "getSessionDetails", autoFetch: false });
 
-  const { timeLeft, initialTimeRef, timeLeftRef } = useTimerLogic(
-    isSessionStarted, 
-    currentQuestion, 
-    loadingStates.submitting, 
+  const parsedCurrentQuestion = useMemo(() => parseQuestion(currentQuestion), [currentQuestion]);
+
+  const effectiveTotalQuestions = useMemo(() =>
+    get(parsedCurrentQuestion, "totalquestion") || totalQuestions || DEFAULT_TOTAL_QUESTIONS
+  , [parsedCurrentQuestion, totalQuestions]);
+
+  const { timeLeft, timeLeftRef, initialTimeRef } = useTimerLogic({
+    isSessionStarted,
+    currentQuestion,
+    isSubmitting: loadingStates.submitting,
     interviewFinished,
     sessionId,
-    questionIndex
-  );
+    questionIndex,
+  });
+
+  const applyServerQuestionData = useCallback((data) => {
+    const q = get(data, "question") || (get(data, "questionText") ? data : null);
+    const serverIndex = get(data, "index") ?? 0;
+    const serverTotal = get(data, "totalquestion") ?? get(data, "totalQuestions");
+
+    setCurrentQuestion(q);
+    setQuestionIndex(serverIndex);
+    if (serverTotal) setTotalQuestions(serverTotal);
+  }, [setCurrentQuestion, setQuestionIndex, setTotalQuestions]);
 
   const finishInterview = useCallback(async () => {
     if (!sessionId) return;
-    setLoadingStates(prev => ({ ...prev, finishing: true }));
+    setLoading("finishing", true);
     try {
       await callEndSession({ urlSuffix: `/${sessionId}/${jobId}` });
       setInterviewFinished(true);
-      success("Interview Finished", "Your responses have been submitted.");
       setCurrentQuestion(null);
-
-      Object.keys(localStorage).forEach(key => {
-        if (key.startsWith(`timer_${sessionId}`)) localStorage.removeItem(key);
-      });
-    } catch (err) {
-      console.error("Finish error:", err);
+      clearSessionTimers(sessionId);
+      success("Interview Finished", "Your responses have been submitted.");
+    } catch {
     } finally {
-      setLoadingStates(prev => ({ ...prev, finishing: false }));
+      setLoading("finishing", false);
     }
-  }, [sessionId, jobId, callEndSession, success]);
+  }, [sessionId, jobId, callEndSession, success, setLoading, setInterviewFinished]);
 
   const autoSkipExpired = useCallback(async (sId, q, index) => {
     if (!sId || !q) return;
-    const formData = new FormData();
-    formData.append("SessionId", sId);
-    formData.append("QuestionId", q.id || q.questionId);
-    formData.append("currentQuestionIndex", index);
-    formData.append("time", "0");
-    formData.append("UserAnswer", "Time limit exceeded (Auto-recovered)");
-    
-    try {
-      await callNextQuestion({ data: formData, silent: true });
-    } catch (e) {  }
+    const formData = buildAnswerFormData({
+      sessionId: sId,
+      questionId: get(q, "id") || get(q, "questionId"),
+      questionIndex: index,
+      timeTaken: 0,
+      answerData: { text: "Time limit exceeded (Auto-recovered)" },
+    });
+    try { await callNextQuestion({ data: formData, silent: true }); } catch { }
   }, [callNextQuestion]);
 
   const syncSession = useCallback(async (silent = false) => {
-    if (!silent) setLoadingStates(prev => ({ ...prev, session: true }));
+    if (!silent) setLoading("session", true);
     try {
       const res = await callCheckActiveSession();
       const sId = get(res, "data.sessionid") || get(res, "data.sessionId") || get(res, "data");
-      
-      if (!sId || sId === INVALID_SESSION_ID || !isString(sId)) {
-        if (!silent) setLoadingStates(prev => ({ ...prev, session: false }));
-        return;
+      if (!isValidSessionId(sId)) {
+        syncCheckedRef.current = true;
+        return false;
       }
 
       const detailsRes = await callGetSessionDetails({ urlSuffix: `/${sId}` });
       const data = get(detailsRes, "data");
-      if (!data) return;
+      if (!data) {
+        syncCheckedRef.current = true;
+        return false;
+      }
 
       const q = get(data, "question") || (get(data, "questionText") ? data : null);
       const remSec = parseInt(get(q, "remainingSeconds"), 10);
-      
+
       if (!isNaN(remSec) && remSec <= 0) {
         await autoSkipExpired(sId, q, get(data, "index") ?? 0);
         return syncSession(silent);
@@ -182,140 +213,146 @@ export const useInterviewSession = (jobId) => {
 
       setSessionId(sId);
       setIsSessionStarted(true);
-      setCurrentQuestion(q);
-      setQuestionIndex(get(data, "index") ?? 0);
-      setTotalQuestions(get(data, "totalquestion") ?? 15);
-    } catch (err) {
+      applyServerQuestionData(data);
+      syncCheckedRef.current = true;
+      return true;
+    } catch {
+      return false;
     } finally {
-      if (!silent) setLoadingStates(prev => ({ ...prev, session: false }));
+      if (!silent) setLoading("session", false);
     }
-  }, [callCheckActiveSession, callGetSessionDetails, autoSkipExpired]);
+  }, [callCheckActiveSession, callGetSessionDetails, autoSkipExpired, applyServerQuestionData, setSessionId, setIsSessionStarted, setLoading]);
 
   const submitAnswer = useCallback(async (answerData) => {
-    if (submittingRef.current || !sessionId || !currentQuestion) return;
-    
+    if (submittingRef.current || !sessionId || !parsedCurrentQuestion) return;
     submittingRef.current = true;
-    setLoadingStates(prev => ({ ...prev, submitting: true }));
+    setLoading("submitting", true);
 
     const timeTaken = initialTimeRef.current - (timeLeftRef.current || 0);
-    const parsed = parseQuestion(currentQuestion);
-    
-    const formData = new FormData();
-    formData.append("SessionId", sessionId);
-    formData.append("QuestionId", get(parsed, "id") || get(parsed, "questionId"));
-    formData.append("currentQuestionIndex", questionIndex);
-    formData.append("time", String(timeTaken));
-    
-    if (answerData?.voiceFile) formData.append("voiceFile", answerData.voiceFile, "voice.wav");
-    else formData.append("UserAnswer", answerData?.text || "");
+    const formData = buildAnswerFormData({
+      sessionId,
+      questionId: get(parsedCurrentQuestion, "id") || get(parsedCurrentQuestion, "questionId"),
+      questionIndex,
+      timeTaken,
+      answerData,
+    });
 
     setCurrentQuestion(null);
+    awaitingSignalRRef.current = true;
 
     try {
       const result = await callNextQuestion({ data: formData });
       const response = get(result, "data");
-      const nextQ = get(response, "question") || (get(response, "questionText") ? response : null);
-      
-      if (nextQ?.id) setCurrentQuestion(nextQ);
 
-      const incomingIdx = get(response, "index");
-      // Update question index based on server response; fallback to increment
-      if (incomingIdx !== undefined) {
-        setQuestionIndex(incomingIdx);
-      } else {
-        setQuestionIndex(prev => prev + 1);
-      }
+      const signalRAlreadyDelivered = !awaitingSignalRRef.current;
 
-      // Determine effective index for last-question check (0‑based)
-      const effectiveIdx = incomingIdx !== undefined ? incomingIdx : questionIndex + 1;
       const isCompleted = get(response, "isCompleted") || get(response, "completed");
-      const isLast = (effectiveIdx + 1) >= (get(parsed, "totalquestion") || totalQuestions);
+      const wasLastQuestion = (questionIndex + 1) >= effectiveTotalQuestions;
 
-      if (isCompleted || isLast) {
+      if (isCompleted || wasLastQuestion) {
+        awaitingSignalRRef.current = false;
         await delay(1000);
         await finishInterview();
+        return;
       }
-    } catch (err) {
+
+      if (signalRAlreadyDelivered) return;
+
+      const nextQ = get(response, "question") || (get(response, "questionText") ? response : null);
+
+      if (nextQ) {
+        awaitingSignalRRef.current = false;
+        applyServerQuestionData(response);
+      }
+    } catch {
+      awaitingSignalRRef.current = false;
       await syncSession(true);
     } finally {
-      setLoadingStates(prev => ({ ...prev, submitting: false }));
+      setLoading("submitting", false);
       submittingRef.current = false;
     }
-  }, [sessionId, currentQuestion, questionIndex, totalQuestions, callNextQuestion, finishInterview, syncSession]);
+  }, [
+    sessionId, parsedCurrentQuestion, questionIndex, effectiveTotalQuestions,
+    callNextQuestion, finishInterview, syncSession, applyServerQuestionData, setLoading,
+  ]);
 
   const startInterview = useCallback(async () => {
     setError(null);
-    setLoadingStates(prev => ({ ...prev, session: true }));
+    setLoading("session", true);
     try {
       const result = await callStartSession();
-      const sId = get(result, "data.sessionId") || get(result, "data.sessionid") || get(result, "data.id") || get(result, "data");
-      const finalId = isObject(sId) ? (sId.sessionId || sId.id) : sId;
-      
+      const raw = get(result, "data.sessionId") || get(result, "data.sessionid") || get(result, "data.id") || get(result, "data");
+      const finalId = isObject(raw) ? (raw.sessionId || raw.id) : raw;
       if (!finalId) throw new Error("Invalid Session ID");
       setSessionId(finalId);
       setIsSessionStarted(true);
       return finalId;
-    } catch (err) {
+    } catch {
       setError("Failed to start session");
     } finally {
-      setLoadingStates(prev => ({ ...prev, session: false }));
+      setLoading("session", false);
     }
-  }, [callStartSession]);
+  }, [callStartSession, setError, setLoading, setSessionId, setIsSessionStarted]);
 
   useEffect(() => {
     if (jobId) syncSession();
-    else setLoadingStates(prev => ({ ...prev, session: false }));
-  }, [jobId, syncSession]);
+    else setLoading("session", false);
+  }, [jobId, syncSession, setLoading]);
 
   useEffect(() => {
-    const termError = sessionStorage.getItem("interviewTerminatedError");
-    if (termError) {
-      notifyError("Session Terminated", termError);
-      sessionStorage.removeItem("interviewTerminatedError");
-    }
+    const msg = sessionStorage.getItem("interviewTerminatedError");
+    if (msg) { notifyError("Session Terminated", msg); sessionStorage.removeItem("interviewTerminatedError"); }
   }, [notifyError]);
 
+  const questionIndexRef = useRef(questionIndex);
+  useEffect(() => { questionIndexRef.current = questionIndex; }, [questionIndex]);
+
   useEffect(() => {
-    on("nextQuestionReady", data => {
+    on("nextQuestionReady", (data) => {
       const incomingIndex = get(data, "index");
-      if (incomingIndex !== undefined && incomingIndex >= questionIndex) {
+      if (incomingIndex === undefined) return;
+
+      if (awaitingSignalRRef.current) {
+        awaitingSignalRRef.current = false;
         setCurrentQuestion(data);
-        if (incomingIndex > questionIndex) setQuestionIndex(incomingIndex);
+        setQuestionIndex(incomingIndex);
+        return;
+      }
+
+      if (incomingIndex >= questionIndexRef.current) {
+        setCurrentQuestion(data);
+        setQuestionIndex(incomingIndex);
       }
     });
-    on("reportGenerationStarted", data => {
+    on("reportGenerationStarted", (data) => {
       setFinishMessage(get(data, "message") || "Generating your report...");
       setInterviewFinished(true);
     });
-    on("OnInterviewTerminated", data => {
-      const msg = get(data, "message") || (isString(data) ? data : "Session terminated due to camera errors. You failed to show your face 10 times.");
+    on("OnInterviewTerminated", (data) => {
+      const msg = get(data, "message") || (isString(data) ? data : "Session terminated due to camera errors.");
       sessionStorage.setItem("interviewTerminatedError", msg);
       window.location.reload();
     });
-  }, [on, questionIndex]);
+  }, [on]);
 
   useEffect(() => {
-    if (isSessionStarted && timeLeft === 0 && timeLeft !== null && currentQuestion && !loadingStates.submitting && !interviewFinished) {
+    if (isSessionStarted && timeLeft === 0 && timeLeft !== null && parsedCurrentQuestion && !loadingStates.submitting && !interviewFinished) {
       submitAnswer({ text: "Time limit exceeded" });
     }
-  }, [timeLeft, isSessionStarted, currentQuestion, loadingStates.submitting, interviewFinished, submitAnswer]);
-
-  const parsedCurrentQuestion = useMemo(() => parseQuestion(currentQuestion), [currentQuestion]);
-  const effectiveTotalQuestions = useMemo(() => 
-    get(parsedCurrentQuestion, "totalquestion") || totalQuestions || 15
-  , [parsedCurrentQuestion, totalQuestions]);
+  }, [timeLeft, isSessionStarted, parsedCurrentQuestion, loadingStates.submitting, interviewFinished, submitAnswer]);
 
   return useMemo(() => ({
     isSessionStarted,
     sessionId,
     currentQuestion: parsedCurrentQuestion,
     isConnected,
-    isLoading: loadingStates.session,
-    isSubmitting: loadingStates.submitting,
-    isFinishing: loadingStates.finishing,
+    isLoading:      loadingStates.session,
+    isSubmitting:   loadingStates.submitting,
+    isFinishing:    loadingStates.finishing,
     startInterview,
     submitAnswer,
     finishInterview,
+    syncSession,
     error,
     questionIndex,
     totalQuestions: effectiveTotalQuestions,
@@ -323,39 +360,40 @@ export const useInterviewSession = (jobId) => {
     finishMessage,
     isQuestionReady: !!parsedCurrentQuestion,
     timeLeft,
-    isLastQuestion: (questionIndex + 1) >= effectiveTotalQuestions
+    isLastQuestion: (questionIndex + 1) >= effectiveTotalQuestions,
+    syncCheckedRef,
   }), [
-    isSessionStarted, sessionId, parsedCurrentQuestion, isConnected, loadingStates, 
-    startInterview, submitAnswer, finishInterview, error, questionIndex, 
-    effectiveTotalQuestions, interviewFinished, finishMessage, timeLeft
+    isSessionStarted, sessionId, parsedCurrentQuestion, isConnected, loadingStates,
+    startInterview, submitAnswer, finishInterview, syncSession, error, questionIndex,
+    effectiveTotalQuestions, interviewFinished, finishMessage, timeLeft,
   ]);
 };
 
 export const useInterviewRoomState = (jobId) => {
   const session = useInterviewSession(jobId);
-  const { currentQuestion, questionIndex, isConnected, isSessionStarted, error, isLoading, startInterview } = session;
+  const { currentQuestion, questionIndex, isConnected, isSessionStarted, error, isLoading, startInterview, syncCheckedRef } = session;
 
   useEffect(() => {
-    if (isConnected && !isSessionStarted && !error && !isLoading) {
+    if (isConnected && !isSessionStarted && !error && !isLoading && syncCheckedRef.current) {
       startInterview();
     }
-  }, [isConnected, isSessionStarted, error, isLoading, startInterview]);
+  }, [isConnected, isSessionStarted, error, isLoading, startInterview, syncCheckedRef]);
 
-  const questionText = useMemo(() => 
+  const questionText = useMemo(() =>
     get(currentQuestion, "questionText") || get(currentQuestion, "question") || `Preparing question ${questionIndex + 1}...`
   , [currentQuestion, questionIndex]);
 
-  const type = useMemo(() => get(currentQuestion, "type"), [currentQuestion]);
+  const type       = useMemo(() => get(currentQuestion, "type"),       [currentQuestion]);
   const difficulty = useMemo(() => get(currentQuestion, "difficulty"), [currentQuestion]);
-  const time = useMemo(() => get(currentQuestion, "time"), [currentQuestion]);
+  const time       = useMemo(() => get(currentQuestion, "time"),       [currentQuestion]);
 
   const difficultyStyles = useMemo(() => ({
-    hard: "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-100 dark:border-red-800/30",
+    hard:   "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-100 dark:border-red-800/30",
     medium: "bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border-amber-100 dark:border-amber-800/30",
-    easy: "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800/30",
+    easy:   "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800/30",
   }), []);
 
-  const currentDiffStyle = useMemo(() => 
+  const currentDiffStyle = useMemo(() =>
     difficultyStyles[difficulty?.toLowerCase()] || difficultyStyles.easy
   , [difficulty, difficultyStyles]);
 
@@ -370,10 +408,10 @@ export const useInterviewRoomState = (jobId) => {
 };
 
 export const useAnswerConsole = (onSubmit, questionType) => {
-  const [activeTab, setActiveTab] = useState("text");
-  const [textAnswer, setTextAnswer] = useState("");
-  const [codeAnswer, setCodeAnswer] = useState("// Write your code here\n");
-  const [language, setLanguage] = useState("javascript");
+  const [activeTab, setActiveTab]     = useState("text");
+  const [textAnswer, setTextAnswer]   = useState("");
+  const [codeAnswer, setCodeAnswer]   = useState("// Write your code here\n");
+  const [language, setLanguage]       = useState("javascript");
 
   useEffect(() => {
     setActiveTab(questionType?.toLowerCase() === "coding" ? "code" : "text");
@@ -382,33 +420,42 @@ export const useAnswerConsole = (onSubmit, questionType) => {
   const { status, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } =
     useReactMediaRecorder({ audio: true, blobPropertyBag: { type: "audio/wav" } });
 
-  const handleSend = () => {
+  const stripCodePlaceholder = useCallback((raw) =>
+    raw.replace(/\/\/ Write your code here\n?/g, "").trim()
+  , []);
+
+  const handleSend = useCallback(() => {
     if (activeTab === "voice" && mediaBlobUrl) {
-      fetch(mediaBlobUrl).then(res => res.blob()).then(blob => {
+      fetch(mediaBlobUrl).then((r) => r.blob()).then((blob) => {
         onSubmit({ voiceFile: blob });
         clearBlobUrl();
       });
       return;
     }
-    
-    let finalAnswer = activeTab === "text" ? textAnswer : codeAnswer;
-    finalAnswer = finalAnswer.replace(/\/\/ Write your code here\n?/g, "").trim();
-
-    onSubmit({ text: finalAnswer });
+    const raw = activeTab === "text" ? textAnswer : codeAnswer;
+    onSubmit({ text: stripCodePlaceholder(raw) });
     setTextAnswer("");
     setCodeAnswer("// Write your code here\n");
-  };
+  }, [activeTab, mediaBlobUrl, textAnswer, codeAnswer, onSubmit, clearBlobUrl, stripCodePlaceholder]);
 
   const hasAnswer = useMemo(() => {
     if (activeTab === "voice") return !!mediaBlobUrl;
     const raw = activeTab === "text" ? textAnswer : codeAnswer;
-    return raw.replace(/\/\/ Write your code here\n?/g, "").trim().length > 0;
-  }, [activeTab, textAnswer, codeAnswer, mediaBlobUrl]);
+    return stripCodePlaceholder(raw).length > 0;
+  }, [activeTab, textAnswer, codeAnswer, mediaBlobUrl, stripCodePlaceholder]);
 
   return useMemo(() => ({
-    activeTab, setActiveTab, textAnswer, setTextAnswer, codeAnswer, setCodeAnswer,
-    language, setLanguage, status, startRecording, stopRecording, mediaBlobUrl, handleSend, hasAnswer
-  }), [activeTab, setActiveTab, textAnswer, setTextAnswer, codeAnswer, setCodeAnswer, language, setLanguage, status, startRecording, stopRecording, mediaBlobUrl, handleSend, hasAnswer]);
+    activeTab, setActiveTab,
+    textAnswer, setTextAnswer,
+    codeAnswer, setCodeAnswer,
+    language, setLanguage,
+    status, startRecording, stopRecording, mediaBlobUrl,
+    handleSend, hasAnswer,
+  }), [
+    activeTab, textAnswer, codeAnswer, language,
+    status, startRecording, stopRecording, mediaBlobUrl,
+    handleSend, hasAnswer,
+  ]);
 };
 
 export const useInterviewSidebar = (isSessionStarted, timeLeftFromSession) => {
@@ -416,54 +463,51 @@ export const useInterviewSidebar = (isSessionStarted, timeLeftFromSession) => {
   const [stream, setStream] = useState(null);
 
   useEffect(() => {
-    const checkStream = setInterval(() => {
+    const interval = setInterval(() => {
       if (webcamRef.current?.video?.srcObject) {
         setStream(webcamRef.current.video.srcObject);
-        clearInterval(checkStream);
+        clearInterval(interval);
       }
     }, 500);
-    return () => clearInterval(checkStream);
+    return () => clearInterval(interval);
   }, []);
 
-  return useMemo(() => ({ 
-    timeLeft: Math.max(0, timeLeftFromSession || 0), 
-    formatTime, webcamRef, stream 
-  }), [timeLeftFromSession, formatTime, webcamRef, stream]);
+  return useMemo(() => ({
+    timeLeft: Math.max(0, timeLeftFromSession || 0),
+    formatTime,
+    webcamRef,
+    stream,
+  }), [timeLeftFromSession, stream]);
 };
 
 export const useAudioLevel = (stream) => {
   const [level, setLevel] = useState(0);
-  const animationFrameRef = useRef();
-  const audioContextRef = useRef();
+  const animFrameRef   = useRef();
+  const audioCtxRef    = useRef();
 
   useEffect(() => {
-    if (!stream) {
-      setLevel(0);
-      return;
-    }
+    if (!stream) { setLevel(0); return; }
     try {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const analyser = audioContext.createAnalyser();
-      const source = audioContext.createMediaStreamSource(stream);
+      const ctx      = new (window.AudioContext || window.webkitAudioContext)();
+      const analyser = ctx.createAnalyser();
+      const source   = ctx.createMediaStreamSource(stream);
       analyser.fftSize = 256;
       source.connect(analyser);
-      audioContextRef.current = audioContext;
+      audioCtxRef.current = ctx;
 
-      const dataArray = new Uint8Array(analyser.frequencyBinCount);
-      const updateLevel = () => {
-        analyser.getByteFrequencyData(dataArray);
-        const avg = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
+      const data = new Uint8Array(analyser.frequencyBinCount);
+      const tick = () => {
+        analyser.getByteFrequencyData(data);
+        const avg = data.reduce((a, b) => a + b, 0) / data.length;
         setLevel(Math.min(100, Math.round((avg / 128) * 100)));
-        animationFrameRef.current = requestAnimationFrame(updateLevel);
+        animFrameRef.current = requestAnimationFrame(tick);
       };
-      updateLevel();
-    } catch (err) {
-      console.error("Audio monitor error:", err);
+      tick();
+    } catch {
     }
-
     return () => {
-      cancelAnimationFrame(animationFrameRef.current);
-      audioContextRef.current?.close();
+      cancelAnimationFrame(animFrameRef.current);
+      audioCtxRef.current?.close();
     };
   }, [stream]);
 
