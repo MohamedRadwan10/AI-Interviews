@@ -58,9 +58,9 @@ export const useJobs = () => {
       pageSize: 9,
       ...(debouncedSearch ? { search: debouncedSearch } : {}),
       ...(filters.category ? { category: filters.category } : {}),
-      ...(filters.subCategory ? { subCategory: filters.subCategory, subCtegory: filters.subCategory } : {}),
+      ...(filters.subCategory ? { subcategory: filters.subCategory } : {}),
       ...(filters.type ? { jobType: filters.type } : {}),
-      ...(filters.careerLevel ? { careerLevel: filters.careerLevel } : {}),
+      ...(filters.careerLevel ? { careerlevel: filters.careerLevel } : {}),
       ...(filters.country ? { country: getCountryName(filters.country) } : {}),
       ...(filters.city ? { city: getStateName(filters.country, filters.city) } : {}),
     },
@@ -238,6 +238,10 @@ export const usePostJob = () => {
           requiredSkills,
           startedAt,
           endedAt,
+          questionsCount,
+          codingCount,
+          behavioralCount,
+          technicalCount,
         } = values;
         const payload = {
           title,
@@ -249,6 +253,10 @@ export const usePostJob = () => {
           experienceYears: parseInt(experienceYears || 0, 10),
           requirements,
           requiredSkills,
+          questionsCount: values.questionsCount ? parseInt(values.questionsCount, 10) : 10,
+          codingCount: values.codingCount ? parseInt(values.codingCount, 10) : 2,
+          behavioralCount: values.behavioralCount ? parseInt(values.behavioralCount, 10) : 4,
+          technicalCount: values.technicalCount ? parseInt(values.technicalCount, 10) : 4,
           ...(startedAt ? { startedAt: formatDate(startedAt) } : {}),
           ...(endedAt ? { endedAt: formatDate(endedAt) } : {}),
         };
@@ -293,6 +301,10 @@ export const useEditJob = (jobId) => {
         type: values.type,
         category: values.category,
         requiredSkills: values.requiredSkills || values.skillsAndTools,
+        questionsCount: values.questionsCount ? parseInt(values.questionsCount, 10) : 10,
+        codingCount: values.codingCount ? parseInt(values.codingCount, 10) : 2,
+        behavioralCount: values.behavioralCount ? parseInt(values.behavioralCount, 10) : 4,
+        technicalCount: values.technicalCount ? parseInt(values.technicalCount, 10) : 4,
         startedAt: (originalStart && formatDate(originalStart) === formatDate(values.startedAt))
           ? originalStart
           : formatDate(values.startedAt),

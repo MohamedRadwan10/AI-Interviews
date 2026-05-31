@@ -570,6 +570,40 @@ export const postJobConfig = {
         },
       ],
     },
+    {
+      id: "interviewConfig",
+      title: "AI Interview Questions Configuration",
+      fields: [
+        {
+          field_name: "questionsCount",
+          type: "text",
+          label: "Total Number of Questions",
+          placeholder: "Default: 10",
+          validation: {},
+        },
+        {
+          field_name: "codingCount",
+          type: "text",
+          label: "Coding Questions",
+          placeholder: "Default: 2",
+          validation: {},
+        },
+        {
+          field_name: "behavioralCount",
+          type: "text",
+          label: "Behavioral Questions",
+          placeholder: "Default: 4",
+          validation: {},
+        },
+        {
+          field_name: "technicalCount",
+          type: "text",
+          label: "Technical Questions",
+          placeholder: "Default: 4",
+          validation: {},
+        },
+      ],
+    },
   ],
 };
 

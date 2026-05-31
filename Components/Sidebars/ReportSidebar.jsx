@@ -21,7 +21,7 @@ const ReportSidebar = ({ skillAnalysis, strengthPoints, weaknessesPoints }) => {
 
   return (
     <div className="flex flex-col gap-6 w-full">
-      <div className="bg-white dark:bg-[#1a1d24] rounded-[20px] p-6 shadow-sm border border-ui-borderLight dark:border-ui-border/50">
+      <div className="bg-white dark:bg-dark-primary-3 rounded-[20px] p-6 shadow-sm border border-ui-borderLight dark:border-ui-border/50">
         <div className="flex items-center gap-2 mb-6">
           <TrendingUp className="w-5 h-5 text-brand-primary" />
           <MainText tag="h3" title={"Skills Analysis"} className="text-base font-semibold text-ui-textMain dark:text-white" />
@@ -51,7 +51,7 @@ const ReportSidebar = ({ skillAnalysis, strengthPoints, weaknessesPoints }) => {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-[#1a1d24] rounded-[20px] p-6 shadow-sm border border-ui-borderLight dark:border-ui-border/50">
+      <div className="bg-white dark:bg-dark-primary-3 rounded-[20px] p-6 shadow-sm border border-ui-borderLight dark:border-ui-border/50">
         <div className="flex items-center gap-2 mb-4">
           <TrendingUp className="w-5 h-5 text-status-success" />
           <MainText tag="h3" title={"Strengths"} className="text-base font-semibold text-ui-textMain dark:text-white" />
@@ -61,7 +61,7 @@ const ReportSidebar = ({ skillAnalysis, strengthPoints, weaknessesPoints }) => {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-[#1a1d24] rounded-[20px] p-6 shadow-sm border border-ui-borderLight dark:border-ui-border/50">
+      <div className="bg-white dark:bg-dark-primary-3 rounded-[20px] p-6 shadow-sm border border-ui-borderLight dark:border-ui-border/50">
         <div className="flex items-center gap-2 mb-4">
           <MessageSquare className="w-5 h-5 text-status-error" />
           <MainText tag="h3" title={"Weaknesses"} className="text-base font-semibold text-ui-textMain dark:text-white" />

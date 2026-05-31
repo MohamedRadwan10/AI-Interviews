@@ -13,8 +13,8 @@ import MainButton from "@/Components/Common/MainButton";
 import { ArrowLeft } from "lucide-react";
 import { useNavigation } from "@/hooks/common";
 
-export const CvPage = () => {
-  const { fullName, jobTitle, email, phoneNumber, photoUrl, workExperiences, skills, certifications, projects, education, loading, error } = useProfessionalProfile();
+export const CvPage = ({userId}) => {
+  const { fullName, jobTitle, email, phoneNumber, photoUrl, workExperiences, skills, certifications, projects, education, loading, error } = useProfessionalProfile(userId);
   const { navigateBack } = useNavigation();
   const backIcon = <ArrowLeft className="w-4 h-4" />;
 
@@ -22,7 +22,7 @@ export const CvPage = () => {
   if (error) return <ErrorMessage />;
 
   return (
-    <div className="min-h-screen bg-light-primary dark:bg-dark-primary-1 py-10 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
+    <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
       <div className="max-w-[1200px] mx-auto flex flex-col gap-8">
         <MainButton
           onClick={navigateBack}

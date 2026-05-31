@@ -9,6 +9,7 @@ import { IMAGE_BASE_URL } from "@/Config/apiRegistry";
 import { getVal as commonGetVal } from "@/Utils/Func/Common";
 import { useReport } from "@/hooks/useReport";
 import { useNavigation } from "@/hooks/common";
+import { ReportError } from "@/Components/Errors";
 
 const Section = ({ title, children, className = "" }) => (
   <div className={`flex flex-col gap-2 ${className}`}>
@@ -36,11 +37,15 @@ const PointList = ({ title, points, colorClass, iconColor }) => (
 );
 
 const ApplicantDetailsModal = ({ visible, applicant, onHide, updateStatus, isUpdating }) => {
-  const { report, isLoading, strengthPoints: rawS, weaknessesPoints: rawW, accuracyPercent: acc, performanceLabel: perf } = useReport(applicant?.sessionId, applicant?.userId);
+  const { report, isLoading, refetch, error, strengthPoints: rawS, weaknessesPoints: rawW, accuracyPercent: acc, performanceLabel: perf } = useReport(applicant?.sessionId, applicant?.userId);
   const { navigateTo } = useNavigation();
+  
   const getVal = (path, fallback) => commonGetVal(report, applicant, path, fallback);
   
-  const fullName = getVal("fullName"), exp = getVal("yearsOfExperience"), email = getVal("email"), phone = getVal("phoneNumber");
+  const fullName = getVal("fullName");
+  const exp = getVal("yearOfExperience");
+  const email = getVal("email");
+  const phone = getVal("phoneNumber");
   const avgTimeRaw = getVal("averageResponseTimeSeconds");
   const avgTime = typeof avgTimeRaw === "string" && avgTimeRaw.includes("s") ? avgTimeRaw : `${avgTimeRaw || 0} s`;
   
@@ -48,16 +53,19 @@ const ApplicantDetailsModal = ({ visible, applicant, onHide, updateStatus, isUpd
     return (perf || acc !== null) ? `${perf || ""} ${acc !== null ? `(${acc}%)` : ""}`.trim() : "N/A";
   }, [perf, acc]);
   
-  const handleAction = async (status) => { if (await updateStatus(applicant.sessionId, status)) onHide(); };
-  const onAccept = () => handleAction(0), onReject = () => handleAction(1);
+  const handleAction = async (status) => { if (await updateStatus(applicant?.sessionId, status)) onHide(); };
+  const onAccept = () => handleAction(1);
+  const onReject = () => handleAction(2);
   
   const photo = commonGetVal(applicant, null, "photo", "");
   const photoUrl = photo ? (photo.startsWith("http") ? photo : `${IMAGE_BASE_URL}${photo}`) : null;
-  const sPoints = map(rawS?.split("|"), p => p.trim()).filter(Boolean), wPoints = map(rawW?.split("|"), p => p.trim()).filter(Boolean);
-  const actions = [
+  const sPoints = useMemo(() => map(rawS?.split("|"), p => p.trim()).filter(Boolean), [rawS]);
+  const wPoints = useMemo(() => map(rawW?.split("|"), p => p.trim()).filter(Boolean), [rawW]);
+  
+  const actions = useMemo(() => [
     { t: "View Report", i: <Eye size={18} />, onclick: () => navigateTo(`/intelliHire/report/${applicant?.sessionId}/${applicant?.userId}`) }, 
     { t: "View CV", i: <FileText size={18} />, onclick: () => navigateTo(`/intelliHire/cv/${applicant?.userId}`) }
-  ];
+  ], [applicant, navigateTo]);
 
   const loadingOverlay = useMemo(() => {
     if (!isLoading) return null;
@@ -92,44 +100,53 @@ const ApplicantDetailsModal = ({ visible, applicant, onHide, updateStatus, isUpd
     <CommonModal visible={visible} onHide={onHide} header="Candidate Details" width="800px" 
       contentClassName="bg-light-white dark:bg-dark-primary-3 text-ui-textMain dark:text-dark-white border-none p-0"
       headerClassName="bg-light-white dark:bg-dark-primary-3 text-ui-textMain dark:text-dark-white border-b border-ui-borderLight dark:border-ui-border rounded-t-2xl px-6 py-4">
-      <div className="flex flex-col p-6 gap-6 bg-light-primary dark:bg-dark-primary-1 rounded-b-2xl relative min-h-[400px]">
+      <div className={`flex flex-col p-6 gap-6 bg-light-primary dark:bg-dark-primary-1 rounded-b-2xl relative ${error ? "" : "min-h-[400px]"}`}>
         {loadingOverlay}
-        <Section title="Contact Information">
-          <div className="flex flex-wrap lg:flex-nowrap gap-4">
-            <Card className="flex items-center gap-4 flex-1">
-              <div className="w-14 h-14 rounded-2xl bg-light-main dark:bg-dark-primary-4 flex items-center justify-center overflow-hidden border border-brand-primary/20 shrink-0">
-                {photoContent}
+        
+        {error ? (
+          <div className="flex flex-col items-center justify-center py-10">
+            <ReportError refetch={refetch} />
+          </div>
+        ) : (
+          <>
+            <Section title="Contact Information">
+              <div className="flex flex-wrap lg:flex-nowrap gap-4">
+                <Card className="flex items-center gap-4 flex-1">
+                  <div className="w-14 h-14 rounded-2xl bg-light-main dark:bg-dark-primary-4 flex items-center justify-center overflow-hidden border border-brand-primary/20 shrink-0">
+                    {photoContent}
+                  </div>
+                  <div><MainText tag="h3" title={fullName} className="text-lg font-bold text-ui-textMain dark:text-white leading-tight" /></div>
+                </Card>
+                <Card className="flex flex-col justify-center gap-2 flex-1 text-sm">
+                  <div className="flex justify-between"><MainText title="Years of experience :" className="text-ui-textMuted dark:text-dark-gray" /><MainText title={exp} className="font-semibold text-ui-textMain dark:text-white" /></div>
+                  <div className="flex items-center gap-2"><Mail size={14} className="text-ui-textMuted dark:text-dark-gray" /><MainText title={email} className="text-ui-textMain dark:text-white text-xs truncate max-w-[150px]" /></div>
+                  <div className="flex items-center gap-2"><Phone size={14} className="text-ui-textMuted dark:text-dark-gray" /><MainText title={phone} className="text-ui-textMain dark:text-white text-xs" /></div>
+                </Card>
+                <Card className="flex flex-col justify-center gap-3 flex-1">
+                  <div><MainText title="Avg. Response Time" className="text-xs text-ui-textMuted dark:text-dark-gray block mb-1" /><MainText title={avgTime} className="font-bold text-lg text-ui-textMain dark:text-white" /></div>
+                  <div className="flex justify-between items-center"><MainText title="Accuracy" className="text-xs text-ui-textMuted dark:text-dark-gray" /><MainText title={accText} className="text-xs font-bold text-status-success" /></div>
+                </Card>
               </div>
-              <div><MainText tag="h3" title={fullName} className="text-lg font-bold text-ui-textMain dark:text-white leading-tight" /></div>
-            </Card>
-            <Card className="flex flex-col justify-center gap-2 flex-1 text-sm">
-              <div className="flex justify-between"><MainText title="Years of experience :" className="text-ui-textMuted dark:text-dark-gray" /><MainText title={exp} className="font-semibold text-ui-textMain dark:text-white" /></div>
-              <div className="flex items-center gap-2"><Mail size={14} className="text-ui-textMuted dark:text-dark-gray" /><MainText title={email} className="text-ui-textMain dark:text-white text-xs truncate max-w-[150px]" /></div>
-              <div className="flex items-center gap-2"><Phone size={14} className="text-ui-textMuted dark:text-dark-gray" /><MainText title={phone} className="text-ui-textMain dark:text-white text-xs" /></div>
-            </Card>
-            <Card className="flex flex-col justify-center gap-3 flex-1">
-              <div><MainText title="Avg. Response Time" className="text-xs text-ui-textMuted dark:text-dark-gray block mb-1" /><MainText title={avgTime} className="font-bold text-lg text-ui-textMain dark:text-white" /></div>
-              <div className="flex justify-between items-center"><MainText title="Accuracy" className="text-xs text-ui-textMuted dark:text-dark-gray" /><MainText title={accText} className="text-xs font-bold text-status-success" /></div>
-            </Card>
-          </div>
-        </Section>
-        <Section title="Points Review">
-          <Card className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
-            {strengthPointsContent}
-            {weaknessPointsContent}
-          </Card>
-        </Section>
-        <div className="flex flex-col gap-3 mt-2">
-          <div className="flex gap-4">
-            <MainButton title="Accept" loading={isUpdating} onClick={onAccept} className="flex-1 flex items-center justify-center bg-status-success text-white py-3 rounded-xl font-bold border-none" />
-            <MainButton title="Reject" loading={isUpdating} onClick={onReject} className="flex-1 flex items-center justify-center bg-status-error text-white py-3 rounded-xl font-bold border-none" />
-          </div>
-          <div className="flex gap-4">
-            {map(actions, (b) => (
-              <MainButton key={b.t} title={b.t} icon={b.i} onClick={b.onclick} className="flex-1 flex items-center justify-center bg-brand-primary text-white py-3 rounded-xl font-bold flex justify-center items-center gap-2 border-none" />
-            ))}
-          </div>
-        </div>
+            </Section>
+            <Section title="Points Review">
+              <Card className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+                {strengthPointsContent}
+                {weaknessPointsContent}
+              </Card>
+            </Section>
+            <div className="flex flex-col gap-3 mt-2">
+              <div className="flex gap-4">
+                <MainButton title="Accept" loading={isUpdating} onClick={onAccept} className="flex-1 flex items-center justify-center bg-status-success text-white py-3 rounded-xl font-bold border-none" />
+                <MainButton title="Reject" loading={isUpdating} onClick={onReject} className="flex-1 flex items-center justify-center bg-status-error text-white py-3 rounded-xl font-bold border-none" />
+              </div>
+              <div className="flex gap-4">
+                {map(actions, (b) => (
+                  <MainButton key={b.t} title={b.t} icon={b.i} onClick={b.onclick} className="flex-1 flex items-center justify-center bg-brand-primary text-white py-3 rounded-xl font-bold flex justify-center items-center gap-2 border-none" />
+                ))}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </CommonModal>
   );

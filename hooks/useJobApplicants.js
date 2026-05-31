@@ -31,7 +31,7 @@ export const useJobApplicants = (jobId) => {
 
   const { searchTerm, setSearchTerm, filteredData: applicants } = useSearch({
     data: get(jobDetails, "users", []),
-    searchFields: ["fullName", "status"],
+    searchFields: ["fullName"],
   });
 
   const stats = useMemo(() => {

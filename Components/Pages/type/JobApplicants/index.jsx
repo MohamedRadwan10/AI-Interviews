@@ -32,7 +32,7 @@ const JobApplicants = ({ id }) => {
         
         <JobApplicantsStats stats={stats} />
         
-        <div className="bg-white dark:bg-[#1a1d24] p-6 rounded-3xl border border-ui-borderLight dark:border-ui-border/50">
+        <div className="bg-white dark:bg-dark-primary-4 p-6 rounded-3xl border border-ui-borderLight dark:border-ui-border/50">
           <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
             <MainText title="Applied Candidates" className="text-xl font-bold dark:text-white" />
             <MainSearch value={searchTerm} onChange={onSearchChange} placeholder="Search candidates..." className="md:w-80" />
