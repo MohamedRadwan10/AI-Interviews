@@ -23,6 +23,12 @@ const TextField = (props) => {
     return <MainText title={error} className="text-status-error text-[10px] mt-1" />;
   }, [error]);
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
+  };
+
   return (
     <div className={`w-full mb-2 ${containerClassName}`}>
       <div className="flex items-center gap-1 mb-1">
@@ -35,6 +41,7 @@ const TextField = (props) => {
         value={value}
         onChange={onChange}
         onBlur={onBlur}
+        onKeyDown={handleKeyDown}
         placeholder={placeholder}
         autoComplete={props.autoComplete || (field_name === "email" ? "username" : "on")}
         aria-required={isRequired}

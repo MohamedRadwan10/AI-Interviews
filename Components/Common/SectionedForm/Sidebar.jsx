@@ -20,9 +20,14 @@ const FormSidebar = ({ sections, activeTab, setActiveTab, errors, touched, value
     <div className="lg:w-64 shrink-0 space-y-2">
       {map(sections, (section) => {
         const Icon = ICON_MAP[section.id] || Info;
-        const sectionFields = map(section.fields, "field_name");
-        const hasError = sectionFields.some(f => gv(errors, f) !== "N/A" && gv(touched, f) !== "N/A");
-        const isCompleted = sectionFields.every(f => gv(values, f) !== "N/A" && gv(errors, f) === "N/A");
+        const requiredFields = section.fields
+          .filter(f => f.validation?.required)
+          .map(f => f.field_name);
+        const hasError = requiredFields.some(f => gv(errors, f) !== "N/A" && gv(touched, f) !== "N/A");
+        const isCompleted = requiredFields.length > 0 && requiredFields.every(f => {
+          const val = gv(values, f);
+          return val !== "N/A" && val !== "" && val !== null && val !== undefined && gv(errors, f) === "N/A";
+        });
         const isActive = activeTab === section.id;
         
         const onSectionClick = () => setActiveTab(section.id);

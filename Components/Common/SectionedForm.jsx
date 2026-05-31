@@ -25,6 +25,11 @@ const SectionedForm = (props) => {
     enableReinitialize: true,
     validationSchema,
     onSubmit: async (values, actions) => {
+      const isLast = activeTab === sections[sections.length - 1]?.id;
+      if (!isLast) {
+        actions.setSubmitting(false);
+        return;
+      }
       if (onSubmit) {
         try {
           await onSubmit(values);
@@ -46,12 +51,19 @@ const SectionedForm = (props) => {
     formik
   };
 
+  const handleFormKeyDown = (e) => {
+    if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
   return (
     <div className="flex flex-col lg:flex-row gap-8 w-full">
       <FormSidebar {...sharedProps} />
 
       <div className="flex-1 space-y-6">
-        <form onSubmit={formik.handleSubmit} className="space-y-6">
+        <form onSubmit={formik.handleSubmit} onKeyDown={handleFormKeyDown} className="space-y-6">
           {map(sections, (section) => (
             <FormSection key={section.id} section={section} {...sharedProps} />
           ))}
