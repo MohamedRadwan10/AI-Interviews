@@ -9,13 +9,13 @@ export const CandidateDashboardLoading = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {[1, 2].map(i => (
-            <div key={i} className="bg-white dark:bg-[#1a1d24] rounded-3xl p-6 border border-ui-borderLight dark:border-ui-border/50 flex flex-col items-center justify-center">
+            <div key={i} className="bg-white dark:bg-dark-primary-3 rounded-3xl p-6 border border-ui-borderLight dark:border-ui-border/50 flex flex-col items-center justify-center">
               <Skeleton shape="circle" size="3rem" className="dark:!bg-dark-primary-3 mb-4" />
               <Skeleton width="4rem" height="2rem" className="dark:!bg-dark-primary-3 mb-2" />
               <Skeleton width="6rem" height="1rem" className="dark:!bg-dark-primary-3" />
             </div>
           ))}
-          <div className="bg-white dark:bg-[#1a1d24] rounded-3xl p-6 border border-ui-borderLight dark:border-ui-border/50 flex items-center justify-between">
+          <div className="bg-white dark:bg-dark-primary-3 rounded-3xl p-6 border border-ui-borderLight dark:border-ui-border/50 flex items-center justify-between">
             <div className="flex flex-col gap-3">
               <Skeleton width="5rem" height="1rem" className="dark:!bg-dark-primary-3" />
               <Skeleton width="8rem" height="1.5rem" className="dark:!bg-dark-primary-3" />
@@ -28,7 +28,7 @@ export const CandidateDashboardLoading = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-[#1a1d24] rounded-3xl p-6 border border-ui-borderLight dark:border-ui-border/50">
+        <div className="bg-white dark:bg-dark-primary-3 rounded-3xl p-6 border border-ui-borderLight dark:border-ui-border/50">
           <div className="flex items-center gap-3 mb-6">
             <Skeleton shape="circle" size="1.5rem" className="dark:!bg-dark-primary-3" />
             <Skeleton width="12rem" height="1.5rem" className="dark:!bg-dark-primary-3" />
@@ -36,20 +36,7 @@ export const CandidateDashboardLoading = () => {
           <Skeleton width="100%" height="300px" className="dark:!bg-dark-primary-3" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          {[1, 2].map(i => (
-            <div key={i} className="bg-white dark:bg-[#1a1d24] rounded-3xl p-6 border border-ui-borderLight dark:border-ui-border/50">
-              <Skeleton width="10rem" height="1.5rem" className="dark:!bg-dark-primary-3 mb-4" />
-              <div className="space-y-3">
-                <Skeleton width="100%" height="1rem" className="dark:!bg-dark-primary-3" />
-                <Skeleton width="90%" height="1rem" className="dark:!bg-dark-primary-3" />
-                <Skeleton width="95%" height="1rem" className="dark:!bg-dark-primary-3" />
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="bg-white dark:bg-[#1a1d24] rounded-3xl p-6 border border-ui-borderLight dark:border-ui-border/50">
+        <div className="bg-white dark:bg-dark-primary-3 rounded-3xl p-6 border border-ui-borderLight dark:border-ui-border/50">
           <div className="flex flex-col md:flex-row justify-between mb-6 gap-4">
             <div className="flex items-center gap-3">
               <Skeleton shape="circle" size="1.5rem" className="dark:!bg-dark-primary-3" />

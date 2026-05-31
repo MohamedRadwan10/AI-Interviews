@@ -20,7 +20,7 @@ const CompanyDashboard = () => {
   const onViewApplicants = (job) => navigateTo(`/intelliHire/job-applicants/${job.id}`);
   const onEditJob = (job) => navigateTo(`/intelliHire/edit-job/${job.id}`);
   const onSearchChange = (e) => setSearchTerm(e.target.value);
-  const columns = COMPANY_DASHBOARD_COLUMNS(onViewApplicants, onEditJob, handleDeleteJob);
+  const columns = COMPANY_DASHBOARD_COLUMNS(onViewApplicants, onEditJob, handleDeleteJob, navigateTo);
 
   return (
     <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 bg-light-primary dark:bg-dark-primary-1">

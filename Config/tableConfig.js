@@ -25,17 +25,32 @@ export const CANDIDATE_DASHBOARD_COLUMNS = (navigateTo, userId) => [
     type: "custom" 
   },
   { 
-    field: "hasReport", 
-    header: "Status", 
+    field: "sessionStatus", 
+    header: "Session Status", 
     type: "custom", 
     body: (r) => {
-      const statusText = r.hasReport ? "Completed" : "Pending";
-      const statusClass = `px-2 py-1 rounded-full text-xs font-bold ${r.hasReport ? 'bg-status-success/10 text-status-success' : 'bg-status-warning/10 text-status-warning'}`;
-      return (
-        <span className={statusClass}>
-          {statusText}
-        </span>
-      );
+      const status = r.sessionStatus || (r.hasReport ? "Completed" : "Pending");
+      const isCompleted = String(status).toLowerCase() === "completed";
+      const statusClass = `px-2.5 py-1 rounded-full text-xs font-bold ${
+        isCompleted ? 'bg-status-success/10 text-status-success' : 'bg-status-warning/10 text-status-warning'
+      }`;
+      return <span className={statusClass}>{status}</span>;
+    }
+  },
+  { 
+    field: "applicationStatus", 
+    header: "Application Status", 
+    type: "custom", 
+    body: (r) => {
+      const status = r.applicationStatus || "Pending";
+      const sLower = String(status).toLowerCase();
+      let statusClass = "bg-status-warning/10 text-status-warning";
+      if (sLower === "accepted" || sLower === "approved") {
+        statusClass = "bg-status-success/10 text-status-success";
+      } else if (sLower === "rejected" || sLower ==='incomplete') {
+        statusClass = "bg-status-error/10 text-status-error";
+      }
+      return <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${statusClass}`}>{status}</span>;
     }
   },
   { 
@@ -46,7 +61,7 @@ export const CANDIDATE_DASHBOARD_COLUMNS = (navigateTo, userId) => [
   }
 ];
 
-export const COMPANY_DASHBOARD_COLUMNS = (onViewApplicants, onEdit, onDelete) => [
+export const COMPANY_DASHBOARD_COLUMNS = (onViewApplicants, onEdit, onDelete, navigateTo) => [
   {
     header: "Job Title",
     field: "title",
@@ -54,12 +69,13 @@ export const COMPANY_DASHBOARD_COLUMNS = (onViewApplicants, onEdit, onDelete) =>
     sortable: true,
     type: "custom",
     body: (rowData) => {
-      const { title, type } = rowData;
+      const { title, type, id } = rowData;
       const icon = <Clock size={12} />;
       const typeText = <>{icon} {type}</>;
+      const onClickTitle = () => navigateTo && navigateTo(`/intelliHire/jobs/${id}`);
       return (
-        <div className="flex flex-col gap-1">
-          <MainText title={title} className="font-bold text-ui-textMain dark:text-dark-white" />
+        <div className="flex flex-col gap-1 cursor-pointer group" onClick={onClickTitle}>
+          <MainText title={title} className="font-bold text-ui-textMain dark:text-dark-white group-hover:text-brand-primary transition-colors" />
           <div className="flex items-center gap-3 text-xs text-ui-textMuted dark:text-dark-gray">
             <MainText title={typeText} className="flex items-center gap-1" />
           </div>
@@ -154,15 +170,33 @@ export const JOB_APPLICANTS_COLUMNS = (onViewApplicant) => [
       return <MainText title={scoreText} className={scoreClass} />;
     }
   },
-  {
-    header: "Status",
-    field: "status",
-    align: "center",
-    type: "badge",
-    body: (rowData) => {
-      const statuses = { 0: "accepted", 1: "rejected", 2: "pending" };
-      const statusText = statuses[rowData.status] || "pending";
-      return statusText;
+   { 
+    field: "sessionStatus", 
+    header: "Session Status", 
+    type: "custom", 
+    body: (r) => {
+      const status = r.sessionStatus || (r.hasReport ? "Completed" : "Pending");
+      const isCompleted = String(status).toLowerCase() === "completed";
+      const statusClass = `px-2.5 py-1 rounded-full text-xs font-bold ${
+        isCompleted ? 'bg-status-success/10 text-status-success' : 'bg-status-warning/10 text-status-warning'
+      }`;
+      return <span className={statusClass}>{status}</span>;
+    }
+  },
+  { 
+    field: "reportStatus", 
+    header: "Report Status", 
+    type: "custom", 
+    body: (r) => {
+      const status = r.reportStatus || "Pending";
+      const sLower = String(status).toLowerCase();
+      let statusClass = "bg-status-warning/10 text-status-warning";
+      if (sLower === "accepted" || sLower === "approved") {
+        statusClass = "bg-status-success/10 text-status-success";
+      } else if (sLower === "rejected" || sLower ==='incomplete') {
+        statusClass = "bg-status-error/10 text-status-error";
+      }
+      return <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${statusClass}`}>{status}</span>;
     }
   },
   {

@@ -17,7 +17,7 @@ export const CompanyDashboardLoading = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {[1, 2].map(i => (
-            <div key={i} className="bg-white dark:bg-[#1a1d24] rounded-3xl p-8 border border-ui-borderLight dark:border-ui-border/50 flex justify-between items-center">
+            <div key={i} className="bg-white dark:bg-dark-primary-3 rounded-3xl p-8 border border-ui-borderLight dark:border-ui-border/50 flex justify-between items-center">
               <div className="space-y-3">
                 <Skeleton width="6rem" height="1rem" className="dark:!bg-dark-primary-3" />
                 <Skeleton width="4rem" height="2.5rem" className="dark:!bg-dark-primary-3" />
@@ -27,7 +27,7 @@ export const CompanyDashboardLoading = () => {
           ))}
         </div>
 
-        <div className="bg-white dark:bg-[#1a1d24] rounded-3xl p-6 border border-ui-borderLight dark:border-ui-border/50">
+        <div className="bg-white dark:bg-dark-primary-3 rounded-3xl p-6 border border-ui-borderLight dark:border-ui-border/50">
           <div className="flex justify-between items-center mb-8">
             <Skeleton width="12rem" height="1.8rem" className="dark:!bg-dark-primary-3" />
             <Skeleton width="15rem" height="2.5rem" borderRadius="2rem" className="dark:!bg-dark-primary-3" />

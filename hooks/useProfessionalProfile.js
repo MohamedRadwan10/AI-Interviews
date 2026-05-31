@@ -4,11 +4,12 @@ import { get } from "lodash-es";
 import { useApi } from "@/hooks/useApi";
 import { UserTokenContext } from "@/Context/UserTokenContext";
 
-export const useProfessionalProfile = () => {
+export const useProfessionalProfile = (userId) => {
   const { userToken } = useContext(UserTokenContext);
   const { data, loading, error, refetch } = useApi({
     type: "userCv",
-    autoFetch: !!userToken,
+    autoFetch: !!userToken && !!userId,
+    urlSuffix: `/${userId}`,
   });
 
   const profileData = useMemo(() => {
