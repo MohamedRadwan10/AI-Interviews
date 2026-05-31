@@ -1,23 +1,11 @@
 "use client";
 import React, { useMemo } from "react";
 import { getVal } from "@/Utils/Func/Common";
-import { Calendar } from "primereact/calendar";
+import { InputTextarea } from "primereact/inputtextarea";
 import MainText from "@/Components/Common/MainText";
 
-const DateField = (props) => {
-  const { 
-    field_name, 
-    value, 
-    onChange, 
-    onBlur, 
-    label, 
-    placeholder = "Select Date", 
-    error, 
-    containerClassName = "", 
-    fieldClassName = "", 
-    validation 
-  } = props;
-  
+const TextareaField = (props) => {
+  const { field_name, value = "", onChange, onBlur, label, placeholder = "Enter text", error, containerClassName = "", fieldClassName = "", validation } = props;
   const isRequired = getVal(validation, null, "required", false);
 
   const labelContent = useMemo(() => {
@@ -35,38 +23,34 @@ const DateField = (props) => {
     return <MainText title={error} className="text-status-error text-[10px] mt-1" />;
   }, [error]);
 
-  const handleDateChange = (e) => onChange(e.value);
-  const dateValue = value ? (value instanceof Date ? value : new Date(value)) : null;
-
   return (
     <div className={`w-full mb-2 ${containerClassName}`}>
       <div className="flex items-center gap-1 mb-1">
         {labelContent}
         {requiredIndicator}
       </div>
-      <Calendar
+      <InputTextarea
         id={field_name}
         name={field_name}
-        value={dateValue}
-        onChange={handleDateChange}
+        value={value}
+        onChange={onChange}
         onBlur={onBlur}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            e.preventDefault();
+            // Stop form submit on Enter but allow typing a newline inside textarea
             e.stopPropagation();
           }
         }}
+        rows={5}
         placeholder={placeholder}
-        showIcon
-        dateFormat="yy-mm-dd"
-        className={`w-full ${fieldClassName}`}
-        inputClassName={`w-full p-2 border rounded outline-none focus:border-brand-primary transition-all bg-light-blue50 dark:bg-dark-primary-3 text-light-black dark:text-dark-white ${
+        aria-required={isRequired}
+        className={`w-full p-2 border rounded outline-none focus:border-brand-primary transition-all bg-light-blue50 dark:bg-dark-primary-3 text-light-black dark:text-dark-white resize-none ${
           error ? "border-status-error" : "border-ui-borderLight dark:border-dark-gray"
-        }`}
+        } ${fieldClassName}`}
       />
       {errorContent}
     </div>
   );
 };
 
-export default DateField;
+export default TextareaField;

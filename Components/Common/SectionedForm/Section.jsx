@@ -2,7 +2,7 @@ import { map, get } from "lodash-es";
 import { getVal } from "@/Utils/Func/Common";
 import MainText from "@/Components/Common/MainText";
 import MainInput from "@/Components/Common/Inputs";
-import { Info, Briefcase, Layers, FileText, ListChecks } from "lucide-react";
+import { Info, Briefcase, Layers, FileText, ListChecks, FileQuestion } from "lucide-react";
 
 const ICON_MAP = {
   basic: Info,
@@ -10,6 +10,7 @@ const ICON_MAP = {
   skills: Layers,
   description: FileText,
   requirements: ListChecks,
+  interviewConfig: FileQuestion,
 };
 
 const FormSection = ({ section, activeTab, values, errors, touched, formik, sections }) => {

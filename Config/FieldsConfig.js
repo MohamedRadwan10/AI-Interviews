@@ -548,7 +548,7 @@ export const postJobConfig = {
       fields: [
         {
           field_name: "description",
-          type: "text",
+          type: "textarea",
           label: "The Role",
           placeholder: "Detail the responsibilities and daily tasks...",
           validation: { required: true },
@@ -562,7 +562,7 @@ export const postJobConfig = {
       fields: [
         {
           field_name: "requirements",
-          type: "text",
+          type: "textarea",
           label: "Qualifications",
           placeholder: "Education, certifications, or specific achievements...",
           validation: { required: true },
@@ -576,30 +576,30 @@ export const postJobConfig = {
       fields: [
         {
           field_name: "questionsCount",
-          type: "text",
+          type: "number",
           label: "Total Number of Questions",
-          placeholder: "Default: 10",
+          placeholder: "Leave empty for default (10)",
           validation: {},
         },
         {
           field_name: "codingCount",
-          type: "text",
+          type: "number",
           label: "Coding Questions",
-          placeholder: "Default: 2",
+          placeholder: "Leave empty to auto-distribute",
           validation: {},
         },
         {
           field_name: "behavioralCount",
-          type: "text",
+          type: "number",
           label: "Behavioral Questions",
-          placeholder: "Default: 4",
+          placeholder: "Leave empty to auto-distribute",
           validation: {},
         },
         {
           field_name: "technicalCount",
-          type: "text",
+          type: "number",
           label: "Technical Questions",
-          placeholder: "Default: 4",
+          placeholder: "Leave empty to auto-distribute",
           validation: {},
         },
       ],

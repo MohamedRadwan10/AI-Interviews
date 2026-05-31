@@ -243,6 +243,44 @@ export const usePostJob = () => {
           behavioralCount,
           technicalCount,
         } = values;
+
+        const hasQuestionsCount = questionsCount !== "" && questionsCount !== null && questionsCount !== undefined;
+        let questionCountPayload = {};
+        if (hasQuestionsCount) {
+          const totalCount = parseInt(questionsCount, 10);
+          const hasCoding = codingCount !== "" && codingCount !== null && codingCount !== undefined;
+          const hasBehavioral = behavioralCount !== "" && behavioralCount !== null && behavioralCount !== undefined;
+          const hasTechnical = technicalCount !== "" && technicalCount !== null && technicalCount !== undefined;
+          const allTypesEmpty = !hasCoding && !hasBehavioral && !hasTechnical;
+
+          let resolvedCoding, resolvedBehavioral, resolvedTechnical;
+          if (allTypesEmpty) {
+            const base = Math.floor(totalCount / 3);
+            const remainder = totalCount % 3;
+            resolvedCoding = base + (remainder > 0 ? 1 : 0);
+            resolvedBehavioral = base + (remainder > 1 ? 1 : 0);
+            resolvedTechnical = base;
+          } else {
+            resolvedCoding = hasCoding ? parseInt(codingCount, 10) : 0;
+            resolvedBehavioral = hasBehavioral ? parseInt(behavioralCount, 10) : 0;
+            resolvedTechnical = hasTechnical ? parseInt(technicalCount, 10) : 0;
+          }
+
+          questionCountPayload = {
+            questionsCount: totalCount,
+            codingCount: resolvedCoding,
+            behavioralCount: resolvedBehavioral,
+            technicalCount: resolvedTechnical,
+          };
+        } else {
+          questionCountPayload = {
+            questionsCount: 10,
+            codingCount: 2,
+            behavioralCount: 4,
+            technicalCount: 4,
+          };
+        }
+
         const payload = {
           title,
           category,
@@ -253,10 +291,7 @@ export const usePostJob = () => {
           experienceYears: parseInt(experienceYears || 0, 10),
           requirements,
           requiredSkills,
-          questionsCount: values.questionsCount ? parseInt(values.questionsCount, 10) : 10,
-          codingCount: values.codingCount ? parseInt(values.codingCount, 10) : 2,
-          behavioralCount: values.behavioralCount ? parseInt(values.behavioralCount, 10) : 4,
-          technicalCount: values.technicalCount ? parseInt(values.technicalCount, 10) : 4,
+          ...questionCountPayload,
           ...(startedAt ? { startedAt: formatDate(startedAt) } : {}),
           ...(endedAt ? { endedAt: formatDate(endedAt) } : {}),
         };

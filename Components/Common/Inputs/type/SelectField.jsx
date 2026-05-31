@@ -40,6 +40,12 @@ const SelectField = (props) => {
         optionValue="value"
         onChange={handleDropdownChange}
         onBlur={onBlur}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }}
         placeholder={placeholder}
         filter
 

@@ -1,23 +1,10 @@
 "use client";
 import React, { useMemo } from "react";
 import { getVal } from "@/Utils/Func/Common";
-import { Calendar } from "primereact/calendar";
 import MainText from "@/Components/Common/MainText";
 
-const DateField = (props) => {
-  const { 
-    field_name, 
-    value, 
-    onChange, 
-    onBlur, 
-    label, 
-    placeholder = "Select Date", 
-    error, 
-    containerClassName = "", 
-    fieldClassName = "", 
-    validation 
-  } = props;
-  
+const NumberField = (props) => {
+  const { field_name, value = "", onChange, onBlur, label, placeholder = "Enter number", error, containerClassName = "", fieldClassName = "", validation } = props;
   const isRequired = getVal(validation, null, "required", false);
 
   const labelContent = useMemo(() => {
@@ -35,8 +22,15 @@ const DateField = (props) => {
     return <MainText title={error} className="text-status-error text-[10px] mt-1" />;
   }, [error]);
 
-  const handleDateChange = (e) => onChange(e.value);
-  const dateValue = value ? (value instanceof Date ? value : new Date(value)) : null;
+  const handleChange = (e) => {
+    if (onChange) onChange(e);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
+  };
 
   return (
     <div className={`w-full mb-2 ${containerClassName}`}>
@@ -44,29 +38,24 @@ const DateField = (props) => {
         {labelContent}
         {requiredIndicator}
       </div>
-      <Calendar
+      <input
         id={field_name}
         name={field_name}
-        value={dateValue}
-        onChange={handleDateChange}
+        type="number"
+        min="0"
+        value={value}
+        onChange={handleChange}
         onBlur={onBlur}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            e.stopPropagation();
-          }
-        }}
+        onKeyDown={handleKeyDown}
         placeholder={placeholder}
-        showIcon
-        dateFormat="yy-mm-dd"
-        className={`w-full ${fieldClassName}`}
-        inputClassName={`w-full p-2 border rounded outline-none focus:border-brand-primary transition-all bg-light-blue50 dark:bg-dark-primary-3 text-light-black dark:text-dark-white ${
+        aria-required={isRequired}
+        className={`w-full p-2 border rounded outline-none focus:border-brand-primary transition-all bg-light-blue50 dark:bg-dark-primary-3 text-light-black dark:text-dark-white ${
           error ? "border-status-error" : "border-ui-borderLight dark:border-dark-gray"
-        }`}
+        } ${fieldClassName}`}
       />
       {errorContent}
     </div>
   );
 };
 
-export default DateField;
+export default NumberField;

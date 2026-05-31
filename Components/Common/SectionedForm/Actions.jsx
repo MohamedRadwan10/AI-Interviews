@@ -18,7 +18,13 @@ const FormActions = ({
   const isLast = currentIndex === sections.length - 1;
 
   const onPrevious = () => setActiveTab(sections[currentIndex - 1]?.id);
-  const onNext = () => setActiveTab(sections[currentIndex + 1]?.id);
+  const onNext = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    setActiveTab(sections[currentIndex + 1]?.id);
+  };
   const onCancel = () => navigateTo("/intelliHire/jobs");
   const nextIcon = <ChevronRight className="w-4 h-4" />;
 
@@ -33,9 +39,9 @@ const FormActions = ({
       <div className="flex items-center gap-4 w-full sm:w-auto">
         <MainButton type="button" onClick={onCancel} className="flex-1 sm:flex-none px-8 py-3 text-sm font-semibold text-ui-textMuted dark:text-ui-muted hover:text-ui-textMain dark:hover:text-white transition-colors" title="Cancel" />
         {!isLast ? (
-          <MainButton type="button" onClick={onNext} className="flex-1 sm:flex-none px-8 py-3 bg-brand-primary text-white rounded-2xl hover:shadow-lg hover:shadow-brand-primary/30 transition-all font-bold flex items-center gap-2" title="Next Step" icon={nextIcon} />
+          <MainButton key="next-step-btn" type="button" onClick={onNext} className="flex-1 sm:flex-none px-8 py-3 bg-brand-primary text-white rounded-2xl hover:shadow-lg hover:shadow-brand-primary/30 transition-all font-bold flex items-center gap-2" title="Next Step" icon={nextIcon} />
         ) : (
-          <MainButton type="submit" className="flex-1 sm:flex-none px-10 py-3 bg-gradient-to-r from-brand-primary to-brand-primaryDark text-white rounded-2xl shadow-xl shadow-brand-primary/20 hover:scale-105 transition-all font-bold disabled:opacity-50" disabled={isSubmitting || isLoading} isLoading={isLoading || isSubmitting} title={submitButtonText} />
+          <MainButton key="submit-job-btn" type="submit" className="flex-1 sm:flex-none px-10 py-3 bg-gradient-to-r from-brand-primary to-brand-primaryDark text-white rounded-2xl shadow-xl shadow-brand-primary/20 hover:scale-105 transition-all font-bold disabled:opacity-50" disabled={isSubmitting || isLoading} isLoading={isLoading || isSubmitting} title={submitButtonText} />
         )}
       </div>
     </div>
