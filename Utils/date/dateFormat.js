@@ -11,3 +11,28 @@ export const formatRelative = (date) =>
 
 export const formatMonthYear = (date) =>
   moment(date).format("MMMM YYYY");
+
+
+export const formatReportDate = (apiDate) => {
+  if (!apiDate) return "N/A";
+  try {
+    const date = new Date(apiDate);
+    if (isNaN(date.getTime())) return "N/A";
+
+    const datePart = date.toLocaleDateString("en-US", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+
+    const timePart = date.toLocaleString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+
+    return `${datePart}, ${timePart}`;
+  } catch {
+    return "N/A";
+  }
+};

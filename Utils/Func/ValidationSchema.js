@@ -85,6 +85,16 @@ export const buildValidationSchema = (fields) => {
           );
         }
       }
+
+      if (field.validation.customTest) {
+        schema = schema.test(
+          field.validation.customTest.name,
+          field.validation.customTest.message,
+          function(value) {
+            return field.validation.customTest.test(value, this);
+          }
+        );
+      }
     }
 
     set(shapeConfig, field.field_name, schema);

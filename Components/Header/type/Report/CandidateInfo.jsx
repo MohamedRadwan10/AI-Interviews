@@ -2,8 +2,21 @@ import React from "react";
 import MainText from "@/Components/Common/MainText";
 import MainImage from "@/Components/Common/Image";
 import { User, Mail, Phone, Briefcase, Building2 } from "lucide-react";
+import { REPORT_STATUS_CONFIG } from "@/Config/InterviewConfig";
 
-const CandidateInfo = ({ photo, fullName, email, phoneNumber, roleApplied, company }) => {
+const CandidateInfo = ({ photo, fullName, email, phoneNumber, roleApplied, company, reportStatus }) => {
+  const renderStatusBadge = () => {
+    const s = String(reportStatus || "Pending").toLowerCase();
+    const config = REPORT_STATUS_CONFIG[s] || REPORT_STATUS_CONFIG.pending;
+
+    return (
+      <div className={`px-3 py-1 rounded-full ${config.badgeClass} flex items-center gap-1.5`}>
+        <span className={`w-1.5 h-1.5 rounded-full inline-block ${config.dotClass}`}></span>
+        <MainText tag="span" title={config.badgeLabel} className="text-xs font-bold uppercase tracking-wider" />
+      </div>
+    );
+  };
+
   return (
     <div className="lg:col-span-2 bg-white dark:bg-dark-primary-4 rounded-[24px] p-6 shadow-sm border border-ui-borderLight dark:border-ui-border/50">
       <div className="flex flex-col sm:flex-row gap-6">
@@ -20,6 +33,7 @@ const CandidateInfo = ({ photo, fullName, email, phoneNumber, roleApplied, compa
           <div className="flex flex-wrap items-center gap-3 mb-4">
             <MainText tag="h2" title={fullName || "Candidate Name"} className="text-xl font-bold text-ui-textMain dark:text-white" />
             <MainText tag="span" title="Candidate" className="px-3 py-1 rounded-full bg-brand-primary/10 text-brand-primary text-xs font-bold uppercase tracking-wider" />
+            {renderStatusBadge()}
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
