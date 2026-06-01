@@ -12,7 +12,7 @@ async function handler(request, { params }) {
     const queryString = searchParams.toString();
     
     // Special case for endpoints that are not under the /api prefix (like /selfie or /CheckJobMatch)
-    const targetUrl = (segments[0] === "selfie" || segments[0] === "CheckJobMatch")
+    const targetUrl = (segments[0] === "selfie" || segments[0] === "CheckJobMatch" || segments[0] === "MarkAsDeleted"|| segments[0] === "MarkAllAsRead"|| segments[0] === "GetNotifications")
       ? `https://intellhire.runasp.net/${backendPath}${queryString ? `?${queryString}` : ""}`
       : `${BACKEND_BASE_URL}/${backendPath}${queryString ? `?${queryString}` : ""}`;
 
@@ -47,7 +47,9 @@ async function handler(request, { params }) {
 
     const responseBody = await backendResponse.arrayBuffer();
 
-    return new NextResponse(responseBody, {
+    const isNoBodyStatus = backendResponse.status === 204 || backendResponse.status === 205 || backendResponse.status === 304;
+
+    return new NextResponse(isNoBodyStatus ? null : responseBody, {
       status: backendResponse.status,
       headers: {
         "Content-Type": backendResponse.headers.get("Content-Type") || "application/json",

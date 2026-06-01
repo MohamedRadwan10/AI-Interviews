@@ -4,8 +4,9 @@ import Theme from "@/Components/admin/Layout/Components/Theme";
 import UserAvatar from "@/Components/admin/Layout/Components/UserAvatar";
 import Logo from "./Components/Logo";
 import NavMenu from "./Components/NavMenu";
-import { Bell, Menu } from "lucide-react";
+import { Bell, Menu, Activity } from "lucide-react";
 import { useInterviewSessions } from "@/hooks/useActiveSessions";
+import { useNotifications } from "@/hooks/useNotifications";
 import { useNavigation } from "@/hooks/common";
 import MainButton from "@/Components/Common/MainButton";
 import MainText from "@/Components/Common/MainText";
@@ -15,9 +16,12 @@ import { get } from "lodash-es";
 const TopBar = () => {
   const [scrolled, setScrolled] = useState(false);
   const { activeSessionsCount } = useInterviewSessions();
+  const { notifications } = useNotifications();
   const { navigateTo } = useNavigation();
   const { accountData } = useUserAccount();
   const userType = get(accountData, "userType");
+
+  const unreadNotificationsCount = (notifications || []).filter(n => !n.isRead).length;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -26,7 +30,7 @@ const TopBar = () => {
   }, []);
 
   const handleSessionsClick = () => navigateTo("/intelliHire/active-sessions");
-  const sessionsCountLabel = activeSessionsCount.toString();
+  const handleNotificationsClick = () => navigateTo("/intelliHire/notifications");
 
   return (
     <header className={`sticky top-0 z-50 transition-all duration-500 w-full px-4 md:px-8 pt-4 pb-2 ${
@@ -40,18 +44,35 @@ const TopBar = () => {
         <NavMenu />
 
         <div className="flex items-center gap-2 md:gap-4 shrink-0">
+          
+          <div className="relative">
+            <MainButton 
+              onClick={handleNotificationsClick}
+              className="p-2.5 rounded-2xl bg-white/50 dark:bg-white/5 border border-ui-borderLight dark:border-dark-gray text-ui-textMuted dark:text-ui-muted hover:text-brand-primary dark:hover:text-brand-accent transition-all"
+            >
+              <Bell className="w-5 h-5" />
+            </MainButton>
+            {unreadNotificationsCount > 0 && (
+              <MainText 
+                tag="span"
+                title={unreadNotificationsCount.toString()}
+                className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-status-error text-[10px] font-bold text-white border-2 border-light-primary dark:border-dark-primary-4 animate-bounce pointer-events-none"
+              />
+            )}
+          </div>
+
           {userType !== "Company" && (
             <div className="relative">
               <MainButton 
                 onClick={handleSessionsClick}
                 className="p-2.5 rounded-2xl bg-white/50 dark:bg-white/5 border border-ui-borderLight dark:border-dark-gray text-ui-textMuted dark:text-ui-muted hover:text-brand-primary dark:hover:text-brand-accent transition-all"
               >
-                <Bell className="w-5 h-5" />
+                <Activity className="w-5 h-5" />
               </MainButton>
               {activeSessionsCount > 0 && (
                 <MainText 
                   tag="span"
-                  title={sessionsCountLabel}
+                  title={activeSessionsCount.toString()}
                   className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-status-error text-[10px] font-bold text-white border-2 border-light-primary dark:border-dark-primary-4 animate-bounce pointer-events-none"
                 />
               )}

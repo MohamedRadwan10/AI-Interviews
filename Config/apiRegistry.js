@@ -123,4 +123,16 @@ export const AUTH_ENDPOINTS = {
     url: "/CheckJobMatch",
     method: "GET",
   },
+  GetNotifications: {
+    url: "/GetNotifications",
+    method: "GET",
+  },
+  MarkAllAsRead: {
+    url: "/MarkAllAsRead",
+    method: "PUT",
+  },
+  MarkAsDeleted: {
+    url: "/MarkAsDeleted", // /{notification id} in end point
+    method: "PUT",
+  },
 };

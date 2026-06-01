@@ -2,15 +2,14 @@ import { useState, useMemo, useEffect, useContext, useCallback } from "react";
 import { get, take, drop, filter } from "lodash-es";
 import { useApi } from "@/hooks/useApi";
 import { UserTokenContext } from "@/Context/UserTokenContext";
-import { useNavigation, useMainNotify } from "@/hooks/common";
+import { useNavigation, useMainNotify, useUrlSync } from "@/hooks/common";
 import { formatDate } from "@/Utils/Func/Common";
 import { getCountryName, getStateName } from "@/Utils/Func/LocationData";
 
 export const useJobs = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const [filters, setFilters] = useState({
+  const { params, setParams, updateParam } = useUrlSync({
+    search: "",
+    page: 1,
     category: "",
     subCategory: "",
     type: "",
@@ -18,6 +17,21 @@ export const useJobs = () => {
     country: "",
     city: "",
   });
+
+  const searchTerm = params.search || "";
+  const setSearchTerm = (value) => updateParam("search", value);
+  const page = params.page || 1;
+  const setPage = (value) => updateParam("page", value);
+  const filters = {
+    category: params.category || "",
+    subCategory: params.subCategory || "",
+    type: params.type || "",
+    careerLevel: params.careerLevel || "",
+    country: params.country || "",
+    city: params.city || "",
+  };
+
+  const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -27,29 +41,29 @@ export const useJobs = () => {
       }
     }, 500);
     return () => clearTimeout(handler);
-  }, [searchTerm, debouncedSearch]);
+  }, [searchTerm, debouncedSearch, setPage]);
 
   const updateFilter = useCallback((name, value) => {
-    setFilters((prev) => {
-      const next = { ...prev, [name]: value };
+    setParams((prev) => {
+      const next = { ...prev, [name]: value, page: 1 };
       if (name === "category") next.subCategory = "";
       if (name === "country") next.city = "";
       return next;
     });
-    setPage(1);
-  }, []);
+  }, [setParams]);
 
   const resetFilters = useCallback(() => {
-    setFilters({
+    setParams(prev => ({
+      ...prev,
       category: "",
       subCategory: "",
       type: "",
       careerLevel: "",
       country: "",
       city: "",
-    });
-    setPage(1);
-  }, []);
+      page: 1
+    }));
+  }, [setParams]);
 
   const { data, loading, error, refetch } = useApi({
     type: "jobs",
