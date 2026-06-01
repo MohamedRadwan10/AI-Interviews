@@ -84,6 +84,14 @@ export const useSignalR = (token, userId) => {
       callbacksRef.current["OnInterviewTerminated"]?.(data);
     });
 
+    connection.on("ReceiveCompanyNotification", (data) => {
+      callbacksRef.current["ReceiveCompanyNotification"]?.(data);
+    });
+    
+    connection.on("ReceiveUserNotification", (data) => {
+      callbacksRef.current["ReceiveUserNotification"]?.(data);
+    });
+
     return () => {
       isMounted = false;
       connection.off("updateStatus");
@@ -93,6 +101,8 @@ export const useSignalR = (token, userId) => {
       connection.off("ErrorMessage");
       connection.off("OnWarning");
       connection.off("OnInterviewTerminated");
+      connection.off("ReceiveCompanyNotification");
+      connection.off("ReceiveUserNotification");
     };
   }, [connection]);
 

@@ -84,3 +84,9 @@ export const JobApplicantsPage = dynamic(() => import('./JobApplicants'), {
     loading: () => <RouteLoading type="jobApplicants" />,
     ssr: false
 });
+
+export const NotificationPage = dynamic(() => import('./Notification'), { 
+    loading: () => <RouteLoading type="notification" />,
+    ssr: false
+});
+

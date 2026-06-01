@@ -17,3 +17,4 @@ export * from '@/Components/Common/LoadingSkeleton/type/CompanyDashboardLoading'
 export * from '@/Components/Common/LoadingSkeleton/type/JobApplicantsLoading';
 export * from '@/Components/Common/LoadingSkeleton/type/CvLoading';
 export * from '@/Components/Common/LoadingSkeleton/type/auth';
+export * from '@/Components/Common/LoadingSkeleton/type/NotificationLoading';

@@ -241,3 +241,58 @@ export const useDownloadReport = () => {
     printContent,
   }), [isDownloading, downloadError, downloadAsFile, printContent]);
 };
+
+export const useUrlSync = (initialParams) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const initialParamsStr = JSON.stringify(initialParams);
+
+  const [params, setParams] = useState(() => {
+    if (typeof window !== "undefined") {
+      const sp = new URLSearchParams(window.location.search);
+      const initial = JSON.parse(initialParamsStr);
+      Object.keys(initial).forEach(key => {
+        if (sp.has(key)) {
+          const val = sp.get(key);
+          initial[key] = typeof initial[key] === "number" ? Number(val) : val;
+        }
+      });
+      return initial;
+    }
+    return JSON.parse(initialParamsStr);
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const sp = new URLSearchParams(window.location.search);
+    let changed = false;
+    const initial = JSON.parse(initialParamsStr);
+
+    Object.entries(params).forEach(([key, value]) => {
+      const defaultVal = initial[key];
+      if (value && value !== defaultVal) {
+        if (sp.get(key) !== String(value)) {
+          sp.set(key, String(value));
+          changed = true;
+        }
+      } else if (sp.has(key)) {
+        sp.delete(key);
+        changed = true;
+      }
+    });
+
+    if (changed) {
+      router.replace(`${pathname}?${sp.toString()}`, { scroll: false });
+    }
+  }, [params, pathname, router, initialParamsStr]);
+
+  const updateParam = useCallback((key, value) => {
+    setParams(prev => ({ ...prev, [key]: value }));
+  }, []);
+
+  const resetParams = useCallback(() => {
+    setParams(JSON.parse(initialParamsStr));
+  }, [initialParamsStr]);
+
+  return useMemo(() => ({ params, setParams, updateParam, resetParams }), [params, setParams, updateParam, resetParams]);
+};
