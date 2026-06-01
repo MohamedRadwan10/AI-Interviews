@@ -7,11 +7,12 @@ import CandidateInfo from "@/Components/Header/type/Report/CandidateInfo";
 import PerformanceScore from "@/Components/Header/type/Report/PerformanceScore";
 import DetailedMetrics from "@/Components/Header/type/Report/DetailedMetrics";
 import { useReportHeader } from "@/hooks/useReport";
+import { REPORT_STATUS_CONFIG } from "@/Config/InterviewConfig";
 
 const ReportHeader = (props) => {
   const { 
     sessionId, feedback, duration, averageResponseTimeSeconds,
-    fullName, email, phoneNumber, roleApplied, company 
+    fullName, email, phoneNumber, roleApplied, company, reportStatus 
   } = props;
 
   const {
@@ -23,6 +24,24 @@ const ReportHeader = (props) => {
     candidatePhoto,
     downloadFileName
   } = useReportHeader(props);
+
+  const renderStatusBanner = () => {
+    const s = String(reportStatus || "Pending").toLowerCase();
+    const config = REPORT_STATUS_CONFIG[s] || REPORT_STATUS_CONFIG.pending;
+    const IconComponent = config.icon;
+
+    return (
+      <div className={`w-full mb-6 p-4 rounded-[20px] bg-gradient-to-r ${config.bgClass} flex items-center gap-4 shadow-sm`}>
+        <div className={`p-3 rounded-xl shrink-0 text-xl ${config.iconBgClass}`}>
+          {IconComponent && <IconComponent size={24} />}
+        </div>
+        <div>
+          <MainText tag="h3" title={config.title} className={`font-bold text-base ${config.textClass}`} />
+          <MainText title={config.desc} className="text-sm text-ui-textMuted dark:text-ui-muted mt-0.5" />
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="w-full mb-8">
@@ -38,6 +57,8 @@ const ReportHeader = (props) => {
         />
       </div>
 
+      {renderStatusBanner()}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <CandidateInfo 
           photo={candidatePhoto} 
@@ -46,6 +67,7 @@ const ReportHeader = (props) => {
           phoneNumber={phoneNumber} 
           roleApplied={roleApplied} 
           company={company} 
+          reportStatus={reportStatus}
         />
         <PerformanceScore 
           scorePercentage={scorePercentage} 

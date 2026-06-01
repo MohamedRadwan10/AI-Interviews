@@ -212,6 +212,55 @@ export const useJobDetails = (jobId) => {
   }), [data, loading, error, refetch]);
 };
 
+export const resolveQuestionCounts = (values) => {
+  const { questionsCount, codingCount, behavioralCount, technicalCount } = values;
+
+  const hasQuestionsCount = questionsCount !== "" && questionsCount !== null && questionsCount !== undefined;
+  const hasCoding = codingCount !== "" && codingCount !== null && codingCount !== undefined;
+  const hasBehavioral = behavioralCount !== "" && behavioralCount !== null && behavioralCount !== undefined;
+  const hasTechnical = technicalCount !== "" && technicalCount !== null && technicalCount !== undefined;
+
+  let totalCount = hasQuestionsCount ? parseInt(questionsCount, 10) : 10;
+  if (isNaN(totalCount) || totalCount < 0) totalCount = 10;
+
+  const cCount = hasCoding ? parseInt(codingCount, 10) : 0;
+  const bCount = hasBehavioral ? parseInt(behavioralCount, 10) : 0;
+  const tCount = hasTechnical ? parseInt(technicalCount, 10) : 0;
+
+  const parsedCoding = isNaN(cCount) || cCount < 0 ? 0 : cCount;
+  const parsedBehavioral = isNaN(bCount) || bCount < 0 ? 0 : bCount;
+  const parsedTechnical = isNaN(tCount) || tCount < 0 ? 0 : tCount;
+
+  const allTypesEmpty = !hasCoding && !hasBehavioral && !hasTechnical;
+
+  let resolvedCoding, resolvedBehavioral, resolvedTechnical, resolvedTotal;
+
+  if (allTypesEmpty) {
+    resolvedTotal = totalCount;
+    const p1 = Math.floor(Math.random() * (totalCount + 1));
+    const p2 = Math.floor(Math.random() * (totalCount + 1));
+    const minP = Math.min(p1, p2);
+    const maxP = Math.max(p1, p2);
+
+    resolvedCoding = minP;
+    resolvedBehavioral = maxP - minP;
+    resolvedTechnical = totalCount - maxP;
+  } else {
+    const sum = parsedCoding + parsedBehavioral + parsedTechnical;
+    resolvedTotal = sum;
+    resolvedCoding = parsedCoding;
+    resolvedBehavioral = parsedBehavioral;
+    resolvedTechnical = parsedTechnical;
+  }
+
+  return {
+    questionsCount: resolvedTotal,
+    codingCount: resolvedCoding,
+    behavioralCount: resolvedBehavioral,
+    technicalCount: resolvedTechnical,
+  };
+};
+
 export const usePostJob = () => {
   const { userData } = useContext(UserTokenContext);
   const { navigateTo } = useNavigation();
@@ -238,48 +287,7 @@ export const usePostJob = () => {
           requiredSkills,
           startedAt,
           endedAt,
-          questionsCount,
-          codingCount,
-          behavioralCount,
-          technicalCount,
         } = values;
-
-        const hasQuestionsCount = questionsCount !== "" && questionsCount !== null && questionsCount !== undefined;
-        let questionCountPayload = {};
-        if (hasQuestionsCount) {
-          const totalCount = parseInt(questionsCount, 10);
-          const hasCoding = codingCount !== "" && codingCount !== null && codingCount !== undefined;
-          const hasBehavioral = behavioralCount !== "" && behavioralCount !== null && behavioralCount !== undefined;
-          const hasTechnical = technicalCount !== "" && technicalCount !== null && technicalCount !== undefined;
-          const allTypesEmpty = !hasCoding && !hasBehavioral && !hasTechnical;
-
-          let resolvedCoding, resolvedBehavioral, resolvedTechnical;
-          if (allTypesEmpty) {
-            const base = Math.floor(totalCount / 3);
-            const remainder = totalCount % 3;
-            resolvedCoding = base + (remainder > 0 ? 1 : 0);
-            resolvedBehavioral = base + (remainder > 1 ? 1 : 0);
-            resolvedTechnical = base;
-          } else {
-            resolvedCoding = hasCoding ? parseInt(codingCount, 10) : 0;
-            resolvedBehavioral = hasBehavioral ? parseInt(behavioralCount, 10) : 0;
-            resolvedTechnical = hasTechnical ? parseInt(technicalCount, 10) : 0;
-          }
-
-          questionCountPayload = {
-            questionsCount: totalCount,
-            codingCount: resolvedCoding,
-            behavioralCount: resolvedBehavioral,
-            technicalCount: resolvedTechnical,
-          };
-        } else {
-          questionCountPayload = {
-            questionsCount: 10,
-            codingCount: 2,
-            behavioralCount: 4,
-            technicalCount: 4,
-          };
-        }
 
         const payload = {
           title,
@@ -291,7 +299,7 @@ export const usePostJob = () => {
           experienceYears: parseInt(experienceYears || 0, 10),
           requirements,
           requiredSkills,
-          ...questionCountPayload,
+          ...resolveQuestionCounts(values),
           ...(startedAt ? { startedAt: formatDate(startedAt) } : {}),
           ...(endedAt ? { endedAt: formatDate(endedAt) } : {}),
         };
@@ -336,10 +344,7 @@ export const useEditJob = (jobId) => {
         type: values.type,
         category: values.category,
         requiredSkills: values.requiredSkills || values.skillsAndTools,
-        questionsCount: values.questionsCount ? parseInt(values.questionsCount, 10) : 10,
-        codingCount: values.codingCount ? parseInt(values.codingCount, 10) : 2,
-        behavioralCount: values.behavioralCount ? parseInt(values.behavioralCount, 10) : 4,
-        technicalCount: values.technicalCount ? parseInt(values.technicalCount, 10) : 4,
+        ...resolveQuestionCounts(values),
         startedAt: (originalStart && formatDate(originalStart) === formatDate(values.startedAt))
           ? originalStart
           : formatDate(values.startedAt),

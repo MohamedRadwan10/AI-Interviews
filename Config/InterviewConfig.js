@@ -1,3 +1,5 @@
+import { PartyPopper, Handshake, Hourglass } from "lucide-react";
+
 export const jobCategories = [
   { label: "Software Engineering", value: "Software" },
   { label: "Artificial Intelligence", value: "AI" },
@@ -94,3 +96,62 @@ export const careerLevels = [
   { label: "Senior", value: "Senior" },
   { label: "Manager", value: "Manager" }
 ];
+
+
+export const REPORT_STATUS_CONFIG = {
+  accepted: {
+    title: "Congratulations! Application Accepted",
+    desc: "The interview evaluation has been completed successfully and your profile has been approved for the role.",
+    icon: PartyPopper,
+    bgClass: "from-status-success/15 to-status-success/5 border-status-success/20",
+    iconBgClass: "bg-status-success/10 text-status-success",
+    textClass: "text-status-success",
+    badgeLabel: "Accepted",
+    badgeClass: "bg-status-success/10 text-status-success border-status-success/20",
+    dotClass: "bg-status-success animate-pulse"
+  },
+  approved: {
+    title: "Congratulations! Application Accepted",
+    desc: "The interview evaluation has been completed successfully and your profile has been approved for the role.",
+    icon: PartyPopper,
+    bgClass: "from-status-success/15 to-status-success/5 border-status-success/20",
+    iconBgClass: "bg-status-success/10 text-status-success",
+    textClass: "text-status-success",
+    badgeLabel: "Accepted",
+    badgeClass: "bg-status-success/10 text-status-success border-status-success/20",
+    dotClass: "bg-status-success animate-pulse"
+  },
+  rejected: {
+    title: "Application Status: Closed",
+    desc: "Thank you for your participation. Unfortunately, you did not pass the selection criteria for this role. We wish you success in your future endeavors.",
+    icon: Handshake,
+    bgClass: "from-status-error/15 to-status-error/5 border-status-error/20",
+    iconBgClass: "bg-status-error/10 text-status-error",
+    textClass: "text-status-error",
+    badgeLabel: "Rejected",
+    badgeClass: "bg-status-error/10 text-status-error border-status-error/20",
+    dotClass: "bg-status-error"
+  },
+  incomplete: {
+    title: "Application Status: Closed",
+    desc: "Thank you for your participation. Unfortunately, you did not pass the selection criteria for this role. We wish you success in your future endeavors.",
+    icon: Handshake,
+    bgClass: "from-status-error/15 to-status-error/5 border-status-error/20",
+    iconBgClass: "bg-status-error/10 text-status-error",
+    textClass: "text-status-error",
+    badgeLabel: "Rejected",
+    badgeClass: "bg-status-error/10 text-status-error border-status-error/20",
+    dotClass: "bg-status-error"
+  },
+  pending: {
+    title: "Application Under Review",
+    desc: "Your interview evaluation is currently pending review by the hiring committee. Status updates will be shown here.",
+    icon: Hourglass,
+    bgClass: "from-status-warning/15 to-status-warning/5 border-status-warning/20",
+    iconBgClass: "bg-status-warning/10 text-status-warning",
+    textClass: "text-status-warning",
+    badgeLabel: "Pending",
+    badgeClass: "bg-status-warning/10 text-status-warning border-status-warning/20",
+    dotClass: "bg-status-warning animate-pulse"
+  }
+};

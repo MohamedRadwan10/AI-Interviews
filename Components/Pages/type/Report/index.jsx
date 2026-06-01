@@ -18,7 +18,7 @@ const ReportPage = ({ sessionId, userId: propUserId }) => {
     feedback, strengthPoints, weaknessesPoints, improvementsTips, skillAnalysis,
     scoreBreakdown, recommendationReason, redFlags, performanceLabel, hiringRecommendation,
     duration, averageResponseTimeSeconds, sessionDate, overallRating,
-    fullName, email, phoneNumber, photo, role, company,
+    fullName, email, phoneNumber, photo, role, company, reportStatus,
     isLoading, error, refetch,
   } = useReport(sessionId, userId);
 
@@ -47,6 +47,7 @@ const ReportPage = ({ sessionId, userId: propUserId }) => {
               photo={photo}
               roleApplied={role}
               company={company}
+              reportStatus={reportStatus}
             />
 
             <div className="flex flex-col lg:flex-row gap-6 mt-6">

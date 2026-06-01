@@ -2,7 +2,7 @@
 import { useMemo, useContext } from "react";
 import { useApi } from "@/hooks/useApi";
 import { UserTokenContext } from "@/Context/UserTokenContext";
-import { formatDate } from "@/Utils/date/dateFormat";
+import { formatReportDate } from "@/Utils/date/dateFormat";
 import { get, isArray, size, map } from "lodash-es";
 import { APP_CONFIG } from "@/Config/appConfig";
 
@@ -41,6 +41,7 @@ export const useReport = (sessionId, userId) => {
     const redFlags = get(report, "redFlags", "");
     const performanceLabel = get(report, "performanceLabel", "");
     const hiringRecommendation = get(report, "hiringRecommendation", "");
+    const reportStatus = get(report, "reportStatus", "Pending");
 
     const scoreBreakdown = map(questionsArray, (q, index) => ({
       index: index + 1,
@@ -92,6 +93,7 @@ export const useReport = (sessionId, userId) => {
       phoneNumber,
       photo,
       role,
+      reportStatus,
       isLoading: loading,
       error,
       refetch,
@@ -122,9 +124,7 @@ export const useReportHeader = (props) => {
   const questionsLabel = useMemo(() => `${questionsAnswered}/${totalQuestions}`, [questionsAnswered, totalQuestions]);
   const accuracyLabel = useMemo(() => `${accuracyRaw}%`, [accuracyRaw]);
 
-  const formattedDate = useMemo(() => 
-    sessionDate ? formatDate(sessionDate) : "N/A"
-  , [sessionDate]);
+  const formattedDate = useMemo(() => formatReportDate(sessionDate), [sessionDate]);
 
   const IMAGE_BASE_URL = "https://intellhire.runasp.net"; 
   const candidatePhoto = useMemo(() => 

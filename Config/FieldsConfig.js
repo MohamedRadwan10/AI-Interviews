@@ -450,6 +450,32 @@ export const forgetPasswordConfig = {
   },
 };
 
+const sumQuestionsTotalTest = {
+  name: "sumQuestionsLimit",
+  message: "Total questions cannot be less than the sum of individual question types.",
+  test: function(value, context) {
+    const { questionsCount, codingCount, behavioralCount, technicalCount } = context.parent || {};
+    const total = parseInt(questionsCount, 10) || 10;
+    const c = parseInt(codingCount, 10) || 0;
+    const b = parseInt(behavioralCount, 10) || 0;
+    const t = parseInt(technicalCount, 10) || 0;
+    return (c + b + t) <= total;
+  }
+};
+
+const sumQuestionsSubTest = {
+  name: "sumQuestionsLimit",
+  message: "The sum of coding, behavioral, and technical questions cannot exceed the total questions count.",
+  test: function(value, context) {
+    const { questionsCount, codingCount, behavioralCount, technicalCount } = context.parent || {};
+    const total = parseInt(questionsCount, 10) || 10;
+    const c = parseInt(codingCount, 10) || 0;
+    const b = parseInt(behavioralCount, 10) || 0;
+    const t = parseInt(technicalCount, 10) || 0;
+    return (c + b + t) <= total;
+  }
+};
+
 export const postJobConfig = {
   pageTitle: "Create Job Post",
   pageSubtitle: "Find the perfect candidate for your organization",
@@ -579,28 +605,36 @@ export const postJobConfig = {
           type: "number",
           label: "Total Number of Questions",
           placeholder: "Leave empty for default (10)",
-          validation: {},
+          validation: {
+            customTest: sumQuestionsTotalTest,
+          },
         },
         {
           field_name: "codingCount",
           type: "number",
           label: "Coding Questions",
           placeholder: "Leave empty to auto-distribute",
-          validation: {},
+          validation: {
+            customTest: sumQuestionsSubTest,
+          },
         },
         {
           field_name: "behavioralCount",
           type: "number",
           label: "Behavioral Questions",
           placeholder: "Leave empty to auto-distribute",
-          validation: {},
+          validation: {
+            customTest: sumQuestionsSubTest,
+          },
         },
         {
           field_name: "technicalCount",
           type: "number",
           label: "Technical Questions",
           placeholder: "Leave empty to auto-distribute",
-          validation: {},
+          validation: {
+            customTest: sumQuestionsSubTest,
+          },
         },
       ],
     },
