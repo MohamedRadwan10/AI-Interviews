@@ -22,10 +22,10 @@ const NotificationCard = ({ item, onDelete }) => {
 
   const goTo = useCallback(() => {
     if(sessionId !== null){
-      navigateTo(`interview/report/${sessionId}/${userId}`);
+      navigateTo(`report/${sessionId}/${userId}`);
     }
     if(jobId !== null){
-      navigateTo(`/job-applicants/${jobId}`);
+      navigateTo(`job-applicants/${jobId}`);
     }
   }, [sessionId, jobId, navigateTo]);
 
