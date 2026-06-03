@@ -6,6 +6,7 @@ import { UserTokenContext } from "@/Context/UserTokenContext";
 import { useNavigation, useMainNotify, useConfirmation, useSearch } from "@/hooks/common";
 import { useUserAccount } from "@/Context/UserAccountContext";
 import { CANDIDATE_DASHBOARD_COLUMNS } from "@/Config/tableConfig";
+
 export const useDashboard = () => {
   const { userToken } = useContext(UserTokenContext);
   const [searchTerm, setSearchTerm] = useState("");

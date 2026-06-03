@@ -8,6 +8,11 @@ import { useApi } from "@/hooks/useApi";
 import { APP_CONFIG } from "@/Config/appConfig";
 import axios from "axios";
 import { API_BASE_URL, AUTH_ENDPOINTS } from "@/Config/apiRegistry";
+import { useFormik } from "formik";
+import { getVal } from "@/Utils/Func/Common";
+import { buildValidationSchema } from "@/Utils/Func/ValidationSchema";
+
+const SOCIAL_LOGIN_BASE_URL = "https://intellhire.runasp.net/api/Auth/external-login";
 
 export const useAfterLogin = () => {
   const { navigateTo } = useNavigation();
@@ -280,11 +285,9 @@ export const useExternalLoginCallback = () => {
     const token = searchParams.get("token");
     const refreshToken = searchParams.get("refreshToken");
     const userType = searchParams.get("type");
-    // Handle both string "true"/"false" and potential numeric or missing values
     const isProfileComplete = searchParams.get("isProfileComplete") === "true";
 
     if (token) {
-      // 1. Save Token
       localStorage.setItem("userToken", token);
       setUserToken(token);
       
@@ -293,18 +296,14 @@ export const useExternalLoginCallback = () => {
         setRefreshToken(refreshToken);
       }
       
-      // 2. Prepare User Data
       const userData = {
-        userType, // Individual or Company
+        userType,
         isComplete: isProfileComplete,
       };
       localStorage.setItem("userData", JSON.stringify(userData));
       setUserData(userData);
-      
-      // 3. Notify and Redirect
       success("Login Successful", `Welcome back!`);
       
-      // delay slightly to allow context update if needed
       setTimeout(() => {
         afterLogin(userData);
       }, 500);
@@ -431,4 +430,101 @@ export const useProfileData = () => {
     isLoading: profileApi.loading,
     error: profileApi.error,
   };
+};
+
+export const useAuthPage = ({ config, onSubmit, type }) => {
+  const [socialRole, setSocialRole] = useState(0);
+  useExternalLoginCallback();
+
+  const searchParams = useSearchParams();
+  const isSuccess = searchParams.get("success") === "true";
+  const isVerified = searchParams.get("verified") === "true";
+
+  const handleSubmit = useCallback(
+    async (values) => onSubmit(values),
+    [onSubmit]
+  );
+
+  const handleSocialLogin = useCallback(
+    (provider) => {
+      const userType = type === "login" ? socialRole : (get(config, "externalType", 0));
+      window.location.href = `${SOCIAL_LOGIN_BASE_URL}?provider=${provider}&type=${userType}&clientId=web`;
+    },
+    [type, socialRole, config]
+  );
+
+  const handleSocialRoleChange = useCallback((role) => setSocialRole(role), []);
+
+  const result = useMemo(() => ({
+    socialRole,
+    isSuccess,
+    isVerified,
+    handleSubmit,
+    handleSocialLogin,
+    handleSocialRoleChange,
+  }), [socialRole, isSuccess, isVerified, handleSubmit, handleSocialLogin, handleSocialRoleChange]);
+
+  return result;
+};
+
+ export const useMainForm = ({ config, onSubmit }) => {
+  const gv = (obj, path, fb) => getVal(obj, null, path, fb);
+  const fields = gv(config, "fields", []);
+
+  const validationSchema = useMemo(
+    () => buildValidationSchema(fields),
+    [fields]
+  );
+
+  const initialValues = useMemo(
+    () => fields.reduce((acc, field) => {
+      const fieldName = gv(field, "field_name");
+      const fieldType = gv(field, "type");
+      set(acc, fieldName, fieldType === "checkBox" ? false : "");
+      return acc;
+    }, {}),
+    [fields]
+  );
+
+  const formik = useFormik({
+    initialValues,
+    validationSchema,
+    onSubmit: async (values, actions) => {
+      if (typeof onSubmit === "function") {
+        try { await onSubmit(values); } catch (_) {}
+      }
+      actions.setSubmitting(false);
+    },
+  });
+
+  const buildFieldHandler = useCallback(
+    (field) => {
+      const fieldName = gv(field, "field_name");
+      const fieldType = gv(field, "type");
+      const onValueChange = gv(field, "onValueChange");
+
+      return (e) => {
+        const isCheck = fieldType === "checkBox";
+        const val = isCheck ? get(e, "target.checked", e) : get(e, "target.value", e);
+        formik.setFieldValue(fieldName, val);
+        if (typeof onValueChange === "function") {
+          onValueChange(val, { setFieldValue: formik.setFieldValue });
+        }
+      };
+    },
+    [formik]
+  );
+
+  const result = useMemo(() => ({
+    formik,
+    fields,
+    buildFieldHandler,
+    values: formik.values,
+    touched: formik.touched,
+    errors: formik.errors,
+    isSubmitting: formik.isSubmitting,
+    isValid: formik.isValid,
+  }), [formik, fields, buildFieldHandler]);
+
+  return result;
 };

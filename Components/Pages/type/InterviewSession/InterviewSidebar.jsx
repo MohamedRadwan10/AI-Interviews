@@ -8,10 +8,10 @@ import { useInterviewSidebar } from "@/hooks/useInterviewSession";
 import { useInterviewFaceAuth } from "@/hooks/useFaceAuth";
 import { useUserAccount } from "@/Context/UserAccountContext";
 
-export const InterviewSidebar = ({ isConnected, isSessionStarted, questionTime, sessionId }) => {
+export const InterviewSidebar = ({ isConnected, isSessionStarted, questionTime, sessionId, on, invoke, jobId }) => {
   const { timeLeft, formatTime, webcamRef, stream } = useInterviewSidebar(isSessionStarted, questionTime);
   const { userId } = useUserAccount();
-  const { startStreaming, stopStreaming, faceWarning } = useInterviewFaceAuth(sessionId);
+  const { startStreaming, stopStreaming, faceWarning } = useInterviewFaceAuth(sessionId, on, invoke, isConnected, jobId);
 
   useEffect(() => {
     if (isSessionStarted && userId && sessionId && webcamRef.current?.video) {
@@ -55,7 +55,11 @@ export const InterviewSidebar = ({ isConnected, isSessionStarted, questionTime, 
       </div>
 
       <div className="space-y-4">
-        <div className="aspect-video bg-black rounded-3xl overflow-hidden border-2 relative shadow-lg group transition-all duration-300 border-ui-borderLight dark:border-ui-border">
+        <div className={`aspect-video bg-black rounded-3xl overflow-hidden border-2 relative shadow-lg group transition-all duration-300 ${
+          faceWarning 
+            ? "border-status-error ring-4 ring-status-error/20" 
+            : "border-ui-borderLight dark:border-ui-border"
+        }`}>
           <Webcam 
             ref={webcamRef}
             audio={true}
@@ -67,6 +71,20 @@ export const InterviewSidebar = ({ isConnected, isSessionStarted, questionTime, 
             <div className="w-1.5 h-1.5 rounded-full bg-status-error animate-ping" />
             LIVE
           </div>
+          {faceWarning && (
+            <div className="absolute bottom-0 left-0 right-0 bg-status-error/95 backdrop-blur-sm text-white p-2.5 flex items-start gap-2 text-xs transition-all duration-300 animate-slide-up">
+              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-white" />
+              <div className="flex-1">
+                <span className="font-bold block text-[11px] uppercase tracking-wide opacity-90">Verification Issue</span>
+                <span className="text-[11px] leading-tight block mt-0.5">{faceWarning.message}</span>
+              </div>
+              {faceWarning.attempt > 0 && (
+                <div className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded font-mono font-bold">
+                  {faceWarning.attempt}/10
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 

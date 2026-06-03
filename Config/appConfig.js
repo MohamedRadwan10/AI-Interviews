@@ -11,15 +11,18 @@ export const APP_CONFIG = {
     }
   },
   faceAuth: {
-    frameInterval: 60000,      
+    frameInterval: 60000,
+    frameError: 5000,      
     frameQuality: 0.6,       
-    warningDisplayTime: 3000, 
+    warningDisplayTime: 5000, 
     maxAttempts: 3,         
+    retryInterval: 500,
   },
   interview: {
     defaultTotalQuestions: 15,
     autoSubmitDelay: 1000,   
     timerSyncInterval: 5000,  
+    webcamCheckInterval: 500,
   },
   upload: {
     maxCVSizeMB: 5,
