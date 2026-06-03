@@ -33,3 +33,27 @@ export const buildAnswerFormData = ({ sessionId, questionId, questionIndex, time
   else formData.append("UserAnswer", answerData?.text || "");
   return formData;
 };
+
+export const cleanBase64 = (str) => {
+  if (!str) return "";
+  return str.includes(",") ? str.split(",")[1] : str;
+};
+
+export const setInterviewTerminated = (jobId, message) => {
+  if (typeof window === "undefined" || !jobId) return;
+  sessionStorage.setItem(`interviewTerminated_${jobId}`, "true");
+  sessionStorage.setItem(`interviewTerminatedError_${jobId}`, message);
+};
+
+export const getInterviewTerminatedStatus = (jobId) => {
+  if (typeof window === "undefined" || !jobId) return { isTerminated: false, message: "" };
+  const isTerminated = sessionStorage.getItem(`interviewTerminated_${jobId}`) === "true";
+  const message = sessionStorage.getItem(`interviewTerminatedError_${jobId}`) || "";
+  return { isTerminated, message };
+};
+
+export const clearInterviewTerminatedStatus = (jobId) => {
+  if (typeof window === "undefined" || !jobId) return;
+  sessionStorage.removeItem(`interviewTerminated_${jobId}`);
+  sessionStorage.removeItem(`interviewTerminatedError_${jobId}`);
+};

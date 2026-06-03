@@ -1,7 +1,7 @@
 "use client"; 
 import AuthPage from "@/Components/auth/AuthPage";
 import { loginConfig } from "@/Config/FieldsConfig";
-import { useLogin, useExternalLoginCallback } from "@/hooks/useAuth";
+import { useLogin } from "@/hooks/useAuth";
 
 const LoginPage = () => {
   const { login, error: errors, isLoading } = useLogin();

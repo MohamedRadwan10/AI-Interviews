@@ -8,7 +8,15 @@ export const useSignalR = (token, userId) => {
   const callbacksRef = useRef({});
 
   const on = useCallback((eventName, callback) => {
-    callbacksRef.current[eventName] = callback;
+    if (!callbacksRef.current[eventName]) {
+      callbacksRef.current[eventName] = [];
+    }
+    callbacksRef.current[eventName].push(callback);
+    return () => {
+      if (callbacksRef.current[eventName]) {
+        callbacksRef.current[eventName] = callbacksRef.current[eventName].filter((cb) => cb !== callback);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -56,40 +64,57 @@ export const useSignalR = (token, userId) => {
 
     startConnection();
 
+    const trigger = (eventName, data) => {
+      const listeners = callbacksRef.current[eventName];
+      if (Array.isArray(listeners)) {
+        listeners.forEach((cb) => {
+          try {
+            cb(data);
+          } catch (err) {
+            console.error(`Error in SignalR callback for event ${eventName}:`, err);
+          }
+        });
+      }
+    };
+
     connection.on("updateStatus", (message) => {
-      callbacksRef.current["updateStatus"]?.(message);
+      trigger("updateStatus", message);
     });
 
     connection.on("nextQuestionReady", (question) => {
-      callbacksRef.current["nextQuestionReady"]?.(question);
+      trigger("nextQuestionReady", question);
     });
 
     connection.on("reportGenerationStarted", (data) => {
-      callbacksRef.current["reportGenerationStarted"]?.(data);
+      trigger("reportGenerationStarted", data);
     });
 
     connection.on("reportReady", (message) => {
-      callbacksRef.current["reportReady"]?.(message);
+      trigger("reportReady", message);
     });
 
     connection.on("ErrorMessage", (message) => {
-      callbacksRef.current["ErrorMessage"]?.(message);
+      trigger("ErrorMessage", message);
     });
 
     connection.on("OnWarning", (data) => {
-      callbacksRef.current["OnWarning"]?.(data);
+      trigger("OnWarning", data);
+    });
+
+    connection.on("OnSuccess", (data) => {
+      trigger("OnSuccess", data);
     });
 
     connection.on("OnInterviewTerminated", (data) => {
-      callbacksRef.current["OnInterviewTerminated"]?.(data);
+      trigger("OnInterviewTerminated", data);
     });
 
     connection.on("ReceiveCompanyNotification", (data) => {
-      callbacksRef.current["ReceiveCompanyNotification"]?.(data);
+      trigger("ReceiveCompanyNotification", data);
     });
     
     connection.on("ReceiveUserNotification", (data) => {
-      callbacksRef.current["ReceiveUserNotification"]?.(data);
+      trigger("ReceiveUserNotification", data);
     });
 
     return () => {
@@ -100,6 +125,7 @@ export const useSignalR = (token, userId) => {
       connection.off("reportReady");
       connection.off("ErrorMessage");
       connection.off("OnWarning");
+      connection.off("OnSuccess");
       connection.off("OnInterviewTerminated");
       connection.off("ReceiveCompanyNotification");
       connection.off("ReceiveUserNotification");

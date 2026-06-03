@@ -8,7 +8,7 @@ import { useApi } from "@/hooks/useApi";
 import { formatTime, delay } from "@/Utils/Func/Common";
 import { useMainNotify } from "@/hooks/common";
 import { APP_CONFIG } from "@/Config/appConfig";
-import { getTimerStorageKey, parseQuestion, isValidSessionId, buildAnswerFormData, clearSessionTimers } from "@/Utils/Func/InterviewSession";
+import { getTimerStorageKey, parseQuestion, isValidSessionId, buildAnswerFormData, clearSessionTimers, getInterviewTerminatedStatus, clearInterviewTerminatedStatus, setInterviewTerminated } from "@/Utils/Func/InterviewSession";
 
 const DEFAULT_TOTAL_QUESTIONS = APP_CONFIG.interview.defaultTotalQuestions;
 
@@ -113,6 +113,10 @@ export const useInterviewSession = (jobId) => {
   const awaitingSignalRRef = useRef(false);
   const syncCheckedRef = useRef(false);
 
+  const isTerminated = useMemo(() => {
+    return getInterviewTerminatedStatus(jobId).isTerminated;
+  }, [jobId]);
+
   const state = useSessionState();
   const {
     sessionId, setSessionId,
@@ -126,13 +130,20 @@ export const useInterviewSession = (jobId) => {
     loadingStates, setLoading,
   } = state;
 
+  useEffect(() => {
+    if (isTerminated && jobId) {
+      const { message } = getInterviewTerminatedStatus(jobId);
+      setError(message || "Session terminated due to camera errors.");
+    }
+  }, [isTerminated, jobId, setError]);
+
   const { refetch: callStartSession }       = useApi({ type: "startSession",       autoFetch: false, urlSuffix: `/${jobId}` });
   const { refetch: callNextQuestion }       = useApi({ type: "nextQuestion",       autoFetch: false });
   const { refetch: callEndSession }         = useApi({ type: "endSession",         autoFetch: false });
   const { refetch: callCheckActiveSession } = useApi({ type: "checkActiveSession", autoFetch: false, urlSuffix: `/${jobId}` });
   const { refetch: callGetSessionDetails }  = useApi({ type: "getSessionDetails",  autoFetch: false });
 
-  const { isConnected, on } = useSignalR(userToken, userId);
+  const { isConnected, on, invoke } = useSignalR(userToken, userId);
 
   const parsedCurrentQuestion = useMemo(() => parseQuestion(currentQuestion), [currentQuestion]);
 
@@ -187,6 +198,7 @@ export const useInterviewSession = (jobId) => {
   }, [callNextQuestion]);
 
   const syncSession = useCallback(async (silent = false) => {
+    if (isTerminated) return false;
     if (!silent) setLoading("session", true);
     try {
       const res = await callCheckActiveSession();
@@ -221,7 +233,7 @@ export const useInterviewSession = (jobId) => {
     } finally {
       if (!silent) setLoading("session", false);
     }
-  }, [callCheckActiveSession, callGetSessionDetails, autoSkipExpired, applyServerQuestionData, setSessionId, setIsSessionStarted, setLoading]);
+  }, [callCheckActiveSession, callGetSessionDetails, autoSkipExpired, applyServerQuestionData, setSessionId, setIsSessionStarted, setLoading, isTerminated]);
 
   const submitAnswer = useCallback(async (answerData) => {
     if (submittingRef.current || !sessionId || !parsedCurrentQuestion) return;
@@ -251,7 +263,7 @@ export const useInterviewSession = (jobId) => {
 
       if (isCompleted || wasLastQuestion) {
         awaitingSignalRRef.current = false;
-        await delay(1000);
+        await delay(APP_CONFIG.interview.autoSubmitDelay);
         await finishInterview();
         return;
       }
@@ -277,6 +289,7 @@ export const useInterviewSession = (jobId) => {
   ]);
 
   const startInterview = useCallback(async () => {
+    if (isTerminated) return;
     setError(null);
     setLoading("session", true);
     try {
@@ -292,7 +305,7 @@ export const useInterviewSession = (jobId) => {
     } finally {
       setLoading("session", false);
     }
-  }, [callStartSession, setError, setLoading, setSessionId, setIsSessionStarted]);
+  }, [callStartSession, setError, setLoading, setSessionId, setIsSessionStarted, isTerminated]);
 
   useEffect(() => {
     if (jobId) syncSession();
@@ -300,15 +313,19 @@ export const useInterviewSession = (jobId) => {
   }, [jobId, syncSession, setLoading]);
 
   useEffect(() => {
-    const msg = sessionStorage.getItem("interviewTerminatedError");
-    if (msg) { notifyError("Session Terminated", msg); sessionStorage.removeItem("interviewTerminatedError"); }
-  }, [notifyError]);
+    if (!jobId) return;
+    const { message } = getInterviewTerminatedStatus(jobId);
+    if (message && !isTerminated) {
+      notifyError("Session Terminated", message);
+      clearInterviewTerminatedStatus(jobId);
+    }
+  }, [notifyError, isTerminated, jobId]);
 
   const questionIndexRef = useRef(questionIndex);
   useEffect(() => { questionIndexRef.current = questionIndex; }, [questionIndex]);
 
   useEffect(() => {
-    on("nextQuestionReady", (data) => {
+    const unsubNext = on("nextQuestionReady", (data) => {
       const incomingIndex = get(data, "index");
       if (incomingIndex === undefined) return;
 
@@ -324,15 +341,21 @@ export const useInterviewSession = (jobId) => {
         setQuestionIndex(incomingIndex);
       }
     });
-    on("reportGenerationStarted", (data) => {
+    const unsubReport = on("reportGenerationStarted", (data) => {
       setFinishMessage(get(data, "message") || "Generating your report...");
       setInterviewFinished(true);
     });
-    on("OnInterviewTerminated", (data) => {
+    const unsubTerminated = on("OnInterviewTerminated", (data) => {
       const msg = get(data, "message") || (isString(data) ? data : "Session terminated due to camera errors.");
-      sessionStorage.setItem("interviewTerminatedError", msg);
+      setInterviewTerminated(jobId, msg);
       window.location.reload();
     });
+
+    return () => {
+      unsubNext?.();
+      unsubReport?.();
+      unsubTerminated?.();
+    };
   }, [on]);
 
   useEffect(() => {
@@ -362,10 +385,12 @@ export const useInterviewSession = (jobId) => {
     timeLeft,
     isLastQuestion: (questionIndex + 1) >= effectiveTotalQuestions,
     syncCheckedRef,
+    on,
+    invoke,
   }), [
     isSessionStarted, sessionId, parsedCurrentQuestion, isConnected, loadingStates,
     startInterview, submitAnswer, finishInterview, syncSession, error, questionIndex,
-    effectiveTotalQuestions, interviewFinished, finishMessage, timeLeft,
+    effectiveTotalQuestions, interviewFinished, finishMessage, timeLeft, on, invoke
   ]);
 };
 
@@ -468,7 +493,7 @@ export const useInterviewSidebar = (isSessionStarted, timeLeftFromSession) => {
         setStream(webcamRef.current.video.srcObject);
         clearInterval(interval);
       }
-    }, 500);
+    }, APP_CONFIG.interview.webcamCheckInterval);
     return () => clearInterval(interval);
   }, []);
 
