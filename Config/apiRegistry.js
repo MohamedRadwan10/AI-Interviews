@@ -136,11 +136,19 @@ export const AUTH_ENDPOINTS = {
     method: "PUT",
   },
   candidateSettingInfo: {
-    url: "/Setting/personal-info", 
+    url: "/Setting/personal-info",
+    method: "PATCH",
+  },
+  companySettingInfo: {
+    url: "/Setting/personal-company-info", // Name(string) , Industry (string), PhoneNumber(string), photostring($binary) --- inbody in form data
     method: "PATCH",
   },
   SettingCV: {
     url: "/Setting/career-details",
+    method: "PATCH",
+  },
+  SettingCompanyAbout: {
+    url: "/Setting/company-about", //  in body {"locations": {"city": "string","country": "string","government": "string" ,"about": "string","websiteUrl": "string" }
     method: "PATCH",
   },
   ChangeEmailStep1: {

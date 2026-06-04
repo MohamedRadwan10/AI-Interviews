@@ -21,6 +21,9 @@ const NavMenu = () => {
     if (item.label === "Post Job" && userType === "Individual") {
       return false;
     }
+    if (item.label === "Jobs" && userType === "Company") {
+      return false;
+    }
     return true;
   }).map((item) => {
     if (item.label === "Dashboard") {

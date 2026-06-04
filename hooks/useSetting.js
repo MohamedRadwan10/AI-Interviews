@@ -226,3 +226,93 @@ export const useCandidateSettings = () => {
     emailHook, passwordHook, handleDeleteAccount, deleteLoading, logout
   ]);
 };
+
+export const useCompanySettings = () => {
+  const { accountData, refetch: refetchUserData } = useUserAccount();
+  const { success: notifySuccess, error: notifyError } = useMainNotify();
+  const { confirm } = useConfirmation();
+  const { logout } = useLogout();
+
+  const { params, updateParam } = useUrlSync({ tab: "account" });
+  const activeSection = params.tab;
+  const setActiveSection = useCallback((id) => updateParam("tab", id), [updateParam]);
+
+  const emailHook = useChangeEmail(accountData, logout);
+  const passwordHook = useChangePassword(accountData);
+
+  const { refetch: updateCompanyInfoApi, loading: infoLoading } = useApi({ type: "companySettingInfo", autoFetch: false });
+  const { refetch: updateCompanyAboutApi, loading: aboutLoading } = useApi({ type: "SettingCompanyAbout", autoFetch: false });
+  const { refetch: deleteAccountApi, loading: deleteLoading } = useApi({ type: "deleteAccount", autoFetch: false });
+
+  const handleUpdateCompanyInfo = useCallback(async (values) => {
+    try {
+      const formData = new FormData();
+      if (values.Photo instanceof File) {
+        formData.append("photostring", values.Photo);
+      }
+      formData.append("Name", values.companyName || values.Name || "");
+      formData.append("Industry", values.Industry || "");
+      formData.append("PhoneNumber", values.PhoneNumber || "");
+
+      await updateCompanyInfoApi({ data: formData });
+      notifySuccess("Success", "Company information updated successfully");
+      refetchUserData();
+    } catch (err) {
+      notifyError("Error", get(err, "response.data.message") || "Failed to update company information");
+    }
+  }, [updateCompanyInfoApi, refetchUserData, notifySuccess, notifyError]);
+
+  const handleUpdateCompanyAbout = useCallback(async (values) => {
+    try {
+      const payload = {
+        locations: {
+          city: values.City || "",
+          country: values.Country || "",
+          government: values.Government || "",
+          about: values.About || "",
+          websiteUrl: values.WebsiteUrl || "",
+        }
+      };
+
+      await updateCompanyAboutApi({ data: payload });
+      notifySuccess("Success", "Company details and location updated successfully");
+      refetchUserData();
+    } catch (err) {
+      notifyError("Error", get(err, "response.data.message") || "Failed to update company details");
+    }
+  }, [updateCompanyAboutApi, refetchUserData, notifyError]);
+
+  const handleDeleteAccount = useCallback(async () => {
+    confirm({
+      message: "Are you sure you want to delete your account? This action cannot be undone.",
+      header: "Delete Account",
+      icon: "pi pi-exclamation-triangle",
+      acceptClassName: "p-button-danger",
+      accept: async () => {
+        try {
+          await deleteAccountApi({ data: { email: getVal(accountData, "", "email"), password: "" } });
+          notifySuccess("Account Deleted", "Your account has been successfully removed.");
+          logout();
+        } catch (err) {
+          notifyError("Error", get(err, "response.data.message") || "Failed to delete account");
+        }
+      }
+    });
+  }, [deleteAccountApi, accountData, confirm, logout, notifySuccess, notifyError]);
+
+  const result = useMemo(() => ({
+    activeSection, setActiveSection, accountData,
+    infoLoading, aboutLoading, deleteLoading,
+    handleUpdateCompanyInfo, handleUpdateCompanyAbout,
+    ...emailHook,
+    ...passwordHook,
+    handleDeleteAccount, logout
+  }), [
+    activeSection, setActiveSection, accountData,
+    infoLoading, aboutLoading, deleteLoading,
+    handleUpdateCompanyInfo, handleUpdateCompanyAbout,
+    emailHook, passwordHook, handleDeleteAccount, logout
+  ]);
+
+  return result;
+};
