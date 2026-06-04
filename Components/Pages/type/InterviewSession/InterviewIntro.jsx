@@ -11,7 +11,7 @@ import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
 import { GenericError } from "@/Components/Errors";
 import { useSelfie } from "@/hooks/useFaceAuth";
 import { useCheckJobMatch } from "@/hooks/useJobs";
-import JobRejectionModal from "@/Components/Common/JobRejectionModal";
+import JobRejectionModal from "@/Components/Modal/JobRejectionModal";
 import { INTERVIEW_INSTRUCTIONS } from "@/Config/InterviewConfig";
 
 

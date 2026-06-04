@@ -132,7 +132,43 @@ export const AUTH_ENDPOINTS = {
     method: "PUT",
   },
   MarkAsDeleted: {
-    url: "/MarkAsDeleted", // /{notification id} in end point
+    url: "/MarkAsDeleted",
+    method: "PUT",
+  },
+  candidateSettingInfo: {
+    url: "/Setting/personal-info", 
+    method: "PATCH",
+  },
+  SettingCV: {
+    url: "/Setting/career-details",
+    method: "PATCH",
+  },
+  ChangeEmailStep1: {
+    url: "/Setting/change-email-password-request", 
+    method: "POST",
+  },
+  ChangeEmailStep2: {
+    url: "/Setting/change-email-request", 
+    method: "POST",
+  },
+  ChangeEmailStep3: {
+    url: "/Setting/change-email-Confirm", 
+    method: "POST",
+  },
+  ChangePasswordStep1: {
+    url: "/Setting/request-password-change",
+    method: "POST",
+  },
+  ChangePasswordStep2: {
+    url: "/Setting/send-otp",
+    method: "POST",
+  },
+  ChangePasswordStep3: {
+    url: "/Setting/confirm-password-change",
+    method: "POST",
+  },
+  deleteAccount: {
+    url: "/Setting/delete-account",
     method: "PUT",
   },
 };
