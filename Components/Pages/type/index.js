@@ -90,3 +90,9 @@ export const NotificationPage = dynamic(() => import('./Notification'), {
     ssr: false
 });
 
+export const SettingPage = dynamic(() => import('./Setting'), { 
+    loading: () => <RouteLoading type="Setting" />,
+    ssr: false
+});
+
+

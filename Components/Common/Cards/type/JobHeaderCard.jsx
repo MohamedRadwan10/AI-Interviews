@@ -11,7 +11,7 @@ import { getImageUrl } from "@/Utils/Func/UrlHelper";
 import { useUserAccount } from "@/Context/UserAccountContext";
 import { formatDate } from "@/Utils/Func/Common";
 import { useCheckJobMatch } from "@/hooks/useJobs";
-import JobRejectionModal from "@/Components/Common/JobRejectionModal";
+import JobRejectionModal from "@/Components/Modal/JobRejectionModal";
 
 const JobHeaderCard = ({ item }) => {
   const { accountData } = useUserAccount();

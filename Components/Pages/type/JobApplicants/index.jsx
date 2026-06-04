@@ -9,7 +9,7 @@ import MainSearch from "@/Components/Common/MainSearch";
 import MainText from "@/Components/Common/MainText";
 import { JOB_APPLICANTS_COLUMNS } from "@/Config/tableConfig";
 import MainTable from "@/Components/Common/Table/MainTable";
-import ApplicantDetailsModal from "./ApplicantDetailsModal";
+import ApplicantDetailsModal from "../../../Modal/ApplicantDetailsModal";
 
 const JobApplicants = ({ id }) => {
   const jobId = id;

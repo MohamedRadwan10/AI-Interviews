@@ -21,7 +21,7 @@ export const EmailStep = ({ config, onSubmit, isLoading }) => {
   );
 };
 
-export const OTPStep = ({ config, otp, onOtpChange, onSubmit, isLoading }) => {
+export const OTPStep = ({ config, otp, onOtpChange, onSubmit, isLoading, onResend }) => {
   const gv = (obj, path, fb) => getVal(obj, null, path, fb);
   const footerLink = gv(config, "footerLinks[0]");
   const footerText = gv(config, "footerText");
@@ -103,7 +103,11 @@ export const OTPStep = ({ config, otp, onOtpChange, onSubmit, isLoading }) => {
 
       <div className="text-center flex items-center justify-center gap-1.5 flex-wrap">
         <MainText title={footerText} className="text-ui-textMuted dark:text-dark-gray text-sm" />
-        <button className="text-brand-primary dark:text-brand-accent text-sm font-semibold hover:underline bg-transparent border-none p-0 cursor-pointer">
+        <button 
+          type="button" 
+          onClick={onResend} 
+          className="text-brand-primary dark:text-brand-accent text-sm font-semibold hover:underline bg-transparent border-none p-0 cursor-pointer"
+        >
           {footerLinkText}
         </button>
       </div>

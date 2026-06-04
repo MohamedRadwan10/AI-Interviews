@@ -82,9 +82,9 @@ const TopBar = () => {
           <div className="h-8 w-[1px] bg-ui-borderLight dark:bg-dark-gray mx-1 hidden sm:block"></div>
           
           <div className="flex items-center gap-3">
-            <div className="hidden sm:block">
+            {/* <div className="hidden sm:block">
               <Theme />
-            </div>
+            </div> */}
             <UserAvatar />
           </div>
           
