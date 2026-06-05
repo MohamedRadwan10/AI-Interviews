@@ -11,8 +11,8 @@ import { getScoreColor, getMatchColor } from "@/Utils/Func/Common";
 
 const getStatusIcon = (label) => {
   const l = label.toLowerCase();
-  if ( l.includes("Good") || l.includes("Perfect") || l.includes("Strong")) return <CheckCircle2 className="w-6 h-6 text-status-success" />;
-  if ( l.includes("Partial") || l.includes("Weak")) return <AlertCircle className="w-6 h-6 text-status-warning" />;
+  if (l.includes("excellent") || l.includes("good") || l.includes("perfect") || l.includes("strong")) return <CheckCircle2 className="w-6 h-6 text-status-success" />;
+  if (l.includes("average") || l.includes("fair") || l.includes("partial") || l.includes("weak")) return <AlertCircle className="w-6 h-6 text-status-warning" />;
   return <XCircle className="w-6 h-6 text-status-error" />;
 };
 

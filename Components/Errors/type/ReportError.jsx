@@ -5,9 +5,11 @@ import MainButton from "@/Components/Common/MainButton";
 import { RefreshCw } from "lucide-react";
 import { useNavigation } from "@/hooks/common";
 import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
+import { useUserAccount } from "@/Context/UserAccountContext";
 
 const ReportError = ({ refetch }) => {
   const { navigateTo } = useNavigation();
+  const {accountType} = useUserAccount();
   const onBrowseJobs = () => navigateTo(NAVIGATION_ROUTES.candidate.jobs);
   const retryIcon = <RefreshCw className="w-4 h-4" />;
 
@@ -21,7 +23,7 @@ const ReportError = ({ refetch }) => {
         <MainText tag="p" className="text-sm text-ui-textMuted dark:text-ui-muted max-w-md">{"Something went wrong while fetching your report. Please try again."}</MainText>
         <div className="flex gap-3">
           <MainButton onClick={refetch} className="flex items-center gap-2 bg-brand-primary text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-brand-primaryDark transition-colors" icon={retryIcon} title="Retry" />
-          <MainButton onClick={onBrowseJobs} className="bg-white dark:bg-dark-primary-3 text-ui-textMain dark:text-white border border-ui-borderLight dark:border-ui-border px-5 py-2.5 rounded-xl font-semibold hover:bg-light-main dark:hover:bg-dark-primary-4 transition-colors" title="Browse Jobs" />
+          {accountType === "candidate" ? <MainButton onClick={onBrowseJobs} className="bg-white dark:bg-dark-primary-3 text-ui-textMain dark:text-white border border-ui-borderLight dark:border-ui-border px-5 py-2.5 rounded-xl font-semibold hover:bg-light-main dark:hover:bg-dark-primary-4 transition-colors" title="Browse Jobs" /> : null}
         </div>
       </div>
     </div>
