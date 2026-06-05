@@ -220,51 +220,45 @@ export const useJobDetails = (jobId) => {
 };
 
 export const resolveQuestionCounts = (values) => {
-  const { questionsCount, codingCount, behavioralCount, technicalCount } = values;
+  const { cvCount, codingCount, behavioralCount, technicalCount } = values;
 
-  const hasQuestionsCount = questionsCount !== "" && questionsCount !== null && questionsCount !== undefined;
-  const hasCoding = codingCount !== "" && codingCount !== null && codingCount !== undefined;
-  const hasBehavioral = behavioralCount !== "" && behavioralCount !== null && behavioralCount !== undefined;
-  const hasTechnical = technicalCount !== "" && technicalCount !== null && technicalCount !== undefined;
+  const DEFAULT_TOTAL = 7;
 
-  let totalCount = hasQuestionsCount ? parseInt(questionsCount, 10) : 10;
-  if (isNaN(totalCount) || totalCount < 0) totalCount = 10;
+  const isEmpty = (v) => v === "" || v === null || v === undefined;
 
-  const cCount = hasCoding ? parseInt(codingCount, 10) : 0;
-  const bCount = hasBehavioral ? parseInt(behavioralCount, 10) : 0;
-  const tCount = hasTechnical ? parseInt(technicalCount, 10) : 0;
+  const hasCv       = !isEmpty(cvCount);
+  const hasCoding   = !isEmpty(codingCount);
+  const hasBehavioral = !isEmpty(behavioralCount);
+  const hasTechnical  = !isEmpty(technicalCount);
 
-  const parsedCoding = isNaN(cCount) || cCount < 0 ? 0 : cCount;
-  const parsedBehavioral = isNaN(bCount) || bCount < 0 ? 0 : bCount;
-  const parsedTechnical = isNaN(tCount) || tCount < 0 ? 0 : tCount;
+  const parsedCv       = hasCv       ? Math.max(0, parseInt(cvCount,        10) || 0) : 0;
+  const parsedCoding   = hasCoding   ? Math.max(0, parseInt(codingCount,    10) || 0) : 0;
+  const parsedBehavioral = hasBehavioral ? Math.max(0, parseInt(behavioralCount, 10) || 0) : 0;
+  const parsedTechnical  = hasTechnical  ? Math.max(0, parseInt(technicalCount,  10) || 0) : 0;
 
-  const allTypesEmpty = !hasCoding && !hasBehavioral && !hasTechnical;
+  const allEmpty = !hasCv && !hasCoding && !hasBehavioral && !hasTechnical;
 
-  let resolvedCoding, resolvedBehavioral, resolvedTechnical, resolvedTotal;
+  let resolvedCv, resolvedCoding, resolvedBehavioral, resolvedTechnical;
 
-  if (allTypesEmpty) {
-    resolvedTotal = totalCount;
-    const p1 = Math.floor(Math.random() * (totalCount + 1));
-    const p2 = Math.floor(Math.random() * (totalCount + 1));
-    const minP = Math.min(p1, p2);
-    const maxP = Math.max(p1, p2);
-
-    resolvedCoding = minP;
-    resolvedBehavioral = maxP - minP;
-    resolvedTechnical = totalCount - maxP;
+  if (allEmpty) {
+    const total = DEFAULT_TOTAL;
+    const cuts = [0, ...Array.from({ length: 3 }, () => Math.floor(Math.random() * (total + 1))), total].sort((a, b) => a - b);
+    resolvedCv         = cuts[1] - cuts[0];
+    resolvedCoding     = cuts[2] - cuts[1];
+    resolvedBehavioral = cuts[3] - cuts[2];
+    resolvedTechnical  = cuts[4] - cuts[3];
   } else {
-    const sum = parsedCoding + parsedBehavioral + parsedTechnical;
-    resolvedTotal = sum;
-    resolvedCoding = parsedCoding;
+    resolvedCv         = parsedCv;
+    resolvedCoding     = parsedCoding;
     resolvedBehavioral = parsedBehavioral;
-    resolvedTechnical = parsedTechnical;
+    resolvedTechnical  = parsedTechnical;
   }
 
   return {
-    questionsCount: resolvedTotal,
-    codingCount: resolvedCoding,
-    behavioralCount: resolvedBehavioral,
-    technicalCount: resolvedTechnical,
+    cvCount:          resolvedCv,
+    codingCount:      resolvedCoding,
+    behavioralCount:  resolvedBehavioral,
+    technicalCount:   resolvedTechnical,
   };
 };
 

@@ -49,6 +49,9 @@ const FormSection = ({ section, activeTab, values, errors, touched, formik, sect
             const gridClass = gv(field, "gridClassName", "col-span-1");
             const fieldValue = gv(values, fieldName);
             const fieldError = gv(touched, fieldName) !== "N/A" && gv(errors, fieldName) !== "N/A" ? gv(errors, fieldName) : null;
+            const hintText = typeof field.hint === "function" ? field.hint(values) : field.hint;
+            const hintIsWarning = hintText && hintText.includes("min");
+            const hintIsOk = hintText && hintText.includes("✓");
 
             const handleFieldChange = (e) => {
               const isCheck = field.type === "checkBox";
@@ -71,6 +74,17 @@ const FormSection = ({ section, activeTab, values, errors, touched, formik, sect
                   onBlur={formik.handleBlur}
                   options={options}
                 />
+                {hintText && (
+                  <p className={`mt-1.5 text-xs font-medium flex items-center gap-1 ${
+                    hintIsWarning
+                      ? "text-red-500 dark:text-red-400"
+                      : hintIsOk
+                      ? "text-green-500 dark:text-green-400"
+                      : "text-ui-textMuted dark:text-ui-muted"
+                  }`}>
+                    {hintText}
+                  </p>
+                )}
               </div>
             );
           })}
