@@ -248,7 +248,7 @@ export const useCompanySettings = () => {
     try {
       const formData = new FormData();
       if (values.photo instanceof File) {
-        formData.append("photostring", values.photo);
+        formData.append("photo", values.photo);
       }
       formData.append("Name", values.companyName || "");
       formData.append("Industry", values.industry || "");

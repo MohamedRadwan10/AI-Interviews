@@ -7,6 +7,7 @@ import { Users, Edit2, Trash2, Clock, User, Eye } from "lucide-react";
 import moment from "moment-timezone";
 import { IMAGE_BASE_URL } from "@/Config/apiRegistry";
 import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
+import MainImage from "@/Components/Common/Image";
 
 export const CANDIDATE_DASHBOARD_COLUMNS = (navigateTo, userId) => [
   { field: "roleApplied", header: "Role Applied", sortable: true },
@@ -148,7 +149,7 @@ export const JOB_APPLICANTS_COLUMNS = (onViewApplicant) => [
       return (
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-light-main dark:bg-dark-primary-4 flex items-center justify-center overflow-hidden shrink-0">
-            {photoUrl ? <Image src={photoUrl} alt={fullName} width={40} height={40} className="object-cover w-full h-full" /> : <User size={20} className="text-ui-muted" />}
+            {photoUrl ? <MainImage src={photoUrl} alt={fullName} width={40} height={40} className="object-cover w-full h-full" /> : <User size={20} className="text-ui-muted" />}
           </div>
           <div className="flex flex-col">
             <MainText title={fullName} className="font-bold text-ui-textMain dark:text-dark-white" />
