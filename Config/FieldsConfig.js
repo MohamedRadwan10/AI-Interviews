@@ -450,30 +450,36 @@ export const forgetPasswordConfig = {
   },
 };
 
-const sumQuestionsTotalTest = {
-  name: "sumQuestionsLimit",
-  message: "Total questions cannot be less than the sum of individual question types.",
+const QUESTIONS_MIN = 7;
+const QUESTIONS_MAX = 20;
+
+const getTotalQuestions = (parent) => {
+  const cv  = parseInt(parent?.cvCount,        10) || 0;
+  const c   = parseInt(parent?.codingCount,    10) || 0;
+  const b   = parseInt(parent?.behavioralCount,10) || 0;
+  const t   = parseInt(parent?.technicalCount, 10) || 0;
+  return cv + c + b + t;
+};
+
+const questionsTotalTest = {
+  name: "questionsTotalRange",
+  message: `Total questions must be between ${QUESTIONS_MIN} and ${QUESTIONS_MAX}.`,
   test: function(value, context) {
-    const { questionsCount, codingCount, behavioralCount, technicalCount } = context.parent || {};
-    const total = parseInt(questionsCount, 10) || 10;
-    const c = parseInt(codingCount, 10) || 0;
-    const b = parseInt(behavioralCount, 10) || 0;
-    const t = parseInt(technicalCount, 10) || 0;
-    return (c + b + t) <= total;
+    const total = getTotalQuestions(context.parent);
+    if (total === 0) return true;
+    return total >= QUESTIONS_MIN && total <= QUESTIONS_MAX;
   }
 };
 
-const sumQuestionsSubTest = {
-  name: "sumQuestionsLimit",
-  message: "The sum of coding, behavioral, and technical questions cannot exceed the total questions count.",
-  test: function(value, context) {
-    const { questionsCount, codingCount, behavioralCount, technicalCount } = context.parent || {};
-    const total = parseInt(questionsCount, 10) || 10;
-    const c = parseInt(codingCount, 10) || 0;
-    const b = parseInt(behavioralCount, 10) || 0;
-    const t = parseInt(technicalCount, 10) || 0;
-    return (c + b + t) <= total;
-  }
+export const getQuestionsCounterHint = (values) => {
+  const cv  = parseInt(values?.cvCount,        10) || 0;
+  const c   = parseInt(values?.codingCount,    10) || 0;
+  const b   = parseInt(values?.behavioralCount,10) || 0;
+  const t   = parseInt(values?.technicalCount, 10) || 0;
+  const total = cv + c + b + t;
+  if (total === 0) return `0 / ${QUESTIONS_MAX} — leave all empty to auto-distribute 7 questions`;
+  const isValid = total >= QUESTIONS_MIN && total <= QUESTIONS_MAX;
+  return `${total} / ${QUESTIONS_MAX} questions selected${isValid ? " ✓" : ` (min ${QUESTIONS_MIN}, max ${QUESTIONS_MAX})`}`;
 };
 
 export const postJobConfig = {
@@ -601,12 +607,14 @@ export const postJobConfig = {
       title: "AI Interview Questions Configuration",
       fields: [
         {
-          field_name: "questionsCount",
+          field_name: "cvCount",
           type: "number",
-          label: "Total Number of Questions",
-          placeholder: "Leave empty for default (10)",
+          label: "CV Questions",
+          placeholder: "Leave empty to auto-distribute",
+          hint: (values) => getQuestionsCounterHint(values),
+          gridClassName: "col-span-2",
           validation: {
-            customTest: sumQuestionsTotalTest,
+            customTest: questionsTotalTest,
           },
         },
         {
@@ -614,8 +622,9 @@ export const postJobConfig = {
           type: "number",
           label: "Coding Questions",
           placeholder: "Leave empty to auto-distribute",
+          hint: (values) => getQuestionsCounterHint(values),
           validation: {
-            customTest: sumQuestionsSubTest,
+            customTest: questionsTotalTest,
           },
         },
         {
@@ -623,8 +632,9 @@ export const postJobConfig = {
           type: "number",
           label: "Behavioral Questions",
           placeholder: "Leave empty to auto-distribute",
+          hint: (values) => getQuestionsCounterHint(values),
           validation: {
-            customTest: sumQuestionsSubTest,
+            customTest: questionsTotalTest,
           },
         },
         {
@@ -632,8 +642,9 @@ export const postJobConfig = {
           type: "number",
           label: "Technical Questions",
           placeholder: "Leave empty to auto-distribute",
+          hint: (values) => getQuestionsCounterHint(values),
           validation: {
-            customTest: sumQuestionsSubTest,
+            customTest: questionsTotalTest,
           },
         },
       ],
