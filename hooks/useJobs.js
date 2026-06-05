@@ -4,7 +4,8 @@ import { useApi } from "@/hooks/useApi";
 import { UserTokenContext } from "@/Context/UserTokenContext";
 import { useNavigation, useMainNotify, useUrlSync } from "@/hooks/common";
 import { formatDate } from "@/Utils/Func/Common";
-import { getCountryName, getStateName } from "@/Utils/Func/LocationData";
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
+
 
 export const useJobs = () => {
   const { params, setParams, updateParam } = useUrlSync({
@@ -75,8 +76,8 @@ export const useJobs = () => {
       ...(filters.subCategory ? { subcategory: filters.subCategory } : {}),
       ...(filters.type ? { jobType: filters.type } : {}),
       ...(filters.careerLevel ? { careerlevel: filters.careerLevel } : {}),
-      ...(filters.country ? { country: getCountryName(filters.country) } : {}),
-      ...(filters.city ? { city: getStateName(filters.country, filters.city) } : {}),
+      ...(filters.country ? { country: filters.country } : {}),
+      ...(filters.city ? { city: filters.city } : {}),
     },
   });
 
@@ -139,24 +140,16 @@ export const useJobs = () => {
 
     if (filters.country) {
       const countryNormalized = normalize(filters.country);
-      const countryNameNormalized = normalize(getCountryName(filters.country));
       const jobCountry = normalize(get(job, "country"));
       const jobLocations = normalize(get(job, "locations"));
-      if (jobCountry !== countryNormalized && 
-          jobCountry !== countryNameNormalized && 
-          !jobLocations.includes(countryNormalized) && 
-          !jobLocations.includes(countryNameNormalized)) return false;
+      if (jobCountry !== countryNormalized && !jobLocations.includes(countryNormalized)) return false;
     }
 
     if (filters.city) {
       const cityNormalized = normalize(filters.city);
-      const cityNameNormalized = normalize(getStateName(filters.country, filters.city));
-      const jobCity = normalize(get(job, "city"));
+      const jobCity = normalize(get(job, "city") || get(job, "governmentId") || get(job, "government"));
       const jobLocations = normalize(get(job, "locations"));
-      if (jobCity !== cityNormalized && 
-          jobCity !== cityNameNormalized && 
-          !jobLocations.includes(cityNormalized) && 
-          !jobLocations.includes(cityNameNormalized)) return false;
+      if (jobCity !== cityNormalized && !jobLocations.includes(cityNormalized)) return false;
     }
 
     return true;
@@ -320,7 +313,12 @@ export const usePostJob = () => {
       const data = await postJobApi.refetch({ data: payload });
       if (data) {
         success("Job Posted", "New job opportunity created successfully.");
-        navigateTo("/intelliHire/jobs");
+        const jobId = get(data, "jobId") || get(data, "id") || get(data, "data.jobId") || get(data, "data.id");
+        if (jobId) {
+          navigateTo(NAVIGATION_ROUTES.company.jobApplicants(jobId));
+        } else {
+          navigateTo(NAVIGATION_ROUTES.company.dashboard);
+        }
       }
       return data;
     } catch (err) { 
@@ -369,7 +367,7 @@ export const useEditJob = (jobId) => {
       const data = await editJobApi.refetch({ data: payload });
       if (data) {
         success("Job Updated", "Job details have been updated successfully.");
-        navigateTo("/intelliHire/jobs");
+        navigateTo(NAVIGATION_ROUTES.candidate.jobs);
       }
       return data;
     } catch (err) { 
@@ -415,20 +413,25 @@ export const useCheckJobMatch = (autoJobId = null) => {
   const [hasHandledAutoResult, setHasHandledAutoResult] = useState(false);
 
   const handleResult = useCallback((data, jobId) => {
-    if (data && data.rejected) {
-      setMatchResult(data);
+    const actualData = get(data, "data") || data;
+    const isPoor = actualData && (actualData.rejected || actualData.matchLabel === "Poor Match");
+    if (isPoor) {
+      setMatchResult(actualData);
       setShowRejectionModal(true);
       return false;
-    } else if (data && !data.rejected && jobId) {
-      navigateTo(`/intelliHire/interview-session/${jobId}`);
+    } else if (actualData && jobId) {
+      setMatchResult(actualData);
+      if (!autoJobId) {
+        setShowRejectionModal(true);
+      }
       return true;
     }
     return true;
-  }, [navigateTo]);
+  }, [autoJobId]);
 
   useEffect(() => {
     if (autoJobId && checkMatchApi.data && !hasHandledAutoResult) {
-      handleResult(checkMatchApi.data);
+      handleResult(checkMatchApi.data, autoJobId);
       setHasHandledAutoResult(true);
     }
   }, [autoJobId, checkMatchApi.data, hasHandledAutoResult, handleResult]);
@@ -436,7 +439,8 @@ export const useCheckJobMatch = (autoJobId = null) => {
   useEffect(() => {
     if (autoJobId && checkMatchApi.error && !hasHandledAutoResult) {
       const errorData = get(checkMatchApi.error, "response.data");
-      if (errorData && errorData.rejected) {
+      const isPoor = errorData && (errorData.rejected || errorData.matchLabel === "Poor Match");
+      if (isPoor) {
         setMatchResult(errorData);
         setShowRejectionModal(true);
         setHasHandledAutoResult(true);
@@ -450,7 +454,8 @@ export const useCheckJobMatch = (autoJobId = null) => {
       return handleResult(data, jobId);
     } catch (err) {
       const errorData = get(err, "response.data");
-      if (errorData && errorData.rejected) {
+      const isPoor = errorData && (errorData.rejected || errorData.matchLabel === "Poor Match");
+      if (isPoor) {
         setMatchResult(errorData);
         setShowRejectionModal(true);
         return false;
@@ -466,6 +471,6 @@ export const useCheckJobMatch = (autoJobId = null) => {
     matchResult, 
     showRejectionModal, 
     setShowRejectionModal,
-    isRejected: !!(matchResult && matchResult.rejected)
+    isRejected: !!(matchResult && (matchResult.rejected || matchResult.matchLabel === "Poor Match"))
   };
 };

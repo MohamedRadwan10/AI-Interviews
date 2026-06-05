@@ -8,6 +8,7 @@ import { useNavigation } from "@/hooks/common";
 import MainText from "@/Components/Common/MainText";
 import MainButton from "@/Components/Common/MainButton";
 import { map } from "lodash-es";
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 
 const ActiveSessionsPage = () => {
   const { activeSessions, isLoading } = useInterviewSessions();
@@ -15,7 +16,7 @@ const ActiveSessionsPage = () => {
 
   if (isLoading) return <RouteLoading type="activeSessions" />;
 
-  const onBrowseJobs = () => navigateTo("/intelliHire/jobs");
+  const onBrowseJobs = () => navigateTo(NAVIGATION_ROUTES.candidate.jobs);
   
   const sessionsSubTitle = activeSessions.length > 0 ? "You have sessions that need completion" : "No active sessions found";
 

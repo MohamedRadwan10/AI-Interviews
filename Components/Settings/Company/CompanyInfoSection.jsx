@@ -25,12 +25,12 @@ const CompanyInfoSection = ({ initialValues, validationSchema, onSubmit, infoLoa
             <div className="flex items-center gap-6 py-2">
               <div className="w-24 h-24 !m-0 rounded-full overflow-hidden shrink-0 border-2 border-brand-primary/20 flex items-center justify-center bg-light-blue50 dark:bg-dark-primary-3 relative">
                 <MainInput
-                  field_name="Photo"
+                  field_name="photo"
                   type="photoUpload"
                   uploadType="image"
-                  value={values.Photo}
-                  error={touched.Photo && errors.Photo}
-                  onChange={(file) => setFieldValue("Photo", file)}
+                  value={values.photo}
+                  error={touched.photo && errors.photo}
+                  onChange={(file) => setFieldValue("photo", file)}
                   onBlur={handleBlur}
                   {...companyPersonalConfig.fields[0]}
                   containerClassName="!mb-0 !p-0 !border-0 absolute inset-0 w-full h-full"
@@ -40,7 +40,7 @@ const CompanyInfoSection = ({ initialValues, validationSchema, onSubmit, infoLoa
               <div className="flex flex-col gap-1.5 justify-center">
                 <MainButton
                   type="button"
-                  onClick={() => document.getElementById("Photo-file-input")?.click()}
+                  onClick={() => document.getElementById("photo-file-input")?.click()}
                   className="px-4 py-2 text-xs font-semibold rounded-lg border border-ui-borderLight dark:border-dark-gray text-ui-textMain dark:text-white bg-transparent hover:bg-light-blue50/50 dark:hover:bg-white/5 transition-all w-fit"
                   title="Upload Logo"
                 />
@@ -54,32 +54,32 @@ const CompanyInfoSection = ({ initialValues, validationSchema, onSubmit, infoLoa
                 type="text"
                 label="Company Name"
                 placeholder="Tech Corp"
-                value={values.Name}
-                error={touched.Name && errors.Name}
-                onChange={(e) => setFieldValue("Name", e.target.value)}
+                value={values.companyName}
+                error={touched.companyName && errors.companyName}
+                onChange={(e) => setFieldValue("companyName", e.target.value)}
                 onBlur={handleBlur}
                 validation={companyPersonalConfig.fields[1].validation}
               />
               <MainInput
-                field_name="Industry"
+                field_name="industry"
                 type="select"
                 label="Industry"
                 placeholder="Select Industry"
-                value={values.Industry}
-                error={touched.Industry && errors.Industry}
-                onChange={(e) => setFieldValue("Industry", e.target.value || e)}
+                value={values.industry}
+                error={touched.industry && errors.industry}
+                onChange={(e) => setFieldValue("industry", e.target.value || e)}
                 onBlur={handleBlur}
                 options={companyPersonalConfig.fields[2].options}
                 validation={companyPersonalConfig.fields[2].validation}
               />
               <MainInput
-                field_name="PhoneNumber"
+                field_name="phoneNumber"
                 type="phone"
                 label="Phone Number"
                 placeholder="0123456789"
-                value={values.PhoneNumber}
-                error={touched.PhoneNumber && errors.PhoneNumber}
-                onChange={(e) => setFieldValue("PhoneNumber", e.target.value)}
+                value={values.phoneNumber}
+                error={touched.phoneNumber && errors.phoneNumber}
+                onChange={(e) => setFieldValue("phoneNumber", e.target.value)}
                 onBlur={handleBlur}
                 validation={companyPersonalConfig.fields[3].validation}
               />

@@ -12,6 +12,7 @@ import { useUserAccount } from "@/Context/UserAccountContext";
 import { formatDate } from "@/Utils/Func/Common";
 import { useCheckJobMatch } from "@/hooks/useJobs";
 import JobRejectionModal from "@/Components/Modal/JobRejectionModal";
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 
 const JobHeaderCard = ({ item }) => {
   const { accountData } = useUserAccount();
@@ -114,6 +115,7 @@ const JobHeaderCard = ({ item }) => {
         visible={showRejectionModal} 
         onHide={() => setShowRejectionModal(false)} 
         result={matchResult} 
+        onProceed={() => navigateTo(NAVIGATION_ROUTES.candidate.interviewSession(id))}
       />
     </div>
   );

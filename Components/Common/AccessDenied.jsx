@@ -1,13 +1,19 @@
 import React from "react";
 import { Button } from "primereact/button";
 import MainText from "./MainText";
+import { useCallback } from "react";
 import { useNavigation } from "@/hooks/common";
 import { useUserAccount } from "@/Context/UserAccountContext";
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 
 const AccessDenied = () => {
   const { navigateBack, navigateTo } = useNavigation();
   const { accountData } = useUserAccount();
   const isLoggedIn = !!accountData;
+
+  const handleSignIn = useCallback(() => {
+    navigateTo(NAVIGATION_ROUTES.auth.login);
+  }, [navigateTo]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
@@ -29,7 +35,7 @@ const AccessDenied = () => {
           <Button 
             label="Sign In" 
             icon="pi pi-sign-in" 
-            onClick={() => navigateTo("/login")} 
+            onClick={handleSignIn} 
             className="p-button-primary"
           />
         )}

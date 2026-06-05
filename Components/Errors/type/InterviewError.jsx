@@ -3,10 +3,11 @@ import { AlertCircle } from "lucide-react";
 import MainText from "@/Components/Common/MainText";
 import MainButton from "@/Components/Common/MainButton";
 import { useNavigation } from "@/hooks/common";
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 
 const InterviewError = ({ error }) => {
   const { navigateTo } = useNavigation();
-  const onReturnDashboard = () => navigateTo("/intelliHire/dashboard");
+  const onReturnDashboard = () => navigateTo(NAVIGATION_ROUTES.candidate.errorDashboard);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 p-6 text-center">

@@ -6,6 +6,7 @@ import MainButton from "@/Components/Common/MainButton";
 import { useNavigation } from "@/hooks/common";
 import MainImage from "@/Components/Common/Image";
 import { getImageUrl } from "@/Utils/Func/UrlHelper";
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 
 const JobItemCard = ({ data }) => {
   const { navigateTo } = useNavigation();
@@ -26,7 +27,7 @@ const JobItemCard = ({ data }) => {
   
   const description = gv("description") !== "N/A" ? gv("description") : gv("desc", "");
   const jobId = gv("id");
-  const jobDetailsPath = `/intelliHire/jobs/${jobId}`;
+  const jobDetailsPath = NAVIGATION_ROUTES.candidate.jobDetails(jobId);
   
   const handleDetailsClick = () => navigateTo(jobDetailsPath);
 

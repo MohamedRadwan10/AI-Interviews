@@ -10,6 +10,7 @@ import { getVal as commonGetVal } from "@/Utils/Func/Common";
 import { useReport } from "@/hooks/useReport";
 import { useNavigation } from "@/hooks/common";
 import { ReportError } from "@/Components/Errors";
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 
 const Section = ({ title, children, className = "" }) => (
   <div className={`flex flex-col gap-2 ${className}`}>
@@ -35,6 +36,7 @@ const PointList = ({ title, points, colorClass, iconColor }) => (
     </ul>
   </div>
 );
+
 
 const ApplicantDetailsModal = ({ visible, applicant, onHide, updateStatus, isUpdating }) => {
   const { report, isLoading, refetch, error, strengthPoints: rawS, weaknessesPoints: rawW, accuracyPercent: acc, performanceLabel: perf } = useReport(applicant?.sessionId, applicant?.userId);
@@ -63,8 +65,8 @@ const ApplicantDetailsModal = ({ visible, applicant, onHide, updateStatus, isUpd
   const wPoints = useMemo(() => map(rawW?.split("|"), p => p.trim()).filter(Boolean), [rawW]);
   
   const actions = useMemo(() => [
-    { t: "View Report", i: <Eye size={18} />, onclick: () => navigateTo(`/intelliHire/report/${applicant?.sessionId}/${applicant?.userId}`) }, 
-    { t: "View CV", i: <FileText size={18} />, onclick: () => navigateTo(`/intelliHire/cv/${applicant?.userId}`) }
+    { t: "View Report", i: <Eye size={18} />, onclick: () => navigateTo(NAVIGATION_ROUTES.candidate.report(applicant?.sessionId, applicant?.userId)) }, 
+    { t: "View CV", i: <FileText size={18} />, onclick: () => navigateTo(NAVIGATION_ROUTES.candidate.cv(applicant?.userId)) }
   ], [applicant, navigateTo]);
 
   const loadingOverlay = useMemo(() => {

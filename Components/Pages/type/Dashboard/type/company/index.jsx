@@ -10,6 +10,7 @@ import { COMPANY_DASHBOARD_COLUMNS } from "@/Config/tableConfig";
 import MainText from "@/Components/Common/MainText";
 import MainSearch from "@/Components/Common/MainSearch";
 import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 
 const CompanyDashboard = () => {
   const { navigateTo } = useNavigation();
@@ -17,8 +18,8 @@ const CompanyDashboard = () => {
 
   if (loading) return <RouteLoading type="CompanyDashboard" />;
 
-  const onViewApplicants = (job) => navigateTo(`/intelliHire/job-applicants/${job.id}`);
-  const onEditJob = (job) => navigateTo(`/intelliHire/edit-job/${job.id}`);
+  const onViewApplicants = (job) => navigateTo(NAVIGATION_ROUTES.company.jobApplicants(job.id));
+  const onEditJob = (job) => navigateTo(NAVIGATION_ROUTES.company.editJob(job.id));
   const onSearchChange = (e) => setSearchTerm(e.target.value);
   const columns = COMPANY_DASHBOARD_COLUMNS(onViewApplicants, onEditJob, handleDeleteJob, navigateTo);
 

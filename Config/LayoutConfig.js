@@ -1,7 +1,10 @@
+import { NAVIGATION_ROUTES } from "./navigationConfig";
+
 export const navigation = [
-  { label: "Home", path: "/intelliHire" },
-  { label: "About Us", path: "/intelliHire/about" },
-  { label: "Jobs", path: "/intelliHire/jobs" },
-  { label: "Dashboard", path: "/intelliHire/dashboard" },
-  { label: "Post Job", path: "/intelliHire/post-job" },
+  { label: "Home", path: NAVIGATION_ROUTES.common.home },
+  { label: "About Us", path: NAVIGATION_ROUTES.common.about },
+  { label: "Jobs", path: NAVIGATION_ROUTES.candidate.jobs },
+  { label: "Dashboard", path: NAVIGATION_ROUTES.candidate.errorDashboard },
+  { label: "Post Job", path: NAVIGATION_ROUTES.company.postJob },
 ];
+

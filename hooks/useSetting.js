@@ -247,12 +247,12 @@ export const useCompanySettings = () => {
   const handleUpdateCompanyInfo = useCallback(async (values) => {
     try {
       const formData = new FormData();
-      if (values.Photo instanceof File) {
-        formData.append("photostring", values.Photo);
+      if (values.photo instanceof File) {
+        formData.append("photostring", values.photo);
       }
-      formData.append("Name", values.companyName || values.Name || "");
-      formData.append("Industry", values.Industry || "");
-      formData.append("PhoneNumber", values.PhoneNumber || "");
+      formData.append("Name", values.companyName || "");
+      formData.append("Industry", values.industry || "");
+      formData.append("PhoneNumber", values.phoneNumber || "");
 
       await updateCompanyInfoApi({ data: formData });
       notifySuccess("Success", "Company information updated successfully");
@@ -265,12 +265,12 @@ export const useCompanySettings = () => {
   const handleUpdateCompanyAbout = useCallback(async (values) => {
     try {
       const payload = {
+        websiteUrl: values.websiteUrl || "",
+        about: values.about || "",
         locations: {
-          city: values.City || "",
-          country: values.Country || "",
-          government: values.Government || "",
-          about: values.About || "",
-          websiteUrl: values.WebsiteUrl || "",
+          city: values.city || "",
+          country: values.country || "",
+          government: values.governmentId || "",
         }
       };
 
@@ -280,7 +280,7 @@ export const useCompanySettings = () => {
     } catch (err) {
       notifyError("Error", get(err, "response.data.message") || "Failed to update company details");
     }
-  }, [updateCompanyAboutApi, refetchUserData, notifyError]);
+  }, [updateCompanyAboutApi, refetchUserData, notifySuccess, notifyError]);
 
   const handleDeleteAccount = useCallback(async () => {
     confirm({

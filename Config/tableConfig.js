@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Users, Edit2, Trash2, Clock, User, Eye } from "lucide-react";
 import moment from "moment-timezone";
 import { IMAGE_BASE_URL } from "@/Config/apiRegistry";
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 
 export const CANDIDATE_DASHBOARD_COLUMNS = (navigateTo, userId) => [
   { field: "roleApplied", header: "Role Applied", sortable: true },
@@ -57,7 +58,7 @@ export const CANDIDATE_DASHBOARD_COLUMNS = (navigateTo, userId) => [
     field: "action", 
     header: "Report", 
     type: "button", 
-    onClick: (row) => navigateTo(`/intelliHire/report/${row.sessionId}/${userId}`)
+    onClick: (row) => navigateTo(NAVIGATION_ROUTES.candidate.report(row.sessionId, userId))
   }
 ];
 
@@ -72,7 +73,7 @@ export const COMPANY_DASHBOARD_COLUMNS = (onViewApplicants, onEdit, onDelete, na
       const { title, type, id } = rowData;
       const icon = <Clock size={12} />;
       const typeText = <>{icon} {type}</>;
-      const onClickTitle = () => navigateTo && navigateTo(`/intelliHire/jobs/${id}`);
+      const onClickTitle = () => navigateTo && navigateTo(NAVIGATION_ROUTES.candidate.jobDetails(id));
       return (
         <div className="flex flex-col gap-1 cursor-pointer group" onClick={onClickTitle}>
           <MainText title={title} className="font-bold text-ui-textMain dark:text-dark-white group-hover:text-brand-primary transition-colors" />

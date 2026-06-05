@@ -36,7 +36,7 @@ export const candidatePersonalConfig = {
 export const companyPersonalConfig = {
   fields: [
     {
-      field_name: "Photo",
+      field_name: "photo",
       type: "photoUpload",
       uploadType: "image",
       label: "Upload Logo",

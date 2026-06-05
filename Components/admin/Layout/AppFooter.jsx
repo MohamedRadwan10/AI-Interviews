@@ -26,6 +26,9 @@ const AppFooter = () => {
     if (item.label === "Post Job" && userType === "Individual") {
       return false;
     }
+    if (item.label === "Jobs" && userType === "Company") {
+      return false;
+    }
     if (item.label === "Dashboard" && userType === "Company") {
       item.path = "/intelliHire/company-dashboard";
       return true;

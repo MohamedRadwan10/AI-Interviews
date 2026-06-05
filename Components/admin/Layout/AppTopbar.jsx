@@ -7,6 +7,8 @@ import NavMenu from "./Components/NavMenu";
 import { Bell, Menu, Activity } from "lucide-react";
 import { useInterviewSessions } from "@/hooks/useActiveSessions";
 import { useNotifications } from "@/hooks/useNotifications";
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
+import { useCallback } from "react";
 import { useNavigation } from "@/hooks/common";
 import MainButton from "@/Components/Common/MainButton";
 import MainText from "@/Components/Common/MainText";
@@ -29,8 +31,13 @@ const TopBar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleSessionsClick = () => navigateTo("/intelliHire/active-sessions");
-  const handleNotificationsClick = () => navigateTo("/intelliHire/notifications");
+  const handleSessionsClick = useCallback(() => {
+    navigateTo(NAVIGATION_ROUTES.candidate.activeSessions);
+  }, [navigateTo]);
+
+  const handleNotificationsClick = useCallback(() => {
+    navigateTo(NAVIGATION_ROUTES.common.notifications);
+  }, [navigateTo]);
 
   return (
     <header className={`sticky top-0 z-50 transition-all duration-500 w-full px-4 md:px-8 pt-4 pb-2 ${

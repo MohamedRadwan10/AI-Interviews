@@ -6,6 +6,7 @@ import { UserTokenContext } from "@/Context/UserTokenContext";
 import { useNavigation, useMainNotify } from "@/hooks/common";
 import { useApi } from "@/hooks/useApi";
 import { APP_CONFIG } from "@/Config/appConfig";
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 import axios from "axios";
 import { API_BASE_URL, AUTH_ENDPOINTS } from "@/Config/apiRegistry";
 import { useFormik } from "formik";
@@ -106,7 +107,7 @@ export const useRegister = () => {
       const data = await apiHook.refetch({ data: payload });
       if (data) {
         success("Registration Successful", "Please check your email for verification.");
-        navigateTo("/verify-email-request");
+        navigateTo(NAVIGATION_ROUTES.auth.verifyEmailRequest);
       }
       return data;
     } catch (err) {
@@ -188,7 +189,7 @@ export const useCompleteProfile = () => {
       const data = await apiHook.refetch({ data: formData });
       if (data) {
         success("Profile Updated", "Your profile has been successfully completed.");
-        navigateTo("/intelliHire");
+        navigateTo(NAVIGATION_ROUTES.candidate.dashboard);
       }
       return data;
     } catch (err) {
@@ -254,12 +255,12 @@ export const useVerifyEmail = () => {
         setTimeout(() => {
           if (resToken) {
             if (get(responseData, "userType") === "Company") {
-               router.push("/company-onboarding");
+               router.push(NAVIGATION_ROUTES.auth.companyOnboarding);
             } else {
-               router.push("/candidate-onboarding");
+               router.push(NAVIGATION_ROUTES.auth.candidateOnboarding);
             }
           } else {
-            router.push("/login?verified=true");
+            router.push(NAVIGATION_ROUTES.auth.loginWithVerified);
           }
         }, 2000);
       } catch (err) {
@@ -386,7 +387,7 @@ export const useForgetPassword = () => {
         },
       });
       success("Password Changed", "Your password has been successfully updated.");
-      navigateTo("/login?success=true");
+      navigateTo(NAVIGATION_ROUTES.auth.loginWithSuccess);
     } catch (err) {
       const msg = get(err, "response.data.message") || "Failed to reset password.";
       notifyError("Reset Failed", msg);

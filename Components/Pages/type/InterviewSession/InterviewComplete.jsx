@@ -4,24 +4,25 @@ import MainText from "@/Components/Common/MainText";
 import MainButton from "@/Components/Common/MainButton";
 import { useNavigation } from "@/hooks/common";
 import { useUserAccount } from "@/Context/UserAccountContext";
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 
 export const InterviewComplete = ({ message, sessionId}) => {
   const { navigateTo, replaceUrl } = useNavigation();
   const { userId } = useUserAccount();
   const msgText = message || "Your responses have been successfully submitted and your session is now closed. Your report is being generated and will be available shortly.";
-  const onViewReport = () => navigateTo(`/intelliHire/report/${sessionId}/${userId}`);
-  const onGoDashboard = () => navigateTo("/intelliHire");
+  const onViewReport = () => navigateTo(NAVIGATION_ROUTES.candidate.report(sessionId, userId));
+  const onGoDashboard = () => navigateTo(NAVIGATION_ROUTES.candidate.dashboard);
   const reportIcon = <FileText className="w-5 h-5" />;
   const dashboardIcon = <LayoutDashboard className="w-5 h-5" />;
 
   useEffect(() => {
     if (sessionId) {
       const timer = setTimeout(() => {
-        replaceUrl(`/intelliHire/report/${sessionId}/${userId}`);
+        replaceUrl(NAVIGATION_ROUTES.candidate.report(sessionId, userId));
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [sessionId, replaceUrl]);
+  }, [sessionId, userId, replaceUrl]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 p-6 text-center animate-in zoom-in-95 duration-500">

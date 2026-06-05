@@ -1,3 +1,5 @@
+import { NAVIGATION_ROUTES } from "./navigationConfig";
+
 export const APP_CONFIG = {
   system: {
     name: "IntelliHire",
@@ -19,7 +21,7 @@ export const APP_CONFIG = {
     retryInterval: 500,
   },
   interview: {
-    defaultTotalQuestions: 15,
+    defaultTotalQuestions: 10,
     autoSubmitDelay: 1000,   
     timerSyncInterval: 5000,  
     webcamCheckInterval: 500,
@@ -46,10 +48,11 @@ export const APP_CONFIG = {
   },
   navigation: {
     onboarding: {
-      individual: "/candidate-onboarding",
-      company: "/company-onboarding",
+      individual: NAVIGATION_ROUTES.auth.candidateOnboarding,
+      company: NAVIGATION_ROUTES.auth.companyOnboarding,
     },
-    dashboard: "/intelliHire",
-    login: "/login",
+    dashboard: NAVIGATION_ROUTES.candidate.dashboard,
+    login: NAVIGATION_ROUTES.auth.login,
   }
 };
+
