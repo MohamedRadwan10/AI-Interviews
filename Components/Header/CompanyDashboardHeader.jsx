@@ -5,12 +5,13 @@ import MainText from "@/Components/Common/MainText";
 import MainButton from "@/Components/Common/MainButton";
 import { Plus } from "lucide-react";
 import { useNavigation } from "@/hooks/common";
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 
 const CompanyDashboardHeader = () => {
   const { navigateTo } = useNavigation();
 
   const btnIcon = <Plus size={18} />;
-  const onPostJob = () => navigateTo("/intelliHire/post-job");
+  const onPostJob = () => navigateTo(NAVIGATION_ROUTES.company.postJob);
 
   return (
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">

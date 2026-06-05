@@ -5,6 +5,7 @@ import MainText from "@/Components/Common/MainText";
 import { Briefcase, Play, Clock } from "lucide-react";
 import MainButton from "@/Components/Common/MainButton";
 import { useNavigation } from "@/hooks/common";
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 
 const ActiveSessionCardContent = (props) => {
   const { navigateTo } = useNavigation();
@@ -15,7 +16,7 @@ const ActiveSessionCardContent = (props) => {
   const jobId = get(session, "jobid") || get(session, "jobId");
 
   const sessionIdText = `Session ID: ${sessionId?.substring(0, 8)}...`;
-  const onResume = () => navigateTo(`/intelliHire/interview-session/${jobId}`);
+  const onResume = () => navigateTo(NAVIGATION_ROUTES.candidate.interviewSession(jobId));
   const resumeIcon = <Play className="w-4 h-4" />;
 
   return (

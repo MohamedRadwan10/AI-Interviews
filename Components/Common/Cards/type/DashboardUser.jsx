@@ -4,6 +4,7 @@ import MainButton from "@/Components/Common/MainButton";
 import { Video, TrendingUp, Eye } from "lucide-react";
 import { useNavigation } from "@/hooks/common";
 import { useUserAccount } from "@/Context/UserAccountContext";
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 
 export const DashboardCards = ({ totalInterviews, averageProgress, latestRecord }) => {
   const { navigateTo } = useNavigation();
@@ -12,7 +13,7 @@ export const DashboardCards = ({ totalInterviews, averageProgress, latestRecord 
   const latestJobTitle = latestRecord?.jobTitle || "No recent interviews";
   const latestCompany = latestRecord?.companyName || "-";
   const latestScore = latestRecord?.overallScore || "-";
-  const onViewReport = () => navigateTo(`/intelliHire/report/${latestRecord?.sessionId}/${userId}`);
+  const onViewReport = () => navigateTo(NAVIGATION_ROUTES.candidate.report(latestRecord?.sessionId, userId));
   const viewIcon = <Eye className="w-4 h-4" />;
 
   return (

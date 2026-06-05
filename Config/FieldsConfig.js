@@ -687,8 +687,8 @@ export const jobFilterConfig = {
     {
       field_name: "city",
       type: "select",
-      label: "City / Governorate",
-      placeholder: "All Cities",
+      label: "Governorate",
+      placeholder: "All Governorates",
       options: (filters) => (filters.country ? getStatesOfCountry(filters.country) : []),
       disabled: (filters) => !filters.country,
       containerClassName: "!mb-0",

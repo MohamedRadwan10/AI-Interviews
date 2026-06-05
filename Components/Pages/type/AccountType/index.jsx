@@ -6,6 +6,7 @@ import MainButton from "@/Components/Common/MainButton";
 import MainText from "@/Components/Common/MainText";
 import MainCard from "@/Components/Common/Cards";
 import { useNavigation } from "@/hooks/common";
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 
 const accountTypes = [
   {
@@ -29,7 +30,8 @@ const AccountType = () => {
 
   const handleCreate = () => {
     if (!selected) return;
-    navigateTo(`/${selected}-register`);
+    const route = selected === "company" ? NAVIGATION_ROUTES.auth.companyRegister : NAVIGATION_ROUTES.auth.candidateRegister;
+    navigateTo(route);
   };
 
 

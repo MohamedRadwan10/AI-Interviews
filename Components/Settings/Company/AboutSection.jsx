@@ -14,26 +14,26 @@ const AboutSection = ({ values, errors, touched, setFieldValue, handleBlur }) =>
 
       <div className="flex flex-col gap-4">
         <MainInput
-          field_name="About"
+          field_name="about"
           type="textarea"
           label="About Company"
           placeholder="Tech Crops is a leading provider..."
-          value={values.About}
-          error={touched.About && errors.About}
-          onChange={(e) => setFieldValue("About", e.target.value)}
+          value={values.about}
+          error={touched.about && errors.about}
+          onChange={(e) => setFieldValue("about", e.target.value)}
           onBlur={handleBlur}
           rows={4}
           validation={companyAboutConfig.fields[0].validation}
         />
         
         <MainInput
-          field_name="WebsiteUrl"
+          field_name="websiteUrl"
           type="text"
           label="Website"
           placeholder="https://techcorp.com"
-          value={values.WebsiteUrl}
-          error={touched.WebsiteUrl && errors.WebsiteUrl}
-          onChange={(e) => setFieldValue("WebsiteUrl", e.target.value)}
+          value={values.websiteUrl}
+          error={touched.websiteUrl && errors.websiteUrl}
+          onChange={(e) => setFieldValue("websiteUrl", e.target.value)}
           onBlur={handleBlur}
           validation={companyAboutConfig.fields[1].validation}
         />

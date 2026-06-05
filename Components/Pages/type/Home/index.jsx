@@ -11,8 +11,8 @@ import { useNavigation } from "@/hooks/common";
 import { JobCardLoading } from "@/Components/Common/LoadingSkeleton/type/JobCard";
 import MainImage from "@/Components/Common/Image";
 import dynamic from "next/dynamic";
-
 const HeroCurve = dynamic(() => import("@/Components/Common/HeroCurve"), { ssr: false });
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 
 const Home = () => {
   const { navigateTo } = useNavigation();
@@ -26,7 +26,7 @@ const Home = () => {
   const apiJobs = jobs && jobs.length > 0 ? jobs : get(latestJobs, "items", []);
   const featuredJobs = take(apiJobs, 3);
 
-  const onBrowseJobs = () => navigateTo("/intelliHire/jobs");
+  const onBrowseJobs = () => navigateTo(NAVIGATION_ROUTES.candidate.jobs);
   const heroCta = get(hero, "cta");
   const redefiningCta = get(redefining, "cta");
   const arrowIcon = <ArrowRight className="w-5 h-5" />;

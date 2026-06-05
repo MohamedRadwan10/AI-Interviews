@@ -9,6 +9,7 @@ import { Since } from "@/Utils/Filter/date";
 import MainImage from "@/Components/Common/Image";
 import { getImageUrl } from "@/Utils/Func/UrlHelper";
 import { formatDate } from "@/Utils/Func/Common";
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 
 const JobCardContent = ({ job }) => {
   const { navigateTo } = useNavigation();
@@ -36,7 +37,7 @@ const JobCardContent = ({ job }) => {
   const postedAt = formattedStart ? (formattedEnd ? `${formattedStart} - Ends: ${formattedEnd}` : formattedStart) : "Just now";
   const jobId = get(job, "id");
 
-  const onSeeDetails = () => navigateTo(`/intelliHire/jobs/${jobId}`);
+  const onSeeDetails = () => navigateTo(NAVIGATION_ROUTES.candidate.jobDetails(jobId));
   const detailsIcon = <ChevronRight className="w-4 h-4" />;
 
   const logoContent = useMemo(() => {

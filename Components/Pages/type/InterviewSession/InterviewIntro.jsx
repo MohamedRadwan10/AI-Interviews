@@ -13,8 +13,7 @@ import { useSelfie } from "@/hooks/useFaceAuth";
 import { useCheckJobMatch } from "@/hooks/useJobs";
 import JobRejectionModal from "@/Components/Modal/JobRejectionModal";
 import { INTERVIEW_INSTRUCTIONS } from "@/Config/InterviewConfig";
-
-
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 
 const InstructionsList = () => (
   <div className="bg-white dark:bg-dark-primary-4 p-10 rounded-3xl border border-ui-borderLight dark:border-ui-border shadow-sm min-h-[550px] flex flex-col justify-center">
@@ -93,7 +92,7 @@ const InterviewIntro = ({ jobId }) => {
 
     const isVerified = await verifySelfie(imageBase64);
     if (isVerified) {
-      navigateTo(`/intelliHire/interview-session/${jobId}/room`);
+      navigateTo(NAVIGATION_ROUTES.candidate.interviewSessionRoom(jobId));
     }
   };
 

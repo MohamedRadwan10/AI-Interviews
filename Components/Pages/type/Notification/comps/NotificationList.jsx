@@ -9,6 +9,7 @@ import { formatDate } from "@/Utils/Func/Common";
 import RouteLoading from "@/Components/Common/LoadingSkeleton/RouteLoading";
 import { useUserAccount } from "@/Context/UserAccountContext";
 import { useNavigation } from "@/hooks/common";
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 
 const NotificationCard = ({ item, onDelete }) => {
   const isRead = item.isRead;
@@ -22,12 +23,12 @@ const NotificationCard = ({ item, onDelete }) => {
 
   const goTo = useCallback(() => {
     if(sessionId !== null){
-      navigateTo(`report/${sessionId}/${userId}`);
+      navigateTo(NAVIGATION_ROUTES.candidate.report(sessionId, userId));
     }
     if(jobId !== null){
-      navigateTo(`job-applicants/${jobId}`);
+      navigateTo(NAVIGATION_ROUTES.company.jobApplicants(jobId));
     }
-  }, [sessionId, jobId, navigateTo]);
+  }, [sessionId, jobId, userId, navigateTo]);
 
   if (titleLower.includes("accepted") || titleLower.includes("completed")) {
     Icon = CheckCircle;

@@ -101,7 +101,7 @@ export const AUTH_ENDPOINTS = {
   },
   deleteJob: {
     url: "/Jobs",
-    method: "DELETE",
+    method: "PUT",
   },
   candidateDashboard: {
     url: "/User/dashboard",
@@ -140,7 +140,7 @@ export const AUTH_ENDPOINTS = {
     method: "PATCH",
   },
   companySettingInfo: {
-    url: "/Setting/personal-company-info", // Name(string) , Industry (string), PhoneNumber(string), photostring($binary) --- inbody in form data
+    url: "/Setting/personal-company-info", 
     method: "PATCH",
   },
   SettingCV: {
@@ -148,7 +148,7 @@ export const AUTH_ENDPOINTS = {
     method: "PATCH",
   },
   SettingCompanyAbout: {
-    url: "/Setting/company-about", //  in body {"locations": {"city": "string","country": "string","government": "string" ,"about": "string","websiteUrl": "string" }
+    url: "/Setting/company-about",
     method: "PATCH",
   },
   ChangeEmailStep1: {

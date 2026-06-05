@@ -32,7 +32,7 @@ export const CompanySetting = () => {
     emailStep, setEmailStep, email1Loading, email2Loading, email3Loading,
     handleEmailStep1, handleEmailStep2, handleEmailStep3, handleResendEmailOtp, passwordModalOpen,
     setPasswordModalOpen, passwordStep, setPasswordStep, pass1Loading, pass2Loading,
-    pass3Loading, handlePasswordStep1, handlePasswordStep2, handlePasswordStep3, logout
+    pass3Loading, handlePasswordStep1, handlePasswordStep2, handlePasswordStep3, logout, handleDeleteAccount
   } = useCompanySettings();
 
   const { isDarkMode, toggleDarkMode } = useDarkMode();
@@ -62,32 +62,32 @@ export const CompanySetting = () => {
   }, [isDarkMode, toggleDarkMode]);
 
   const personalInitialValues = useMemo(() => ({
-    Photo: accountData?.photo || null,
-    companyName: accountData?.companyName || accountData?.name || "",
-    Industry: accountData?.industry || "",
-    PhoneNumber: accountData?.phoneNumber || ""
+    photo: accountData?.photo || null,
+    companyName: accountData?.companyName || "",
+    industry: accountData?.industry || "",
+    phoneNumber: accountData?.phoneNumber || ""
   }), [accountData]);
 
   const personalSchema = useMemo(() => Yup.object().shape({
     companyName: Yup.string().required("Company name is required").min(2, "Too short"),
-    Industry: Yup.string().required("Industry is required"),
-    PhoneNumber: Yup.string().required("Phone number is required").matches(/^(\+2)?01[0125][0-9]{8}$/, "Invalid phone number")
+    industry: Yup.string().required("Industry is required"),
+    phoneNumber: Yup.string().required("Phone number is required").matches(/^(\+2)?01[0125][0-9]{8}$/, "Invalid phone number")
   }), []);
 
   const combinedAboutInitialValues = useMemo(() => ({
-    About: accountData?.locations?.about || accountData?.about || "",
-    WebsiteUrl: accountData?.websiteUrl || "",
-    Country: accountData?.locations?.country || accountData?.country || "",
-    Government: accountData?.locations?.government || accountData?.government || "",
-    City: accountData?.locations?.city || accountData?.city || ""
+    about: accountData?.about || "",
+    websiteUrl: accountData?.websiteUrl || "",
+    country: accountData?.country || "",
+    governmentId: accountData?.governmentId || "",
+    city: accountData?.city || ""
   }), [accountData]);
 
   const combinedAboutSchema = useMemo(() => Yup.object().shape({
-    About: Yup.string().nullable(),
-    WebsiteUrl: Yup.string().matches(/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/, "Invalid URL").nullable(),
-    Country: Yup.string().required("Country is required"),
-    Government: Yup.string().required("Governorate is required"),
-    City: Yup.string().required("Detailed address is required")
+    about: Yup.string().nullable(),
+    websiteUrl: Yup.string().matches(/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/, "Invalid URL").nullable(),
+    country: Yup.string().required("Country is required"),
+    governmentId: Yup.string().required("Governorate is required"),
+    city: Yup.string().required("Detailed address is required")
   }), []);
 
   const emailInitialValues = useMemo(() => ({ email: "", currentPassword: "" }), []);

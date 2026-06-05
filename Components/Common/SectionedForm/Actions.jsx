@@ -1,6 +1,7 @@
 "use client";
 import MainButton from "@/Components/Common/MainButton";
 import { ChevronRight } from "lucide-react";
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 import { useNavigation } from "@/hooks/common";
 
 const FormActions = ({ 
@@ -25,7 +26,7 @@ const FormActions = ({
     }
     setActiveTab(sections[currentIndex + 1]?.id);
   };
-  const onCancel = () => navigateTo("/intelliHire/jobs");
+  const onCancel = () => navigateTo(NAVIGATION_ROUTES.candidate.jobs);
   const nextIcon = <ChevronRight className="w-4 h-4" />;
 
   return (

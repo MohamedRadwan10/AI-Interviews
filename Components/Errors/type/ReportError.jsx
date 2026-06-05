@@ -4,10 +4,11 @@ import MainText from "@/Components/Common/MainText";
 import MainButton from "@/Components/Common/MainButton";
 import { RefreshCw } from "lucide-react";
 import { useNavigation } from "@/hooks/common";
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 
 const ReportError = ({ refetch }) => {
   const { navigateTo } = useNavigation();
-  const onBrowseJobs = () => navigateTo("/intelliHire/jobs");
+  const onBrowseJobs = () => navigateTo(NAVIGATION_ROUTES.candidate.jobs);
   const retryIcon = <RefreshCw className="w-4 h-4" />;
 
   return (

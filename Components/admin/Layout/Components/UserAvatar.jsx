@@ -9,6 +9,7 @@ import { getVal } from "@/Utils/Func/Common";
 import MainButton from "@/Components/Common/MainButton";
 import UserDropdown from "@/Components/admin/Layout/Components/UserDropdown";
 import { Settings, FileText, ChevronDown } from "lucide-react";
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 
 const UserAvatar = () => {
   const dropdownRef = useRef(null);
@@ -17,11 +18,15 @@ const UserAvatar = () => {
   const { accountData } = useUserAccount();
   const { navigateTo } = useNavigation();
 
+
+
   const userId = getVal(accountData, null, "id", null);
   const photo = getVal(accountData, null, "photo", null);
   const fullName = getVal(accountData, null, "fullName", "User");
+  const companyName = getVal(accountData, null, "companyName", "Company");
   const email = getVal(accountData, null, "email", "");
   const userType = getVal(accountData, null, "userType", null);
+  const Name = useMemo(() => userType === "Individual" ? fullName : companyName, [userType, fullName, companyName]);
 
   const photoUrl = useMemo(() => {
     if (!photo || photo === "N/A") return null;
@@ -46,8 +51,8 @@ const UserAvatar = () => {
     handleClose();
   }, [logout, handleClose]);
 
-  const handleCvClick = useCallback(() => handleNavigate(`/intelliHire/cv/${userId}`), [handleNavigate, userId]);
-  const handleSettingsClick = useCallback(() => handleNavigate("/intelliHire/settings"), [handleNavigate]);
+  const handleCvClick = useCallback(() => handleNavigate(NAVIGATION_ROUTES.candidate.cv(userId)), [handleNavigate, userId]);
+  const handleSettingsClick = useCallback(() => handleNavigate(NAVIGATION_ROUTES.common.settings), [handleNavigate]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -94,7 +99,7 @@ const UserAvatar = () => {
       {isOpen && (
         <UserDropdown
           photoUrl={photoUrl}
-          fullName={fullName}
+          fullName={Name}
           email={email}
           userType={userType}
           menuItems={menuItems}

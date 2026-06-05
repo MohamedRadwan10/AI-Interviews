@@ -1,11 +1,21 @@
-import MainPage from "@/Components/Pages";
+"use client";
 
-export const metadata = {
-  title: "Explore Jobs | IntelliHire",
-  description: "Browse the latest job opportunities and start your career journey with AI-driven interviews.",
-};
+import MainPage from "@/Components/Pages";
+import { useUserAccount } from "@/Context/UserAccountContext";
+import { get } from "lodash-es";
+import AccessDenied from "@/Components/Common/AccessDenied";
+
 
 const Page = () => {
+  const { accountData, loading } = useUserAccount();
+  const userType = get(accountData, "userType");
+
+  if (loading) return null;
+
+  if (userType === "Company") {
+    return <AccessDenied />;
+  }
+
   return <MainPage type="jobs" />;
 };
 
