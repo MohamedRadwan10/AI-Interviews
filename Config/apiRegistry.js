@@ -100,7 +100,7 @@ export const AUTH_ENDPOINTS = {
     method: "PUT",
   },
   deleteJob: {
-    url: "/Jobs",
+    url: "/Jobs/delete",
     method: "PUT",
   },
   candidateDashboard: {
