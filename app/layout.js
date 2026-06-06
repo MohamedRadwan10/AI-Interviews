@@ -4,7 +4,6 @@ import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import "@/app/globals.css";
 import ClientLayout from "@/app/ClientLayout";
-import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
@@ -33,20 +32,6 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <ClientLayout>{children}</ClientLayout>
-
-        <Script
-          id="chatbase-config"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `window.embeddedChatbotConfig = { chatbotId: "VZ1PwRyPj3AoVjDZHRUO1", domain: "www.chatbase.co" }`
-          }}
-        />
-        <Script
-          id="chatbase-embed"
-          src="https://www.chatbase.co/embed.min.js"
-          strategy="lazyOnload"
-          defer
-        />
       </body>
     </html>
   );

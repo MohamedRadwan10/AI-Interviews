@@ -15,6 +15,7 @@ import PreferencesSection from "@/Components/Settings/Common/PreferencesSection"
 import SecuritySection from "@/Components/Settings/Common/SecuritySection";
 import EmailModal from "@/Components/Modal/EmailModal";
 import PasswordModal from "@/Components/Modal/PasswordModal";
+import DeleteAccountModal from "@/Components/Modal/DeleteAccountModal";
 
 const sidebarItems = [
   { id: "account", label: "Account details", icon: User },
@@ -32,7 +33,8 @@ export const CompanySetting = () => {
     emailStep, setEmailStep, email1Loading, email2Loading, email3Loading,
     handleEmailStep1, handleEmailStep2, handleEmailStep3, handleResendEmailOtp, passwordModalOpen,
     setPasswordModalOpen, passwordStep, setPasswordStep, pass1Loading, pass2Loading,
-    pass3Loading, handlePasswordStep1, handlePasswordStep2, handlePasswordStep3, logout, handleDeleteAccount
+    pass3Loading, handlePasswordStep1, handlePasswordStep2, handlePasswordStep3, logout, handleDeleteAccount,
+    handleDeleteAccountConfirm, handleCloseDeleteModal, deleteModalOpen
   } = useCompanySettings();
 
   const { isDarkMode, toggleDarkMode } = useDarkMode();
@@ -148,6 +150,7 @@ export const CompanySetting = () => {
       </div>
       <EmailModal emailModalOpen={emailModalOpen} handleCloseEmailModal={handleCloseEmailModal} emailStep={emailStep} emailInitialValues={emailInitialValues} emailSchema={emailSchema} handleEmailStep1={handleEmailStep1} email1Loading={email1Loading} handleEmailStep2={handleEmailStep2} email2Loading={email2Loading} handleEmailStep3={handleEmailStep3} email3Loading={email3Loading} handleResendEmailOtp={handleResendEmailOtp} />
       <PasswordModal passwordModalOpen={passwordModalOpen} handleClosePasswordModal={handleClosePasswordModal} passwordStep={passwordStep} pass1Loading={pass1Loading} pass2Loading={pass2Loading} pass3Loading={pass3Loading} handlePasswordStep1={handlePasswordStep1} handlePasswordStep2={handlePasswordStep2} handlePasswordStep3={handlePasswordStep3} passwordInitialValues={passwordInitialValues} passwordSchema={passwordSchema} />
+      <DeleteAccountModal visible={deleteModalOpen} onHide={handleCloseDeleteModal} onConfirm={handleDeleteAccountConfirm} isLoading={deleteLoading} />
     </div>
   );
 };

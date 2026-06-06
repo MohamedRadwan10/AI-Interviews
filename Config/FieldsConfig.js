@@ -1,6 +1,7 @@
 import { getAllCountries, getStatesOfCountry, getCitiesOfState } from "@/Utils/Func/LocationData";
 import { get } from "lodash-es";
 import { jobCategories, jobSubCategories, jobTypes, careerLevels } from "./InterviewConfig";
+import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 
 export const loginConfig = {
   pageTitle: "Welcome back to IntelliHire",
@@ -13,12 +14,12 @@ export const loginConfig = {
   footerLinks: [
     {
       text: "Register",
-      href: "/account-type",
+      href: NAVIGATION_ROUTES.auth.accountType,
       type: "register",
     },
     {
       text: "Forgot password ?",
-      href: "/forget-password",
+      href: NAVIGATION_ROUTES.auth.forgetPassword,
       type: "forget",
     },
   ],
@@ -81,7 +82,7 @@ export const companyRegisterConfig = {
   footerLinks: [
     {
       text: "Log in",
-      href: "/login",
+      href: NAVIGATION_ROUTES.auth.login,
     },
   ],
   footerSeparator: "",
@@ -402,7 +403,7 @@ export const forgetPasswordConfig = {
     pageTitle: "Forget Your Password ?",
     pageSubtitle: "Enter the email address associated with your account.",
     submitButtonText: "Reset Password",
-    footerLinks: [{ text: "Back to Login", href: "/login" }],
+    footerLinks: [{ text: "Back to Login", href: NAVIGATION_ROUTES.auth.login }],
     fields: [
       {
         field_name: "email",
@@ -426,7 +427,7 @@ export const forgetPasswordConfig = {
     pageTitle: "Enter New Password",
     pageSubtitle: "Your new password must be different from previously used password",
     submitButtonText: "Reset Password",
-    footerLinks: [{ text: "Cancel", href: "/login" }],
+    footerLinks: [{ text: "Cancel", href: NAVIGATION_ROUTES.auth.login }],
     fields: [
       {
         field_name: "password",

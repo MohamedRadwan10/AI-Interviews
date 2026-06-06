@@ -3,12 +3,14 @@ export const NAVIGATION_ROUTES = {
     login: "/login",
     loginWithVerified: "/login?verified=true",
     loginWithSuccess: "/login?success=true",
-    register: "/register",
     verifyEmailRequest: "/verify-email-request",
-    candidateRegister: "/individual-register",
+    candidateRegister: "/candidate-register",
     companyRegister: "/company-register",
     candidateOnboarding: "/candidate-onboarding",
     companyOnboarding: "/company-onboarding",
+    accountType: "/account-type",
+    externalLoginCallback: "/auth/callback",
+    forgetPassword: "/forget-password",
   },
   candidate: {
     dashboard: "/intelliHire",
@@ -32,5 +34,8 @@ export const NAVIGATION_ROUTES = {
     about: "/intelliHire/about",
     notifications: "/intelliHire/notifications",
     settings: "/intelliHire/settings",
+    cookies: "/cookies",
+    privacy: "/privacy",
+    terms: "/terms",
   }
 };
