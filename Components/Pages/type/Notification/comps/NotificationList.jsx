@@ -11,7 +11,7 @@ import { useUserAccount } from "@/Context/UserAccountContext";
 import { useNavigation } from "@/hooks/common";
 import { NAVIGATION_ROUTES } from "@/Config/navigationConfig";
 
-const NotificationCard = ({ item, onDelete }) => {
+const NotificationCard = ({ item, onDelete, onRead }) => {
   const isRead = item.isRead;
   const titleLower = String(item.title).toLowerCase();
   const { userId } = useUserAccount();
@@ -21,14 +21,29 @@ const NotificationCard = ({ item, onDelete }) => {
   let Icon = Info;
   let iconColor = "text-brand-primary";
 
-  const goTo = useCallback(() => {
-    if(sessionId !== null){
+  const goTo = useCallback(async () => {
+    if (!isRead && onRead) {
+      await onRead(item.id);
+    }
+    if (sessionId !== null) {
       navigateTo(NAVIGATION_ROUTES.candidate.report(sessionId, userId));
     }
-    if(jobId !== null){
+    if (jobId !== null) {
       navigateTo(NAVIGATION_ROUTES.company.jobApplicants(jobId));
     }
-  }, [sessionId, jobId, userId, navigateTo]);
+  }, [isRead, onRead, item.id, sessionId, jobId, userId, navigateTo]);
+
+  const handleDeleteClick = useCallback((e) => {
+    e.stopPropagation();
+    onDelete(item.id);
+  }, [item.id, onDelete]);
+
+  const handleReadClick = useCallback((e) => {
+    e.stopPropagation();
+    if (onRead) {
+      onRead(item.id);
+    }
+  }, [item.id, onRead]);
 
   if (titleLower.includes("accepted") || titleLower.includes("completed")) {
     Icon = CheckCircle;
@@ -45,7 +60,7 @@ const NotificationCard = ({ item, onDelete }) => {
   }
 
   return (
-    <div onClick={goTo} className={`p-4 mb-4 rounded-xl border transition-all duration-200 flex gap-4 items-start cursor-pointer hover:scale-[102%] hover:bg-light-main   dark:hover:bg-dark-primary-4 ${
+    <div onClick={goTo} className={`p-4 mb-4 rounded-xl border transition-all duration-200 flex gap-4 items-start cursor-pointer hover:scale-[102%] hover:bg-light-main dark:hover:bg-dark-primary-4 ${
       isRead 
         ? "bg-white dark:bg-dark-primary-3 border-ui-borderLight dark:border-ui-border" 
         : "bg-brand-primary/5 dark:bg-brand-primary/10 border-brand-primary/30"
@@ -62,22 +77,34 @@ const NotificationCard = ({ item, onDelete }) => {
         </div>
         <MainText title={item.body} className="text-sm text-ui-textMuted dark:text-ui-muted mt-1 leading-relaxed" />
       </div>
-      <button 
-        onClick={() => onDelete(item.id)}
-        className="text-ui-textMuted dark:text-ui-muted hover:text-red-500 dark:hover:text-red-400 transition-colors p-2"
-        title="Delete"
-      >
-        <Trash2 className="w-5 h-5" />
-      </button>
+      <div className="flex items-center gap-1">
+        {!isRead && (
+          <button 
+            onClick={handleReadClick}
+            className="text-ui-textMuted dark:text-ui-muted hover:text-green-500 dark:hover:text-green-400 transition-colors p-2"
+            title="Mark as read"
+          >
+            <CheckCheck className="w-5 h-5" />
+          </button>
+        )}
+        <button 
+          onClick={handleDeleteClick}
+          className="text-ui-textMuted dark:text-ui-muted hover:text-red-500 dark:hover:text-red-400 transition-colors p-2"
+          title="Delete"
+        >
+          <Trash2 className="w-5 h-5" />
+        </button>
+      </div>
     </div>
   );
 };
 
 export const NotificationList = ({ emptyDescription }) => {
-  const { notifications, loading, markAllAsRead, markAsDeleted, isMarkingRead } = useNotifications();
+  const { notifications, loading, markAllAsRead, markAsDeleted, isMarkingRead, markAsRead } = useNotifications();
 
   const handleMarkAll = useCallback(() => markAllAsRead(), [markAllAsRead]);
   const handleDelete = useCallback((id) => markAsDeleted(id), [markAsDeleted]);
+  const handleRead = useCallback((id) => markAsRead(id), [markAsRead]);
 
   if (loading && isEmpty(notifications)) {
     return (
@@ -109,7 +136,12 @@ export const NotificationList = ({ emptyDescription }) => {
       ) : (
         <div className="space-y-4">
           {map(notifications, (item) => (
-            <NotificationCard key={item.id} item={item} onDelete={handleDelete} />
+            <NotificationCard 
+              key={item.id} 
+              item={item} 
+              onDelete={handleDelete} 
+              onRead={handleRead}
+            />
           ))}
         </div>
       )}

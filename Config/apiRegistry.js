@@ -135,6 +135,10 @@ export const AUTH_ENDPOINTS = {
     url: "/MarkAsDeleted",
     method: "PUT",
   },
+  MarkAsRead: {
+    url: "/MarkAsRead", // /{id} in parameters 
+    method: "PUT",
+  },
   candidateSettingInfo: {
     url: "/Setting/personal-info",
     method: "PATCH",

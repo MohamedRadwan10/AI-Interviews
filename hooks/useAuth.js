@@ -12,6 +12,7 @@ import { API_BASE_URL, AUTH_ENDPOINTS } from "@/Config/apiRegistry";
 import { useFormik } from "formik";
 import { getVal } from "@/Utils/Func/Common";
 import { buildValidationSchema } from "@/Utils/Func/ValidationSchema";
+import { useUserAccount } from "@/Context/UserAccountContext";
 
 const SOCIAL_LOGIN_BASE_URL = "https://intellhire.runasp.net/api/Auth/external-login";
 
@@ -166,6 +167,7 @@ export const useLogout = () => {
 
 export const useCompleteProfile = () => {
   const { navigateTo } = useNavigation();
+  const { refetch: refetchUserData } = useUserAccount();
   const completeUserApi = useApi({ type: "CompleteUserData", autoFetch: false });
   const completeCompanyApi = useApi({ type: "CompleteCompanyData", autoFetch: false });
   const { success, error: notifyError } = useMainNotify();
@@ -188,6 +190,7 @@ export const useCompleteProfile = () => {
       });
       const data = await apiHook.refetch({ data: formData });
       if (data) {
+        await refetchUserData();
         success("Profile Updated", "Your profile has been successfully completed.");
         navigateTo(NAVIGATION_ROUTES.candidate.dashboard);
       }
@@ -196,7 +199,7 @@ export const useCompleteProfile = () => {
       notifyError("Update Failed", get(err, "response.data.message") || "An error occurred while updating your profile.");
       throw err;
     }
-  }, [completeUserApi, completeCompanyApi, navigateTo, success, notifyError]);
+  }, [completeUserApi, completeCompanyApi, refetchUserData, navigateTo, success, notifyError]);
 
   return { 
     completeProfile, 
