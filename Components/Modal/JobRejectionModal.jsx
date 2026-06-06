@@ -7,7 +7,7 @@ import MainButton from "@/Components/Common/MainButton";
 import { ProgressBar } from "primereact/progressbar";
 import { AlertCircle, CheckCircle2, XCircle } from "lucide-react";
 import { get, map } from "lodash-es";
-import { getScoreColor, getMatchColor } from "@/Utils/Func/Common";
+import { getScoreColor, getMatchColor, getScoreColors } from "@/Utils/Func/Common";
 
 const getStatusIcon = (label) => {
   const l = label.toLowerCase();
@@ -65,7 +65,7 @@ const JobRejectionModal = ({ visible, onHide, result, onProceed }) => {
                     value={score} 
                     showValue={false} 
                     style={{ height: '6px' }} 
-                    color={getScoreColor(score)}
+                    color={getScoreColors(score)}
                   />
                 </div>
               );

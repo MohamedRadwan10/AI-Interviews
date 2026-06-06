@@ -7,7 +7,7 @@ import { Users, Target } from "lucide-react";
 const JobApplicantsStats = ({ stats }) => {
   const { total, topScore } = stats;
   
-  const scoreValue = topScore ? `${topScore.toFixed(1)} / 10` : "N/A";
+  const scoreValue = topScore ? `${topScore.toFixed(1)} / 100` : "N/A";
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">

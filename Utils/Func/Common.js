@@ -35,9 +35,20 @@ export const getScoreColor = (score) => {
   return statusColors.error;
 };
 
+export const getScoreColors = (score) => {
+  const statusColors = get(APP_CONFIG, "ui.statusColors", {});
+  if (score >= 45) {
+    return statusColors.success;
+  }
+  if (score >= 30) {
+    return statusColors.warning;
+  }
+  return statusColors.error;
+};
+
 export const getMatchColor = (label) => {
   const l = String(label).toLowerCase();
-  if (l.includes("excellent") || l.includes("good")) return "text-status-success";
-  if (l.includes("average") || l.includes("fair")) return "text-status-warning";
+  if (l.includes("excellent") || l.includes("good") || l.includes("perfect") || l.includes("strong")) return "text-status-success";
+  if (l.includes("average") || l.includes("fair") || l.includes("partial") || l.includes("weak")) return "text-status-warning";
   return "text-status-error";
 };

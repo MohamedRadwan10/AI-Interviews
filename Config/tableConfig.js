@@ -167,7 +167,7 @@ export const JOB_APPLICANTS_COLUMNS = (onViewApplicant) => [
     type: "custom",
     body: (rowData) => {
       const score = rowData.overallScore;
-      const scoreText = score ? `${score.toFixed(1)} / 10` : "N/A";
+      const scoreText = score ? `${score.toFixed(1)} / 100` : "N/A";
       const scoreClass = `font-bold ${score >= 7 ? 'text-status-success' : score >= 5 ? 'text-status-warning' : 'text-status-error'}`;
       return <MainText title={scoreText} className={scoreClass} />;
     }
