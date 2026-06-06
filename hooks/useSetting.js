@@ -1,7 +1,7 @@
 "use client";
 import { useState, useCallback, useMemo, useContext } from "react";
 import { useApi } from "@/hooks/useApi";
-import { useMainNotify, useConfirmation, useUrlSync } from "@/hooks/common";
+import { useMainNotify, useUrlSync } from "@/hooks/common";
 import { useUserAccount } from "@/Context/UserAccountContext";
 import { getVal } from "@/Utils/Func/Common";
 import { get } from "lodash-es";
@@ -147,7 +147,6 @@ export const useCandidateSettings = () => {
   const { accountData, refetch: refetchUserData } = useUserAccount();
   const { userToken } = useContext(UserTokenContext);
   const { success: notifySuccess, error: notifyError } = useMainNotify();
-  const { confirm } = useConfirmation();
   const { logout } = useLogout();
 
   const { params, updateParam } = useUrlSync({ tab: "account" });
@@ -195,23 +194,24 @@ export const useCandidateSettings = () => {
     }
   }, [pendingCvFile, updateResumeApi, refetchUserData, notifySuccess, notifyError]);
 
-  const handleDeleteAccount = useCallback(async () => {
-    confirm({
-      message: "Are you sure you want to delete your account? This action cannot be undone.",
-      header: "Delete Account",
-      icon: "pi pi-exclamation-triangle",
-      acceptClassName: "p-button-danger",
-      accept: async () => {
-        try {
-          await deleteAccountApi({ data: { email: getVal(accountData, "", "email"), password: "" } });
-          notifySuccess("Account Deleted", "Your account has been successfully removed.");
-          logout();
-        } catch (err) {
-          notifyError("Error", get(err, "response.data.message") || "Failed to delete account");
-        }
-      }
-    });
-  }, [deleteAccountApi, accountData, confirm, logout, notifySuccess, notifyError]);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const handleDeleteAccount = useCallback(() => {
+    setDeleteModalOpen(true);
+  }, []);
+
+  const handleDeleteAccountConfirm = useCallback(async (password) => {
+    try {
+      await deleteAccountApi({ data: { email: getVal(accountData, "", "email"), currentPassword: password } });
+      notifySuccess("Account Deleted", "Your account has been successfully removed.");
+      setDeleteModalOpen(false);
+      logout();
+    } catch (err) {
+      notifyError("Error", get(err, "response.data.message") || "Failed to delete account");
+    }
+  }, [deleteAccountApi, accountData, logout, notifySuccess, notifyError]);
+
+  const handleCloseDeleteModal = useCallback(() => setDeleteModalOpen(false), []);
 
   return useMemo(() => ({
     activeSection, setActiveSection, accountData,
@@ -219,18 +219,19 @@ export const useCandidateSettings = () => {
     pendingCvFile, handleCvFileSelect, handleCancelCv, handleSaveCv,
     ...emailHook,
     ...passwordHook,
-    handleDeleteAccount, deleteLoading, logout
+    handleDeleteAccount, handleDeleteAccountConfirm, handleCloseDeleteModal,
+    deleteModalOpen, deleteLoading, logout
   }), [
     activeSection, setActiveSection, accountData, infoLoading, cvLoading,
     handleUpdatePersonalInfo, pendingCvFile, handleCvFileSelect, handleCancelCv, handleSaveCv,
-    emailHook, passwordHook, handleDeleteAccount, deleteLoading, logout
+    emailHook, passwordHook, handleDeleteAccount, handleDeleteAccountConfirm,
+    handleCloseDeleteModal, deleteModalOpen, deleteLoading, logout
   ]);
 };
 
 export const useCompanySettings = () => {
   const { accountData, refetch: refetchUserData } = useUserAccount();
   const { success: notifySuccess, error: notifyError } = useMainNotify();
-  const { confirm } = useConfirmation();
   const { logout } = useLogout();
 
   const { params, updateParam } = useUrlSync({ tab: "account" });
@@ -282,23 +283,24 @@ export const useCompanySettings = () => {
     }
   }, [updateCompanyAboutApi, refetchUserData, notifySuccess, notifyError]);
 
-  const handleDeleteAccount = useCallback(async () => {
-    confirm({
-      message: "Are you sure you want to delete your account? This action cannot be undone.",
-      header: "Delete Account",
-      icon: "pi pi-exclamation-triangle",
-      acceptClassName: "p-button-danger",
-      accept: async () => {
-        try {
-          await deleteAccountApi({ data: { email: getVal(accountData, "", "email"), password: "" } });
-          notifySuccess("Account Deleted", "Your account has been successfully removed.");
-          logout();
-        } catch (err) {
-          notifyError("Error", get(err, "response.data.message") || "Failed to delete account");
-        }
-      }
-    });
-  }, [deleteAccountApi, accountData, confirm, logout, notifySuccess, notifyError]);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const handleDeleteAccount = useCallback(() => {
+    setDeleteModalOpen(true);
+  }, []);
+
+  const handleDeleteAccountConfirm = useCallback(async (password) => {
+    try {
+      await deleteAccountApi({ data: { email: getVal(accountData, "", "email"), currentPassword: password } });
+      notifySuccess("Account Deleted", "Your account has been successfully removed.");
+      setDeleteModalOpen(false);
+      logout();
+    } catch (err) {
+      notifyError("Error", get(err, "response.data.message") || "Failed to delete account");
+    }
+  }, [deleteAccountApi, accountData, logout, notifySuccess, notifyError]);
+
+  const handleCloseDeleteModal = useCallback(() => setDeleteModalOpen(false), []);
 
   const result = useMemo(() => ({
     activeSection, setActiveSection, accountData,
@@ -306,12 +308,14 @@ export const useCompanySettings = () => {
     handleUpdateCompanyInfo, handleUpdateCompanyAbout,
     ...emailHook,
     ...passwordHook,
-    handleDeleteAccount, logout
+    handleDeleteAccount, handleDeleteAccountConfirm, handleCloseDeleteModal,
+    deleteModalOpen, deleteLoading, logout
   }), [
     activeSection, setActiveSection, accountData,
     infoLoading, aboutLoading, deleteLoading,
     handleUpdateCompanyInfo, handleUpdateCompanyAbout,
-    emailHook, passwordHook, handleDeleteAccount, logout
+    emailHook, passwordHook, handleDeleteAccount, handleDeleteAccountConfirm,
+    handleCloseDeleteModal, deleteModalOpen, logout
   ]);
 
   return result;

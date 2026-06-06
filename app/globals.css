@@ -124,3 +124,9 @@
 iframe[src*="chatbase"] {
   font-family: inherit !important;
 }
+
+.hide-chatbot #chatbase-bubble-button,
+.hide-chatbot #chatbase-bubble-window,
+.hide-chatbot iframe[src*="chatbase"] {
+  display: none !important;
+}
