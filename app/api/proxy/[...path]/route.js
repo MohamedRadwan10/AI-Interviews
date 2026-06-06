@@ -12,7 +12,7 @@ async function handler(request, { params }) {
     const queryString = searchParams.toString();
     
     // Special case for endpoints that are not under the /api prefix (like /selfie or /CheckJobMatch)
-    const targetUrl = (segments[0] === "selfie" || segments[0] === "CheckJobMatch" || segments[0] === "MarkAsDeleted"|| segments[0] === "MarkAllAsRead"|| segments[0] === "GetNotifications")
+    const targetUrl = (segments[0] === "selfie" || segments[0] === "CheckJobMatch" || segments[0] === "MarkAsDeleted"|| segments[0] === "MarkAllAsRead"|| segments[0] === "GetNotifications" || segments[0] === "MarkAsRead")
       ? `https://intellhire.runasp.net/${backendPath}${queryString ? `?${queryString}` : ""}`
       : `${BACKEND_BASE_URL}/${backendPath}${queryString ? `?${queryString}` : ""}`;
 

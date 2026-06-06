@@ -27,6 +27,23 @@ export const useNotifications = () => {
     autoFetch: false 
   });
 
+  const readOneApi = useApi({ 
+    type: "MarkAsRead", 
+    autoFetch: false 
+  });
+
+  const markAsRead = useCallback(async (id) => {
+    try {
+      await readOneApi.refetch({ urlSuffix: `/${id}`, data: {} });
+      setRealtimeNotifications((prev) => 
+        prev.map((n) => n.id === id ? { ...n, isRead: true } : n)
+      );
+      getApi.refetch({ silent: true });
+    } catch (err) {
+      console.error("MarkAsRead Error:", err);
+    }
+  }, [readOneApi, getApi]);
+
   useEffect(() => {
     const handleNewNotification = (data) => {
       if (!data) return;
@@ -96,7 +113,9 @@ export const useNotifications = () => {
     markAllAsRead,
     isMarkingRead: readAllApi.loading,
     markAsDeleted,
-    isDeleting: deleteApi.loading
+    isDeleting: deleteApi.loading,
+    markAsRead,
+    isMarkingOneRead: readOneApi.loading
   }), [
     notifications, 
     getApi.loading, 
@@ -105,6 +124,8 @@ export const useNotifications = () => {
     markAllAsRead, 
     readAllApi.loading, 
     markAsDeleted, 
-    deleteApi.loading
+    deleteApi.loading,
+    markAsRead,
+    readOneApi.loading
   ]);
 };

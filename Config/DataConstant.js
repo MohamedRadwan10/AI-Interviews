@@ -37,32 +37,6 @@ export const DataConstant = {
     latestJobs: {
       title: "Latest Job Opportunities",
       subtitle: "Featured jobs posted recently",
-      items: [
-        {
-          id: 1,
-          logo: "TC",
-          title: "Frontend Developer",
-          company: "Tech Corps",
-          type: "Full Time",
-          desc: "We are looking for a Frontend Developer experienced in React and Tailwind CSS to join our team.",
-        },
-        {
-          id: 2,
-          logo: "TC",
-          title: "Frontend Developer",
-          company: "Tech Corps",
-          type: "Full Time",
-          desc: "We are looking for a Frontend Developer experienced in React and Tailwind CSS to join our team.",
-        },
-        {
-          id: 3,
-          logo: "TC",
-          title: "Frontend Developer",
-          company: "Tech Corps",
-          type: "Full Time",
-          desc: "We are looking for a Frontend Developer experienced in React and Tailwind CSS to join our team.",
-        },
-      ],
     },
     redefining: {
       title: "Redefining How You Hire & Get Hired",
